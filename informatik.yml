@@ -38,6 +38,6 @@
     ansible.posix.synchronize:
       src: "~/dev/ansible-packages/"
       dest: "~/packages/"
-      job: "./Structorizer.sh -D ~/packages/Structorizer"
+#      job: "./Structorizer.sh -D ~/packages/Structorizer"
 
 
