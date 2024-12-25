@@ -36,8 +36,8 @@
 
   - name: Kopiere die Hersteller-Pakete in ein Verzeichnis
     copy:
-      src: packages/
-      dest: ~/packages/
+      src: packages
+      dest: ~/packages
      
 
 #  - name: Einen Ansible-User hinzufuegen
