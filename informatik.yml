@@ -36,9 +36,9 @@
 
   - name: Synchronisiere die Hersteller-Pakete in ein lokales Verzeichnis
     synchronize:
-      src: packages
-      dest: ~/packages
-
+      src: "packages"
+      dest: "~/packages"
+      mode: 0644
      
 
 #  - name: Einen Ansible-User hinzufuegen
