@@ -15,5 +15,12 @@
         - shotcut
         - python-is-python3
         - inkscape
+        - python3-psutil
 
+  - name: Kopiere .bashrc-Datei
+    copy:
+      src: files/bashsrc
+      dest: /home/holger/.bashrc
+      owner: holger
+      group: holger
 
