@@ -4,7 +4,16 @@
   become: true
 
   tasks:
-  - name: install htop
+  - name: installiere Debian-Pakete
     package:
-      name: htop
+      name: 
+        - arduino
+        - emacs
+        - gedit
+        - kate
+        - veyon-configurator
+        - shotcut
+        - python-is-python3
+        - inkscape
+
 
