@@ -36,8 +36,8 @@
 
   - name: Kopiere Hersteller-Pakete
     copy:
-      src: ~/ansible-desktop/packages/
-      dest: ~/packages/
+      src: ~/ansible-desktop/packages
+      dest: ~/packages
       owner: holger
       group: holger
 
