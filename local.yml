@@ -19,7 +19,7 @@
 
   - name: Kopiere .bashrc-Datei
     copy:
-      src: files/bashsrc
+      src: files/bashrc
       dest: /home/holger/.bashrc
       owner: holger
       group: holger
