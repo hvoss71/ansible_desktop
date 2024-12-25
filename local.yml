@@ -2,6 +2,8 @@
 - hosts: localhost
   connection: local
   become: true
+  vars: 
+    flatpakrepo: https://dl.flathub.org/repo/flathub.flatpakrepo
 
   tasks:
   - name: installiere Debian-Pakete
@@ -17,6 +19,20 @@
         - inkscape
         - python3-psutil
 
+  - name: Installiere Flatpak-Pakete
+    flatpak:
+      name:  
+        - "{{ flatpakrepo }}"/ch.tigerjython.TigerJython2
+        - "{{ flatpakrepo }}"/de.lernsoftware_filius.Filius
+        - "{{ flatpakrepo }}"/org.eclipse.Java
+        - "{{ flatpakrepo }}"/org.processing.processingide
+        - "{{ flatpakrepo }}"/com.prusa3d.PrusaSlicer
+        - "{{ flatpakrepo }}"/com.visualstudio.code
+        - "{{ flatpakrepo }}"/edu.mit.Scratch
+        - "{{ flatpakrepo }}"/com.github.PintaProject.Pinta
+        - "{{ flatpakrepo }}"/cc.arduino.IDE2
+      state: present
+
   - name: Kopiere .bashrc-Datei
     copy:
       src: files/bashrc
@@ -24,24 +40,24 @@
       owner: holger
       group: holger
 
-  - name: Einen Ansible-User hinzufuegen
-    user: 
-      name: tueroeffner
-      system: yes
+#  - name: Einen Ansible-User hinzufuegen
+#    user: 
+#      name: tueroeffner
+#      system: yes
 
-  - name: Ansible-Nutzer zur Sudo-Gruppe hinzufuegen
-    copy: 
-      src: files/sudoer_tueroeffner
-      dest: /etc/sudoers.d/tueroeffner
-      owner: root
-      group: root
-      mode: 0440
+#  - name: Ansible-Nutzer zur Sudo-Gruppe hinzufuegen
+#    copy: 
+#      src: files/sudoer_tueroeffner
+#      dest: /etc/sudoers.d/tueroeffner
+#      owner: root
+#      group: root
+#      mode: 0440
 
-  - name: Ansible-pull Cronjob hinzufuegen
-    cron: 
-      - name: ansible auto-provision
-      - user: tueroeffner
-      - minute: "*/10"
-      - job: sudo ansible-pull -o -U https://github.com/hvoss71/ansible_desktop.git
+#  - name: Ansible-pull Cronjob hinzufuegen
+#    cron: 
+#      - name: ansible auto-provision
+#      - user: tueroeffner
+#      - minute: "*/10"
+#      - job: sudo ansible-pull -o -U https://github.com/hvoss71/ansible_desktop.git
  
 
