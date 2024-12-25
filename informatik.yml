@@ -34,10 +34,11 @@
         - cc.arduino.IDE2
       state: present
 
-  - name: Kopiere die Hersteller-Pakete in ein Verzeichnis
-    copy:
+  - name: Synchronisiere die Hersteller-Pakete in ein lokales Verzeichnis
+    synchronise:
       src: packages
       dest: ~/packages
+
      
 
 #  - name: Einen Ansible-User hinzufuegen
