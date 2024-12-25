@@ -53,11 +53,11 @@
       group: root
       mode: 0440
 
-#  - name: Ansible-pull Cronjob hinzufuegen
-#    cron: 
-#      - name: ansible auto-provision
-#      - user: tueroeffner
-#      - minute: "*/10"
-#      - job: sudo ansible-pull -o -U https://github.com/hvoss71/ansible_desktop.git
- 
+  - name: Ansible-pull Cronjob hinzufuegen
+    cron: 
+      - name: ansible auto-provision
+      - user: tueroeffner
+      - minute: "*/10"
+      - job: sudo ansible-pull -o -U https://github.com/hvoss71/ansible_desktop.git
+
 
