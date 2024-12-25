@@ -54,7 +54,7 @@
       mode: 0440
 
   - name: Ansible-pull Cronjob hinzufuegen
-    cron: 
+    ansible.builtin.cron: 
       - name: ansible auto-provision
       - user: tueroeffner
       - minute: "*/10"
