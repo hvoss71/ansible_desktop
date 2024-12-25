@@ -24,3 +24,24 @@
       owner: holger
       group: holger
 
+  - name: Einen Ansible-User hinzufügen
+    user: 
+      name: tueroeffner
+      system: yes
+
+  - name: Ansible-Nutzer zur Sudo-Gruppe hinzufügen
+    copy: 
+      scr: files/sudoer_tueroeffner
+      dest: etc/sudoers.d/tueroeffner
+      owner: root
+      group: root
+      mode: 0440
+
+  - name: Ansible-pull Cronjob hinzufügen
+    cron: 
+      - name: ansible auto-provision
+      - user: tueroeffner
+      - minute: "*/10"
+      - job: sudo ansible-pull -o -U https://github.com/hvoss71/ansible_desktop.git
+ 
+
