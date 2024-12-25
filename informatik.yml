@@ -34,10 +34,10 @@
         - cc.arduino.IDE2
       state: present
 
-  - name: Kopiere .bashrc-Datei
+  - name: Kopiere Hersteller-Pakete
     copy:
-      src: files/bashrc
-      dest: /home/holger/.bashrc
+      src: ~/ansible-desktop/packages/*
+      dest: ~/packages/
       owner: holger
       group: holger
 
