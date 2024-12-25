@@ -41,7 +41,7 @@
      
 
   - name: Einen Ansible-User hinzufuegen
-    user: 
+    ansible.builtin.user: 
       name: tueroeffner
       system: yes
 
