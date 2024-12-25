@@ -37,8 +37,8 @@
   - name: Synchronisiere die Hersteller-Pakete in ein lokales Verzeichnis
     synchronize:
       src: "packages"
-      dest: "~/packages"
-      mode: pull
+      dest: "/home/holger/packages"
+      mode: 0644
      
 
 #  - name: Einen Ansible-User hinzufuegen
