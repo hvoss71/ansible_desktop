@@ -18,13 +18,14 @@
         - shotcut              # einfaches Videoschnitt-Programm
         - python-is-python3    # Python  
         - inkscape             # Vektorgrafik
+        - filius               # Filius Rechnernetzwerke
         - python3-psutil
 
   - name: Installiere Flatpak-Pakete
     community.general.flatpak:
       name:  
         - ch.tigerjython.TigerJython2            # TigerJython Programmier-Lernumgebung für Python
-        - de.lernsoftware_filius.Filius          # Flius Netwerkbau
+#        - de.lernsoftware_filius.Filius          # Filius Netwerkbau
         - org.eclipse.Java                       # Eclipse Java-Editor
         - org.processing.processingide           # Processing Java-Editor 
         - com.prusa3d.PrusaSlicer                # 3D-Druck
