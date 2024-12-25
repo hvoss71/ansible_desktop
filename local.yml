@@ -24,12 +24,12 @@
       owner: holger
       group: holger
 
-  - name: Einen Ansible-User hinzufügen
+  - name: Einen Ansible-User hinzufuegen
     user: 
       name: tueroeffner
       system: yes
 
-  - name: Ansible-Nutzer zur Sudo-Gruppe hinzufügen
+  - name: Ansible-Nutzer zur Sudo-Gruppe hinzufuegen
     copy: 
       src: files/sudoer_tueroeffner
       dest: /etc/sudoers.d/tueroeffner
@@ -37,7 +37,7 @@
       group: root
       mode: 0440
 
-  - name: Ansible-pull Cronjob hinzufügen
+  - name: Ansible-pull Cronjob hinzufuegen
     cron: 
       - name: ansible auto-provision
       - user: tueroeffner
