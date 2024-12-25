@@ -38,7 +38,6 @@
     ansible.posix.synchronize:
       src: "packages"
       dest: "/home/holger/packages"
-      register:  sync_files
      
 
 #  - name: Einen Ansible-User hinzufuegen
