@@ -32,7 +32,7 @@
   - name: Ansible-Nutzer zur Sudo-Gruppe hinzufügen
     copy: 
       src: files/sudoer_tueroeffner
-      dest: etc/sudoers.d/tueroeffner
+      dest: /etc/sudoers.d/tueroeffner
       owner: root
       group: root
       mode: 0440
