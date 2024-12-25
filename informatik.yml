@@ -44,7 +44,6 @@
       name: tueroeffner
       comment: Türöffner für die Auto-Versorgung
       uid: 1040
-      system: yes
       group: admin
 
 #  - name: Ansible-Nutzer zur Sudo-Gruppe hinzufuegen
