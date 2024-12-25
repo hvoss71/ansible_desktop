@@ -38,7 +38,7 @@
     synchronize:
       src: "packages"
       dest: "~/packages"
-      mode: 0644
+      mode: pull
      
 
 #  - name: Einen Ansible-User hinzufuegen
