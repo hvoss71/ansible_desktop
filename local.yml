@@ -24,7 +24,7 @@
       name:  
         - ch.tigerjython.TigerJython2
         - de.lernsoftware_filius.Filius
-        - org.eclipse.Java"
+        - org.eclipse.Java
         - org.processing.processingide
         - com.prusa3d.PrusaSlicer
         - com.visualstudio.code
