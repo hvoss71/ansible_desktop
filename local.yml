@@ -3,7 +3,7 @@
   connection: local
   become: true
   vars: 
-    flatpakrepo: https://dl.flathub.org/repo/flathub.flatpakrepo
+    flatpakrepo: https://dl.flathub.org/repo/flathub.flatpakrepo/
 
   tasks:
   - name: installiere Debian-Pakete
@@ -22,15 +22,15 @@
   - name: Installiere Flatpak-Pakete
     flatpak:
       name:  
-        - "{{ flatpakrepo }}"/ch.tigerjython.TigerJython2
-        - "{{ flatpakrepo }}"/de.lernsoftware_filius.Filius
-        - "{{ flatpakrepo }}"/org.eclipse.Java
-        - "{{ flatpakrepo }}"/org.processing.processingide
-        - "{{ flatpakrepo }}"/com.prusa3d.PrusaSlicer
-        - "{{ flatpakrepo }}"/com.visualstudio.code
-        - "{{ flatpakrepo }}"/edu.mit.Scratch
-        - "{{ flatpakrepo }}"/com.github.PintaProject.Pinta
-        - "{{ flatpakrepo }}"/cc.arduino.IDE2
+        - "{{ flatpakrepo }}"+"ch.tigerjython.TigerJython2"
+        - "{{ flatpakrepo }}"de.lernsoftware_filius.Filius
+        - "{{ flatpakrepo }}"org.eclipse.Java
+        - "{{ flatpakrepo }}"org.processing.processingide
+        - "{{ flatpakrepo }}"com.prusa3d.PrusaSlicer
+        - "{{ flatpakrepo }}"com.visualstudio.code
+        - "{{ flatpakrepo }}"edu.mit.Scratch
+        - "{{ flatpakrepo }}"com.github.PintaProject.Pinta
+        - "{{ flatpakrepo }}"cc.arduino.IDE2
       state: present
 
   - name: Kopiere .bashrc-Datei
