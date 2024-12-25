@@ -35,10 +35,10 @@
       state: present
 
   - name: Synchronisiere die Hersteller-Pakete in ein lokales Verzeichnis
-    synchronize:
+    ansible.posix.synchronize:
       src: "packages"
       dest: "/home/holger/packages"
-      mode: 0420
+      register:  sync_files
      
 
 #  - name: Einen Ansible-User hinzufuegen
