@@ -36,7 +36,7 @@
 
   - name: Kopiere die Hersteller-Pakete in ein Verzeichnis
     copy:
-      src: ~/ansible-desktop/packages/
+      src: packages/
       dest: ~/packages/
      
 
