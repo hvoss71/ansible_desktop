@@ -14,7 +14,7 @@
         - gedit                # GNOME-Editor
         - kate                 # KDE Editor
         - veyon-configurator   # Veyon für Schülergeräte
-        - chromium             # Chromium-Browser
+        - chromium             # Chromium-Browser, benötigt für LEGO Spike web App etc.
         - shotcut              # einfaches Videoschnitt-Programm
         - python-is-python3    # Python  
         - inkscape             # Vektorgrafik
@@ -23,15 +23,15 @@
   - name: Installiere Flatpak-Pakete
     community.general.flatpak:
       name:  
-        - ch.tigerjython.TigerJython2
-        - de.lernsoftware_filius.Filius
-        - org.eclipse.Java
-        - org.processing.processingide
-        - com.prusa3d.PrusaSlicer
-        - com.visualstudio.code
-        - edu.mit.Scratch
-        - com.github.PintaProject.Pinta
-        - cc.arduino.IDE2
+        - ch.tigerjython.TigerJython2            # TigerJython Programmier-Lernumgebung für Python
+        - de.lernsoftware_filius.Filius          # Flius Netwerkbau
+        - org.eclipse.Java                       # Eclipse Java-Editor
+        - org.processing.processingide           # Processing Java-Editor 
+        - com.prusa3d.PrusaSlicer                # 3D-Druck
+        - com.visualstudio.code                  # Microsoft Visual Studio
+        - edu.mit.Scratch                        # Scratch 3 (deb-Paket ist veraltet)
+        - com.github.PintaProject.Pinta          # Pendant zu Paint in der Windows-Welt
+        - cc.arduino.IDE2                        # Arduino 2
       state: present
 
   - name: Synchronisiere die Hersteller-Pakete in ein lokales Verzeichnis
@@ -40,18 +40,18 @@
       dest: "/home/holger/packages/"
      
 
-#  - name: Einen Ansible-User hinzufuegen
-#    user: 
-#      name: tueroeffner
-#      system: yes
+  - name: Einen Ansible-User hinzufuegen
+    user: 
+      name: tueroeffner
+      system: yes
 
-#  - name: Ansible-Nutzer zur Sudo-Gruppe hinzufuegen
-#    copy: 
-#      src: files/sudoer_tueroeffner
-#      dest: /etc/sudoers.d/tueroeffner
-#      owner: root
-#      group: root
-#      mode: 0440
+  - name: Ansible-Nutzer zur Sudo-Gruppe hinzufuegen
+    ansible.builtin.copy: 
+      src: files/sudoer_tueroeffner
+      dest: /etc/sudoers.d/tueroeffner
+      owner: root
+      group: root
+      mode: 0440
 
 #  - name: Ansible-pull Cronjob hinzufuegen
 #    cron: 
