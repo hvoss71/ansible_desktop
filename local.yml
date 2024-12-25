@@ -22,7 +22,7 @@
   - name: Installiere Flatpak-Pakete
     community.general.flatpak:
       name:  
-        - "{{ flatpakrepo }}ch.tigerjython.TigerJython2"
+        - ch.tigerjython.TigerJython2
         - "{{ flatpakrepo }}de.lernsoftware_filius.Filius"
         - "{{ flatpakrepo }}org.eclipse.Java"
         - "{{ flatpakrepo }}org.processing.processingide"
