@@ -20,7 +20,7 @@
         - python3-psutil
 
   - name: Installiere Flatpak-Pakete
-    flatpak:
+    community.general.flatpak:
       name:  
         - "{{ flatpakrepo }}ch.tigerjython.TigerJython2"
         - "{{ flatpakrepo }}de.lernsoftware_filius.Filius"
