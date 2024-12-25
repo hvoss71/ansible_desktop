@@ -36,8 +36,8 @@
 
   - name: Synchronisiere die Hersteller-Pakete in ein lokales Verzeichnis
     ansible.posix.synchronize:
-      src: ~/dev/ansible-packages/
-      dest: ~/packages/
+      src: /home/holger/dev/ansible-packages/
+      dest: /home/holger/packages/
 #      job: "./Structorizer.sh -D ~/packages/Structorizer"
 
 
