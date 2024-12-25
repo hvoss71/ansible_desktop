@@ -3,10 +3,10 @@
   connection: local
   become: true
   vars: 
-    flatpakrepo: https://dl.flathub.org/repo/flathub.flatpakrepo/
+    flatpakrepo: https://dl.flathub.org/repo/flathub.flatpakrepo/appstream/
 
   tasks:
-  - name: installiere Debian-Pakete
+  - name: Installiere Debian-Pakete
     package:
       name: 
         - arduino
