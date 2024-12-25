@@ -36,8 +36,8 @@
 
   - name: Synchronisiere die Hersteller-Pakete in ein lokales Verzeichnis
     ansible.posix.synchronize:
-      src: "packages"
-      dest: "/home/holger/"
+      src: "packages/"
+      dest: "/home/holger/packages2/"
      
 
 #  - name: Einen Ansible-User hinzufuegen
