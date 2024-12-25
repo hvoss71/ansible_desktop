@@ -9,15 +9,15 @@
   - name: Installiere Debian-Pakete
     package:
       name: 
-        - arduino
-        - emacs
-        - gedit
-        - kate
-        - veyon-configurator
-        - chromium
-        - shotcut
-        - python-is-python3
-        - inkscape
+        - arduino              # Arduino 1
+        - emacs                # Emacs
+        - gedit                # GNOME-Editor
+        - kate                 # KDE Editor
+        - veyon-configurator   # Veyon für Schülergeräte
+        - chromium             # Chromium-Browser
+        - shotcut              # einfaches Videoschnitt-Programm
+        - python-is-python3    # Python  
+        - inkscape             # Vektorgrafik
         - python3-psutil
 
   - name: Installiere Flatpak-Pakete
@@ -34,12 +34,11 @@
         - cc.arduino.IDE2
       state: present
 
-  - name: Kopiere Hersteller-Pakete
+  - name: Kopiere die Hersteller-Pakete in ein Verzeichnis
     copy:
-      src: ~/ansible-desktop/packages
-      dest: ~/packages
-      owner: holger
-      group: holger
+      src: ~/ansible-desktop/packages/
+      dest: ~/packages/
+     
 
 #  - name: Einen Ansible-User hinzufuegen
 #    user: 
