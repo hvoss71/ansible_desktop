@@ -23,14 +23,14 @@
     community.general.flatpak:
       name:  
         - ch.tigerjython.TigerJython2
-        - "{{ flatpakrepo }}de.lernsoftware_filius.Filius"
-        - "{{ flatpakrepo }}org.eclipse.Java"
-        - "{{ flatpakrepo }}org.processing.processingide"
-        - "{{ flatpakrepo }}com.prusa3d.PrusaSlicer"
-        - "{{ flatpakrepo }}com.visualstudio.code"
-        - "{{ flatpakrepo }}edu.mit.Scratch"
-        - "{{ flatpakrepo }}com.github.PintaProject.Pinta"
-        - "{{ flatpakrepo }}cc.arduino.IDE2"
+        - de.lernsoftware_filius.Filius
+        - org.eclipse.Java"
+        - org.processing.processingide
+        - com.prusa3d.PrusaSlicer
+        - com.visualstudio.code
+        - edu.mit.Scratch
+        - com.github.PintaProject.Pinta
+        - cc.arduino.IDE2
       state: present
 
   - name: Kopiere .bashrc-Datei
