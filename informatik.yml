@@ -39,19 +39,21 @@
       src: "packages/"
       dest: "/home/holger/packages/"
      
-
   - name: Einen Ansible-User hinzufuegen
     ansible.builtin.user: 
       name: tueroeffner
+      comment: Türöffner für die Auto-Versorgung
+      uid: 1040
       system: yes
+      group: admin
 
-  - name: Ansible-Nutzer zur Sudo-Gruppe hinzufuegen
-    ansible.builtin.copy: 
-      src: files/sudoer_tueroeffner
-      dest: /etc/sudoers.d/tueroeffner
-      owner: root
-      group: root
-      mode: 0440
+#  - name: Ansible-Nutzer zur Sudo-Gruppe hinzufuegen
+#    ansible.builtin.copy: 
+#      src: files/sudoer_tueroeffner
+#      dest: /etc/sudoers.d/tueroeffner
+#      owner: root
+#      group: root
+#     mode: 0440
 
   - name: Ansible-pull Cronjob hinzufuegen
     ansible.builtin.cron: 
