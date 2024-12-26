@@ -24,7 +24,7 @@
   - name: Install .deb packages from the Software Manufacturer
     ansible.builtin.apt:
       deb: 
-      - /home/holger/packages/MindPlus/MindPlus_1.7.3-202307011900_amd64_x86.deb
+      - file://home/holger/packages/MindPlus/MindPlus_1.7.3-202307011900_amd64_x86.deb
       - https://www.fisch.lu/Php/download.php?file=structorizer_3_22.deb
 
 
