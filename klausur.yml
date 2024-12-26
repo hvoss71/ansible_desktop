@@ -4,23 +4,23 @@
   connection: local
   become: true
 
-tasks:
-- name: Erzeuge einen Nutzer 'Klausur' mit einem eigenen Home-Verzeichnis
-  ansible.builtin.user:
-    name: klausur
-    password: klausur
-    comment: Klausur
-    group: klausur
-    uid: 1010
-    create_home: yes
-    state: present
+  tasks:
+  - name: Erzeuge einen Nutzer 'Klausur' mit einem eigenen Home-Verzeichnis
+    ansible.builtin.user:
+      name: klausur
+      password: klausur
+      comment: Klausur
+      group: klausur
+      uid: 1010
+      create_home: yes
+      state: present
   
 
 #- name: Initial password generation for user '{{ createuser }}'
 #      shell: usermod -p $(echo 'klausur' | openssl passwd -1 -stdin) klausur
 
 
-- name: Kopiere die Prüfungssoftware auf den Desktop des Klausuraccounts
-    ansible.builtin.copy:
-      src: /home/holger/dev/ansible-packages/Next-Exam/Next-Exam-Student_1.0.0.AppImage
-      dest: /home/klausur/Arbeitsfläche/
+  - name: Kopiere die Prüfungssoftware auf den Desktop des Klausuraccounts
+      ansible.builtin.copy:
+        src: /home/holger/dev/ansible-packages/Next-Exam/Next-Exam-Student_1.0.0.AppImage
+        dest: /home/klausur/Arbeitsfläche/
