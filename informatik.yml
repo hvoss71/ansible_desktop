@@ -6,7 +6,7 @@
     flatpakrepo: https://dl.flathub.org/repo/flathub.flatpakrepo/appstream/
 
   tasks:
-  - name: Installiere Debian-Pakete
+  - name: Installiere Pakete aus dem Debian-Repository
     package:
       name: 
         - arduino              # Arduino 1
@@ -20,6 +20,14 @@
         - inkscape             # Vektorgrafik
         - filius               # Filius Rechnernetzwerke
         - python3-psutil
+
+  - name: Install .deb packages from the Software Manufacturer
+    ansible.builtin.apt:
+      deb: 
+      - /home/holger/packages/MindPlus/MindPlus_1.7.3-202307011900_amd64_x86.deb
+      - https://www.fisch.lu/Php/download.php?file=structorizer_3_22.deb
+
+
 
   - name: Installiere Flatpak-Pakete
     community.general.flatpak:
