@@ -24,14 +24,14 @@
   - name: Synchronisiere die Hersteller-Pakete in ein lokales Verzeichnis
     ansible.posix.synchronize:
       src: /home/holger/dev/ansible-packages/
-      dest: /home/holger/packages/
+      dest: /home/administrator/packages/
 #      job: "./Structorizer.sh -D ~/packages/Structorizer"
 
 
   - name: Installiere die Hersteller-Pakete
     ansible.builtin.apt:
-      deb: /home/holger/packages/MindPlus/MindPlus_1.7.3-202307011900_amd64_x86.deb
-      deb: /home/holger/packages/Structorizer/structorizer_3.32-19.deb
+      deb: /home/administrator/packages/MindPlus/MindPlus_1.7.3-202307011900_amd64_x86.deb
+      deb: /home/administrator/packages/Structorizer/structorizer_3.32-19.deb
 
   - name: Installiere Flatpak-Pakete
     community.general.flatpak:
