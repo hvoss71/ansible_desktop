@@ -31,3 +31,5 @@
     ansible.builtin.copy:
       src: /home/holger/dev/ansible-packages/Next-Exam/Next-Exam-Student_1.0.0.AppImage
       dest: /home/klausur/Arbeitsfläche/
+      owner: klausur
+      group: klausur
