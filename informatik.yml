@@ -21,9 +21,17 @@
         - filius               # Filius Rechnernetzwerke
         - python3-psutil
 
+  - name: Synchronisiere die Hersteller-Pakete in ein lokales Verzeichnis
+    ansible.posix.synchronize:
+      src: /home/holger/dev/ansible-packages/
+      dest: /home/holger/packages/
+#      job: "./Structorizer.sh -D ~/packages/Structorizer"
+
+
   - name: Install .deb packages from the Software Manufacturer
     ansible.builtin.apt:
-      deb: /home/holger/packages/MindPlus/MindPlus_1.7.3-202307011900_amd64_x86.deb
+      deb: 
+        - /home/holger/packages/MindPlus/MindPlus_1.7.3-202307011900_amd64_x86.deb
 #      - path: https://www.fisch.lu/Php/download.php?file=structorizer_3_22.deb
 
 
@@ -42,10 +50,5 @@
         - cc.arduino.IDE2                        # Arduino 2
       state: present
 
-  - name: Synchronisiere die Hersteller-Pakete in ein lokales Verzeichnis
-    ansible.posix.synchronize:
-      src: /home/holger/dev/ansible-packages/
-      dest: /home/holger/packages/
-#      job: "./Structorizer.sh -D ~/packages/Structorizer"
 
 
