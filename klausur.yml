@@ -21,6 +21,6 @@
 
 
   - name: Kopiere die Prüfungssoftware auf den Desktop des Klausuraccounts
-      ansible.builtin.copy:
-        src: /home/holger/dev/ansible-packages/Next-Exam/Next-Exam-Student_1.0.0.AppImage
-        dest: /home/klausur/Arbeitsfläche/
+    ansible.builtin.copy:
+      src: /home/holger/dev/ansible-packages/Next-Exam/Next-Exam-Student_1.0.0.AppImage
+      dest: /home/klausur/Arbeitsfläche/
