@@ -1,7 +1,6 @@
 ---
 # Einrichtung des Klausurprofils inkl. Nutzer und Software
 
----
 - hosts: localhost
   connection: local
   become: true
