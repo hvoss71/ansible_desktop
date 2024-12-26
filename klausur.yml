@@ -5,12 +5,20 @@
   become: true
 
   tasks:
+  - name: Erzeuge eine Gruppe "Klausur"
+    ansible.builtin.group:
+      name: klausur
+      comment: Klausur
+      gid: 1010
+      state: present
+
   - name: Erzeuge einen Nutzer 'Klausur' mit einem eigenen Home-Verzeichnis
     ansible.builtin.user:
       name: klausur
 #      password: klausur
       comment: Klausur
       group: klausur
+      state: present
       uid: 1010
       create_home: yes
       state: present
