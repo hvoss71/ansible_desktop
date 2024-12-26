@@ -8,7 +8,7 @@
   - name: Erzeuge einen Nutzer 'Klausur' mit einem eigenen Home-Verzeichnis
     ansible.builtin.user:
       name: klausur
-      password: klausur
+#      password: klausur
       comment: Klausur
       group: klausur
       uid: 1010
@@ -16,8 +16,8 @@
       state: present
   
 
-#- name: Initial password generation for user '{{ createuser }}'
-#      shell: usermod -p $(echo 'klausur' | openssl passwd -1 -stdin) klausur
+  - name: Initial password generation for user 'klausur'
+    shell: usermod -p $(echo 'klausur' | openssl passwd -1 -stdin) 'klausur'
 
 
   - name: Kopiere die Prüfungssoftware auf den Desktop des Klausuraccounts
