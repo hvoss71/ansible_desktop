@@ -28,13 +28,10 @@
 #      job: "./Structorizer.sh -D ~/packages/Structorizer"
 
 
-  - name: Install .deb packages from the Software Manufacturer
+  - name: Installiere die Hersteller-Pakete
     ansible.builtin.apt:
       deb: /home/holger/packages/MindPlus/MindPlus_1.7.3-202307011900_amd64_x86.deb
       deb: /home/holger/packages/Structorizer/structorizer_3.32-19.deb
-#      - path: https://www.fisch.lu/Php/download.php?file=structorizer_3_22.deb
-
-
 
   - name: Installiere Flatpak-Pakete
     community.general.flatpak:
@@ -49,6 +46,4 @@
         - com.github.PintaProject.Pinta          # Pendant zu Paint in der Windows-Welt
         - cc.arduino.IDE2                        # Arduino 2
       state: present
-
-
 
