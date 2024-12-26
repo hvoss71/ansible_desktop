@@ -8,7 +8,6 @@
   - name: Erzeuge eine Gruppe "Klausur"
     ansible.builtin.group:
       name: klausur
-      comment: Klausur
       gid: 1010
       state: present
 
