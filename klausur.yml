@@ -21,11 +21,7 @@
       create_home: yes
       state: present
       password: "'klausur'"
-      update_password: always
-
-#  - name: Initial password generation for user 'klausur'
-#    shell: usermod -p $(echo 'klausur' | openssl passwd -1 -stdin) 'klausur'
-    
+      update_password: always 
 
   - name: Kopiere die Prüfungssoftware auf den Desktop des Klausuraccounts
     ansible.builtin.copy:
@@ -33,3 +29,4 @@
       dest: /home/klausur/Arbeitsfläche/
       owner: klausur
       group: klausur
+      mode: u+rwx,g-wx,o-rwx   # mode 0740 octal
