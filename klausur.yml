@@ -1,8 +1,8 @@
 ---
 # Einrichtung des Klausurprofils inkl. Nutzer und Prüfungssoftware
 
-- hosts: localhost
-  connection: local
+- hosts: Raum311
+  connection: ssh
   become: true
 
   tasks:
@@ -29,14 +29,14 @@
 
 # Das Passwort kann aufgrund neuer Sicherheitsbestimmungen nicht mehr direkt 
 # gesetzt werden. Im der hier verwendeten Shell-Anweisung wird das Passwort
-# bei jedem Aufruf des Playbooks neu gesetzt und somit auch zurückgesetzt.
+# bei jedem Aufruf des Playbooks neu (zurück-)gesetzt.
 
   - name: Kopiere die Prüfungssoftware auf den Desktop des Klausuraccounts
     ansible.builtin.copy:
-      src: /home/holger/dev/ansible-packages/Next-Exam/Next-Exam-Student_1.0.0.AppImage
+      src: /home/softwareverteilung/dev/ansible-packages/Next-Exam/Next-Exam-Student_1.0.0.AppImage
       dest: /home/klausur/Arbeitsfläche/
       owner: klausur
       group: klausur
       mode: 0540   # - r-x r-- ---
 
-# Die Prüfungssoftware wird schreibgeschützt, ist aber lokal ausführbar
+# Die Prüfungssoftware wird schreibgeschützt, ist aber lokal ausführbar.

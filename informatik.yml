@@ -1,6 +1,6 @@
 ---
-- hosts: localhost
-  connection: local
+- hosts: Raum311,Raum312,Raum313
+  connection: ssh
   become: true
 #  vars: 
 #    flatpakrepo: https://dl.flathub.org/repo/flathub.flatpakrepo/appstream/
@@ -23,7 +23,7 @@
 
   - name: Synchronisiere die Hersteller-Pakete in ein lokales Verzeichnis des Administrators
     ansible.posix.synchronize:
-      src: /home/holger/dev/ansible-packages/
+      src: /home/softwareverteilung/dev/ansible-packages/
       dest: /home/administrator/packages/
 
   - name: Installiere die Hersteller-Pakete
