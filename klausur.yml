@@ -21,7 +21,7 @@
       create_home: yes
       state: present
       password: "klausur"
-      update_password: always 
+#      update_password: always 
 
   - name: Kopiere die Prüfungssoftware auf den Desktop des Klausuraccounts
     ansible.builtin.copy:
