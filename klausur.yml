@@ -1,7 +1,7 @@
 ---
 # Einrichtung des Klausurprofils inkl. Nutzer und Prüfungssoftware
 
-- hosts: Raum311
+- hosts: Raum311,Raum312,Raum313
   connection: ssh
   become: true
 
