@@ -20,11 +20,11 @@
       uid: 1010
       create_home: yes
       state: present
-      password: 'klausur'
-      update_password: always 
+#      password: 'klausur'
+#      update_password: always 
 
-# -  name: Initial password generation for user 'klausur'
-#      shell: usermod -p $(echo 'klausur' | openssl passwd -1 -stdin) 'klausur'
+ -  name: Initiale Passwort-Erzeugung für den Nutzer klausur
+      shell: usermod -p $(echo 'klausur' | openssl passwd -1 -stdin) 'klausur'
 
 
   - name: Kopiere die Prüfungssoftware auf den Desktop des Klausuraccounts
