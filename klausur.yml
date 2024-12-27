@@ -1,5 +1,6 @@
 ---
-# Einrichtung des Klausurprofils inkl. Nutzer und Software
+# Einrichtung des Klausurprofils inkl. Nutzer und Prüfungssoftware
+
 - hosts: localhost
   connection: local
   become: true
@@ -26,6 +27,9 @@
   - name: Initiale Passwort-Erzeugung für den Nutzer klausur
     shell: usermod -p $(echo 'klausur' | openssl passwd -1 -stdin) 'klausur'
 
+# Das Passwort kann aufgrund neuer Sicherheitsbestimmungen nicht mehr direkt 
+# gesetzt werden. Im der hier verwendeten Shell-Anweisung wird das Passwort
+# bei jedem Aufruf des Playbooks neu gesetzt und somit auch zurückgesetzt.
 
   - name: Kopiere die Prüfungssoftware auf den Desktop des Klausuraccounts
     ansible.builtin.copy:
@@ -33,4 +37,6 @@
       dest: /home/klausur/Arbeitsfläche/
       owner: klausur
       group: klausur
-      mode: 0540   # r-x/r--/---
+      mode: 0540   # - r-x r-- ---
+
+# Die Prüfungssoftware wird schreibgeschützt, ist aber lokal ausführbar
