@@ -14,7 +14,6 @@
   - name: Erzeuge einen Nutzer 'Klausur' mit einem eigenen Home-Verzeichnis
     ansible.builtin.user:
       name: klausur
-#      password: klausur
       comment: Klausur
       group: klausur
       state: present
@@ -24,7 +23,7 @@
       password: "'klausur'"
       update_password: always
 
-  - name: Initial password generation for user 'klausur'
+#  - name: Initial password generation for user 'klausur'
 #    shell: usermod -p $(echo 'klausur' | openssl passwd -1 -stdin) 'klausur'
     
 
