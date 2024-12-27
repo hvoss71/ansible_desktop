@@ -21,12 +21,12 @@
       uid: 1010
       create_home: yes
       state: present
-  
+      password: "'klausur'"
+      update_password: always
 
   - name: Initial password generation for user 'klausur'
 #    shell: usermod -p $(echo 'klausur' | openssl passwd -1 -stdin) 'klausur'
-     password: "'klausur'"
-     update_password: always
+    
 
   - name: Kopiere die Prüfungssoftware auf den Desktop des Klausuraccounts
     ansible.builtin.copy:
