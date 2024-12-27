@@ -23,7 +23,7 @@
 #      password: 'klausur'
 #      update_password: always 
 
- -  name: Initiale Passwort-Erzeugung für den Nutzer klausur
+  - name: Initiale Passwort-Erzeugung für den Nutzer klausur
       shell: usermod -p $(echo 'klausur' | openssl passwd -1 -stdin) 'klausur'
 
 
