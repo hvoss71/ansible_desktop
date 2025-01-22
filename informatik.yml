@@ -1,9 +1,7 @@
 ---
-- hosts: Raum311,Raum312,Raum313
+- hosts: Raum311 # künftig auch ,Raum312,Raum313
   connection: ssh
   become: true
-#  vars: 
-#    flatpakrepo: https://dl.flathub.org/repo/flathub.flatpakrepo/appstream/
 
   tasks:
   - name: Installiere Pakete aus dem Debian-Repository
@@ -23,7 +21,7 @@
 
   - name: Synchronisiere die Hersteller-Pakete in ein lokales Verzeichnis des Administrators
     ansible.posix.synchronize:
-      src: /home/softwareverteilung/dev/ansible-packages/
+      src: /home/holgervoss/dev/packages/  # statt holgervoss künftig softwareverteilung
       dest: /home/administrator/packages/
 
   - name: Installiere die Hersteller-Pakete
@@ -33,6 +31,8 @@
 
   - name: Installiere Flatpak-Pakete
     community.general.flatpak:
+#      repo: https://dl.flathub.org/repo/flathub.flatpakrepo
+
       name:  
         - ch.tigerjython.TigerJython2            # TigerJython Programmier-Lernumgebung für Python
 #        - de.lernsoftware_filius.Filius          # Filius Netwerkbau

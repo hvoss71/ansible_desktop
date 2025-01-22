@@ -23,7 +23,7 @@
 
   - name: Synchronisiere die Hersteller-Pakete in ein lokales Verzeichnis des Administrators
     ansible.posix.synchronize:
-      src: /home/holger/dev/ansible-packages/
+      src: /home/holgervoss/dev/packages/
       dest: /home/administrator/packages/
 
   - name: Installiere die Hersteller-Pakete
