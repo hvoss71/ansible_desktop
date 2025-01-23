@@ -2,7 +2,7 @@
 - hosts: Raum311  # künftig auch ,Raum312,Raum313
   connection: ssh
   remote_user: administrator
-  ansible_ssh_private_key_file: ~/.ssh/ansible
+#  ansible_ssh_private_key_file: ~/.ssh/ansible
   become: true
 
   tasks:
