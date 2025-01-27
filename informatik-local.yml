@@ -32,6 +32,14 @@
 #      deb: /home/administrator/packages/Structorizer/structorizer_3.32-19.deb
 #      deb: http://public.dzogovic.org/structorizer_3.23.deb
 
+
+ name: Add the flathub flatpak repository remote to the user installation
+  community.general.flatpak_remote:
+    name: flathub
+    state: present
+    flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
+    method: user
+
   - name: Installiere Flatpak
     package:
       name:
