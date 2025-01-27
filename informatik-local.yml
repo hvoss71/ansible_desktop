@@ -37,7 +37,7 @@
       - name:
         - flatpak                               # Flatpak + GNOME Software-Plugin
         - gnome-software-plugin-flatpak
-      deb: flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+#      deb: flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 
   - name: Installiere Flatpak-Pakete
     community.general.flatpak:
