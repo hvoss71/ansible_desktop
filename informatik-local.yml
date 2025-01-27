@@ -17,7 +17,7 @@
         - chromium                              # Chromium-Browser, benötigt für LEGO Spike web App etc.
         - shotcut                               # einfaches Videoschnitt-Programm
         - python-is-python3                     # Python  
-        - pythin3-psutil
+        - python3-psutil
         - inkscape                              # Vektorgrafik
 #        - filius                                # Filius Rechnernetzwerke - Paket wurde entfernt
 
