@@ -17,20 +17,16 @@
         - chromium                              # Chromium-Browser, benötigt für LEGO Spike web App etc.
         - shotcut                               # einfaches Videoschnitt-Programm
         - python-is-python3                     # Python  
-        - python3-psutil
+        - python3-psutil                        # Abrufen von Informationen über laufende Prozesse
         - inkscape                              # Vektorgrafik
+        - catfish                               # Datei- und Volltextsuche
 #        - filius                                # Filius Rechnernetzwerke - Paket wurde entfernt
-
-#  - name: Synchronisiere die Hersteller-Pakete in ein lokales Verzeichnis des Administrators
-#    ansible.posix.synchronize:
-#      src: /home/holgervoss/dev/packages/
-#      dest: /home/administrator/packages/
 
 #  - name: Installiere die Hersteller-Pakete
 #    ansible.builtin.apt:
 #      deb: /home/administrator/packages/MindPlus/MindPlus_1.7.3-202307011900_amd64_x86.deb
 #      deb: /home/administrator/packages/Structorizer/structorizer_3.32-19.deb
-#      deb: http://public.dzogovic.org/structorizer_3.23.deb
+#      deb: 
 
 
 #  -  name: Add the flathub flatpak repository remote to the user installation

@@ -1,0 +1,10 @@
+---
+- hosts: localhost
+  connection: local
+  become: true
+
+  tasks:
+  - name: Synchronisiere die Hersteller-Pakete in ein lokales Verzeichnis des Administrators
+    ansible.posix.synchronize:
+      src:  http://public.dzogovic.org/structorizer_3.23.deb
+      dest: /home/administrator/packages/
