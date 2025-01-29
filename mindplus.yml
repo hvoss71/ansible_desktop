@@ -1,0 +1,20 @@
+---
+# Dieses Playbook installiert das Programm MindPlusr. Das Debian-Paket des Herstellers 
+# ist weder über die Debian-Repositories noch über Flathub verfügbar und kann daher nur 
+# direkt beim Hersteller (über Google Drive) bezogen werden. .
+
+- hosts: localhost
+  connection: local
+  become: true
+
+# Für die lokale Installation wird das Programm zunächst über scp in das administrator-Verzeichnis kopiert.
+
+  - name: Installiere das Programm
+    ansible.builtin.apt:
+#      deb: /home/administrator/packages/MindPlus/MindPlus_1.7.3-202307011900_amd64_x86.deb
+      deb: /home/administrator/packages/mindplus.deb
+
+  - name: Entferne die Installationsdatei
+    ansible.builtin.file:
+      path: /home/administrator/packages/mindplus.deb
+      state: absent
