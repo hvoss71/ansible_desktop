@@ -1,10 +1,14 @@
 ---
+# Dieses Playbook installiert das Programm Structorizer. Das Debian-Paket des Herstellers 
+# ist weder über die Debian-Repositories noch über Flathub verfügbar und kann daher nur 
+# direkt beim Hersteller (über Github) bezogen werden.
+
 - hosts: localhost
   connection: local
   become: true
 
   tasks:
-  - name: Kopiere das Hersteller-Paket in ein lokales Verzeichnis des Administrators
+  - name: Kopiere die Installationsdatei in ein lokales Verzeichnis des Administrators
     ansible.builtin.get_url:
 #      url:  http://public.dzogovic.org/structorizer_3.23.deb
       url: https://github.com/fesch/Structorizer.Desktop/releases/download/3.32-25/structorizer.deb
@@ -12,7 +16,7 @@
       dest: /home/administrator/packages/structorizer.deb
       mode: '0644'
 
-  - name: Installiere die Hersteller-Pakete
+  - name: Installiere das Programm
     ansible.builtin.apt:
 #      deb: /home/administrator/packages/MindPlus/MindPlus_1.7.3-202307011900_amd64_x86.deb
       deb: /home/administrator/packages/structorizer.deb
