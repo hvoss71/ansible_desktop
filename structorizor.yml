@@ -6,6 +6,12 @@
   tasks:
   - name: Kopiere das Hersteller-Paket in ein lokales Verzeichnis des Administrators
     ansible.builtin.get_url:
-      url:  http://public.dzogovic.org/structorizer_3.23.deb
+#      url:  http://public.dzogovic.org/structorizer_3.23.deb
+      url: https://www.fisch.lu/Php/download.php?file=structorizer.deb
       dest: /home/administrator/packages/structorizor_3.23.deb
       mode: '0644'
+
+  - name: Installiere die Hersteller-Pakete
+    ansible.builtin.apt:
+#      deb: /home/administrator/packages/MindPlus/MindPlus_1.7.3-202307011900_amd64_x86.deb
+      deb: /home/administrator/packages/structorizer_3.32.deb
