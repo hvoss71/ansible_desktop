@@ -7,8 +7,9 @@
   - name: Kopiere das Hersteller-Paket in ein lokales Verzeichnis des Administrators
     ansible.builtin.get_url:
 #      url:  http://public.dzogovic.org/structorizer_3.23.deb
-      url: https://www.fisch.lu/Php/download.php?file=structorizer.deb
-      dest: /home/administrator/packages/structorizor_3.23.deb
+      url: https://github.com/fesch/Structorizer.Desktop/releases/download/3.32-25/structorizer.deb
+#      url: https://www.fisch.lu/Php/download.php?file=structorizer.deb
+      dest: /home/administrator/packages/structorizor.deb
       mode: '0644'
 
   - name: Installiere die Hersteller-Pakete
