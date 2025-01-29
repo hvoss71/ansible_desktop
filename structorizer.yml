@@ -16,3 +16,8 @@
     ansible.builtin.apt:
 #      deb: /home/administrator/packages/MindPlus/MindPlus_1.7.3-202307011900_amd64_x86.deb
       deb: /home/administrator/packages/structorizer.deb
+
+  - name: Entferne die Installationsdatei
+    ansible.builtin.file:
+      path: /home/administrator/packages/structorizer.deb
+      state: absent
