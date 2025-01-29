@@ -5,6 +5,9 @@
 
   tasks:
   - name: Synchronisiere die Hersteller-Pakete in ein lokales Verzeichnis des Administrators
-#    ansible.posix.synchronize:
+    ansible.builtin.copy:
       src:  http://public.dzogovic.org/structorizer_3.23.deb
       dest: /home/administrator/packages/
+      owner: administrator
+      group: administrator
+      mode: '0644'
