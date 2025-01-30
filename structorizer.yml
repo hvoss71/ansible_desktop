@@ -9,6 +9,10 @@
 
   tasks:
 
+  - name: Update repositories cache
+    ansible.builtin.apt:
+      update_cache: yes
+
   - name: Erzeuge das Verzeichnis packages, falls es noch nicht existiert
     ansible.builtin.file:
       path: /home/administrator/packages
