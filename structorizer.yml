@@ -8,6 +8,13 @@
   become: true
 
   tasks:
+
+  - name: Erzeuge das Verzeichnis packages, falls es noch nicht existiert
+    ansible.builtin.file:
+      path: /home/administrator/packages
+      state: directory
+      mode: '0755'
+
   - name: Kopiere die Installationsdatei in ein lokales Verzeichnis des Administrators
     ansible.builtin.get_url:
 #      url:  http://public.dzogovic.org/structorizer_3.23.deb
