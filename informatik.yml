@@ -61,7 +61,9 @@
         - edu.mit.Scratch                        # Scratch 3 (deb-Paket ist veraltet)
         - com.github.PintaProject.Pinta          # Pendant zu Paint in der Windows-Welt
         - cc.arduino.IDE2                        # Arduino 2
-        - org.bluej.BlueJ                        # BlueJ Java-Editor
+        - org.bluej.BlueJ                        # Java-Editor
+        - com.jetbrains.IntelliJ-IDEA-Community  # Java und Kotlin-Editor
+        - com.vscodium.codium                    # Java und visual Studio Editor
       state: present
 
   - name: Ansible-pull Cronjob hinzufügen
