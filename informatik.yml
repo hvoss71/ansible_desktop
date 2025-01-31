@@ -22,31 +22,11 @@
         - catfish                               # Datei- und Volltextsuche
 #        - filius                                # Filius Rechnernetzwerke - Paket wurde entfernt
 
-#  - name: Installiere die Hersteller-Pakete
-#    ansible.builtin.apt:
-#      deb: /home/administrator/packages/MindPlus/MindPlus_1.7.3-202307011900_amd64_x86.deb
-#      deb: /home/administrator/packages/Structorizer/structorizer_3.32-19.deb
-#      deb: 
-
-
-#  -  name: Add the flathub flatpak repository remote to the user installation
-#     community.general.flatpak_remote:
-#       name: flathub
-#       state: present
-#       flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
-#       method: user
-
-#  - name: Add the Gnome flatpak remote to the system installation
-#    community.general.flatpak_remote:
-#      name: gnome
-#      state: present
-#      flatpakrepo_url: https://sdk.gnome.org/gnome-apps.flatpakrepo
-
   - name: Installiere Flatpak
     package:
       name:
         - flatpak                               # Flatpak + GNOME Software-Plugin
-        - gnome-software-plugin-flatpak
+        - gnome-software-plugin-flatpak         # Integration von Flatpak in GNOME
 #      deb: flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 
   - name: Installiere Flatpak-Pakete
@@ -63,7 +43,7 @@
         - cc.arduino.IDE2                        # Arduino 2
         - org.bluej.BlueJ                        # Java-Editor
         - com.jetbrains.IntelliJ-IDEA-Community  # Java und Kotlin-Editor
-        - com.vscodium.codium                    # Java und visual Studio Editor
+        - com.vscodium.codium                    # Java und Visual Studio Editor
       state: present
 
   - name: Ansible-pull Cronjob hinzufügen
