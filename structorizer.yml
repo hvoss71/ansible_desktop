@@ -12,6 +12,11 @@
   - name: Update repositories cache
     ansible.builtin.apt:
       update_cache: yes
+      state: latest
+
+  - name: Prüfe, welche Pakete vorhanden sind
+    package_facts:
+      manager: apt
 
   - name: Erzeuge das Verzeichnis packages, falls es noch nicht existiert
     ansible.builtin.file:
@@ -19,20 +24,19 @@
       state: directory
       mode: '0755'
 
-  - name: Kopiere die Installationsdatei in ein lokales Verzeichnis des Administrators
+  - name: Kopiere die Installationsdatei von structorizer in ein lokales Verzeichnis des Administrators
     ansible.builtin.get_url:
-#      url:  http://public.dzogovic.org/structorizer_3.23.deb
       url: https://github.com/fesch/Structorizer.Desktop/releases/download/3.32-25/structorizer.deb
-#      url: https://www.fisch.lu/Php/download.php?file=structorizer.deb
       dest: /home/administrator/packages/structorizer.deb
       mode: '0644'
+    when: '"structorizer" not in ansible_facts.packages'
 
-  - name: Installiere das Programm
+  - name: Installiere das Programm structorizer
     ansible.builtin.apt:
-#      deb: /home/administrator/packages/MindPlus/MindPlus_1.7.3-202307011900_amd64_x86.deb
       deb: /home/administrator/packages/structorizer.deb
+    when: '"structorizer" not in ansible_facts.packages'
 
-  - name: Entferne die Installationsdatei
+  - name: Entferne die Installationsdatei von structorizer
     ansible.builtin.file:
       path: /home/administrator/packages/structorizer.deb
       state: absent
