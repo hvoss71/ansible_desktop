@@ -1,9 +1,9 @@
 ---
-- hosts: Raum311  # künftig auch ,Raum312,Raum313
-  connection: ssh
-  remote_user: administrator
-#  ansible_ssh_private_key_file: ~/.ssh/ansible
+- hosts: localhost
+  connection: local
   become: true
+#  vars: 
+#    flatpakrepo: https://dl.flathub.org/repo/flathub.flatpakrepo/appstream/
 
   tasks:
   - name: Installiere Pakete aus dem Debian-Repository
@@ -17,27 +17,43 @@
         - chromium                              # Chromium-Browser, benötigt für LEGO Spike web App etc.
         - shotcut                               # einfaches Videoschnitt-Programm
         - python-is-python3                     # Python  
+        - python3-psutil                        # Abrufen von Informationen über laufende Prozesse
         - inkscape                              # Vektorgrafik
-        - filius                                # Filius Rechnernetzwerke
-        - python3-psutil
+        - catfish                               # Datei- und Volltextsuche
+#        - filius                                # Filius Rechnernetzwerke - Paket wurde entfernt
 
-  - name: Synchronisiere die Hersteller-Pakete in ein lokales Verzeichnis des Administrators
-    ansible.posix.synchronize:
-      src: /home/holgervoss/dev/packages/  # statt holgervoss künftig softwareverteilung
-      dest: /home/administrator/packages/
+#  - name: Installiere die Hersteller-Pakete
+#    ansible.builtin.apt:
+#      deb: /home/administrator/packages/MindPlus/MindPlus_1.7.3-202307011900_amd64_x86.deb
+#      deb: /home/administrator/packages/Structorizer/structorizer_3.32-19.deb
+#      deb: 
 
-  - name: Installiere die Hersteller-Pakete
-    ansible.builtin.apt:
-      deb: /home/administrator/packages/MindPlus/MindPlus_1.7.3-202307011900_amd64_x86.deb
-      deb: /home/administrator/packages/Structorizer/structorizer_3.32-19.deb
+
+#  -  name: Add the flathub flatpak repository remote to the user installation
+#     community.general.flatpak_remote:
+#       name: flathub
+#       state: present
+#       flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
+#       method: user
+
+#  - name: Add the Gnome flatpak remote to the system installation
+#    community.general.flatpak_remote:
+#      name: gnome
+#      state: present
+#      flatpakrepo_url: https://sdk.gnome.org/gnome-apps.flatpakrepo
+
+  - name: Installiere Flatpak
+    package:
+      name:
+        - flatpak                               # Flatpak + GNOME Software-Plugin
+        - gnome-software-plugin-flatpak
+#      deb: flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 
   - name: Installiere Flatpak-Pakete
     community.general.flatpak:
-#      repo: https://dl.flathub.org/repo/flathub.flatpakrepo
-
       name:  
         - ch.tigerjython.TigerJython2            # TigerJython Programmier-Lernumgebung für Python
-#        - de.lernsoftware_filius.Filius          # Filius Netwerkbau
+        - de.lernsoftware_filius.Filius          # Filius Netwerkbau
         - org.eclipse.Java                       # Eclipse Java-Editor
         - org.processing.processingide           # Processing Java-Editor 
         - com.prusa3d.PrusaSlicer                # 3D-Druck
@@ -47,3 +63,11 @@
         - cc.arduino.IDE2                        # Arduino 2
         - org.bluej.BlueJ                        # BlueJ Java-Editor
       state: present
+
+  - name: Ansible-pull Cronjob hinzufügen
+    cron: 
+      - name: ansible auto-provision
+      - user: administrator
+      - minute: "*/10"
+      - job: sudo ansible-pull -o -U https://github.com/hvoss71/ansible_desktop.git informatik.yml
+ 
