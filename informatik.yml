@@ -2,8 +2,6 @@
 - hosts: localhost
   connection: local
   become: true
-#  vars: 
-#    flatpakrepo: https://dl.flathub.org/repo/flathub.flatpakrepo/appstream/
 
   tasks:
   - name: Installiere Pakete aus dem Debian-Repository
@@ -20,16 +18,17 @@
         - python3-psutil                        # Abrufen von Informationen über laufende Prozesse
         - inkscape                              # Vektorgrafik
         - catfish                               # Datei- und Volltextsuche
-#        - filius                                # Filius Rechnernetzwerke - Paket wurde entfernt
-
-  - name: Installiere Flatpak
-    package:
-      name:
         - flatpak                               # Flatpak + GNOME Software-Plugin
         - gnome-software-plugin-flatpak         # Integration von Flatpak in GNOME
-#      deb: flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 
-  - name: Installiere Flatpak-Pakete
+  - name: Füge das Flathub Flatpak Repository zur System-Installation hinzu
+    community.general.flatpak_remote:
+      name: flathub
+      state: present
+      flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
+      method: system
+
+  - name: Installiere die Flatpak-Pakete
     community.general.flatpak:
       name:  
         - ch.tigerjython.TigerJython2            # TigerJython Programmier-Lernumgebung für Python
