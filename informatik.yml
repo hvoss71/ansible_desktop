@@ -20,6 +20,8 @@
         - catfish                               # Datei- und Volltextsuche
         - flatpak                               # Flatpak + GNOME Software-Plugin
         - gnome-software-plugin-flatpak         # Integration von Flatpak in GNOME
+      state: latest
+      update_cache: yes
 
   - name: Füge das Flathub Flatpak Repository zur System-Installation hinzu
     community.general.flatpak_remote:
