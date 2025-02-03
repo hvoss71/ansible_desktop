@@ -1,0 +1,35 @@
+---
+# Dieses Playbook installiert das Programm HUS Struktogrammer. Das Paket des Herstellers 
+# ist weder über die Debian-Repositories noch über Flathub verfügbar und kann daher nur 
+# direkt beim Hersteller bezogen werden.
+
+- hosts: localhost
+  connection: local
+  become: true
+
+  tasks:
+
+# Für die lokale Installation wird das Programm zunächst über scp in das administrator-Verzeichnis kopiert.
+
+  - name: Erzeuge das Verzeichnis packages, falls es noch nicht existiert
+    ansible.builtin.file:
+      path: /home/administrator/packages
+      state: directory
+      mode: '0755'
+  - name: Erzeuge das Verzeichnis husStruktogrammer, falls es noch nicht existiert
+    ansible.builtin.file:
+      path: /home/administrator/packages/husStruktogrammer
+      state: directory
+      mode: '0755'
+
+  - name: Synchronization of src on the control machine to dest on the remote hosts
+    ansible.posix.synchronize:
+      src: /home/holger/Programme/Struktogrammer/InstallStgr_Linux/
+      dest: /home/administrator/packages/husStruktogrammer
+
+
+  - name: Starte das Installationsskript, falls es existiert
+    ansible.builtin.script: /home/administrator/packages/husStruktogrammer/installStgr.sh 
+#    args:
+#      creates: /home/administrator/packages/husStruktogrammer/installStgr.sh
+
