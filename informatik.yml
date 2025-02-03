@@ -56,7 +56,7 @@
         - org.bluej.BlueJ                        # Java-Editor
         - com.jetbrains.IntelliJ-IDEA-Community  # Java und Kotlin-Editor
         - com.vscodium.codium                    # Java und Visual Studio Editor
-      state: got: latest
+      state: present
 
   - name: Ansible-pull Cronjob hinzufügen
     ansible.builtin.cron: 
