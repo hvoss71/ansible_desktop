@@ -1,4 +1,15 @@
 ---
+# Dieses Skript enthält die Software-Grundausstattung der PC-Räume, soweit 
+# sie über Debian oder Flatpak verfügbar ist. Es erzeugt zudem einen Cronjob,
+# der dieses Script alle 10 Minuten neu über Github aufruft. Nach erstmaliger
+# Ausführung des Skriptes über ssh ist also keine weitere manuelle Ausführung 
+# erforderlich, da Änderungen am Skript auf Github bei Nutzung der Rechner 
+# automatisch nach 10 Minuten von den Clients übernommen werden. Ein Schlüssel
+# ist nicht erforderlich, da das Playbook öffentlich im Netz steht. Das Instal-
+# lieren, Aktualisieren oder auch Löschen von Software kann so einmalig im 
+# Playbook informatik.yml vorgenommen werden und wird dann automatisch auf 
+# alle Clients ausgerollt.
+
 - hosts: localhost
   connection: local
   become: true
@@ -18,7 +29,7 @@
         - python3-psutil                        # Abrufen von Informationen über laufende Prozesse
         - inkscape                              # Vektorgrafik
         - catfish                               # Datei- und Volltextsuche
-        - flatpak                               # Flatpak + GNOME Software-Plugin
+        - flatpak                               # Flatpak 
         - gnome-software-plugin-flatpak         # Integration von Flatpak in GNOME
       state: latest
       update_cache: yes
@@ -45,7 +56,7 @@
         - org.bluej.BlueJ                        # Java-Editor
         - com.jetbrains.IntelliJ-IDEA-Community  # Java und Kotlin-Editor
         - com.vscodium.codium                    # Java und Visual Studio Editor
-      state: present
+      state: latest
 
   - name: Ansible-pull Cronjob hinzufügen
     ansible.builtin.cron: 
