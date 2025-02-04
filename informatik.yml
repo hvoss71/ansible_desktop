@@ -8,7 +8,8 @@
 # ist nicht erforderlich, da das Playbook öffentlich im Netz steht. Das Instal-
 # lieren, Aktualisieren oder auch Löschen von Software kann so einmalig im 
 # Playbook informatik.yml vorgenommen werden und wird dann automatisch auf 
-# alle Clients ausgerollt.
+# alle Clients ausgerollt. Diese Vorgänge finden im Hintergrund statt 
+# und stören die Arbeit an den Clients in der Regel nicht.
 
 - hosts: localhost
   connection: local
