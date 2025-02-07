@@ -38,4 +38,4 @@
       dest: /home/klausur
       owner: klausur
       group: klausur
-      mode: '0540'    # - r-x r-- ---
+      mode: '0550'    # - r-x r-x ---
