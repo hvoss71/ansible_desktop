@@ -27,6 +27,7 @@
         - catfish                               # Datei- und Volltextsuche
         - flatpak                               # Flatpak 
         - gnome-software-plugin-flatpak         # Integration von Flatpak in GNOME
+        - gnome-tweaks                          # GNOME-Optimierungen
       state: latest
       update_cache: yes
 
