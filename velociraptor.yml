@@ -1,0 +1,28 @@
+---
+# Einrichtung des Wadenbeissers
+
+- hosts: localhost
+  connection: local
+  become: true
+
+  tasks:
+    - name: Create a new user
+      user:
+        name: velociraptor  
+        password: "{{ '' | password_hash('sha512') }}"  
+        shell: /bin/bash
+        state: present
+
+    - name: Add user to sudo group
+      user:
+        name: velociraptor
+        groups: sudo  
+        append: yes
+
+    - name: Allow passwordless sudo for the user (Debian/Ubuntu)
+      lineinfile:
+        path: /etc/sudoers
+        state: present
+        regexp: '^velociraptor'
+        line: 'username ALL=(ALL) NOPASSWD:ALL'
+        validate: '/usr/sbin/visudo -cf %s'

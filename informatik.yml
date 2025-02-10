@@ -79,7 +79,7 @@
   - name: Ansible-pull Cronjob hinzufügen
     ansible.builtin.cron: 
       name: ansible auto-provision
-      user: root
+      user: velociraptor
       minute: "*/10"
       job: sudo ansible-pull -o -U https://github.com/hvoss71/ansible_desktop.git informatik.yml
  
