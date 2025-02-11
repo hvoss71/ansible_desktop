@@ -50,6 +50,22 @@
         - tetravex
         - taquin
         - tali
+        - gnome-aisleriot
+        - gnome-2048
+        - gnome-mahjongg
+        - gnome-mines
+        - gnome-sudoku
+        - gnome-five-or-more
+        - gnome-hitori
+        - gnome-four-in-a-row
+        - gnome-klotski 
+        - gnome-nibbles
+        - gnome-quadrapassel
+        - gnome-reversi
+        - gnome-swell-foop
+        - gnome-tetravex
+        - gnome-taquin
+        - gnome-tali
       state: absent
 
   - name: Füge das Flathub Flatpak Repository zur System-Installation hinzu
