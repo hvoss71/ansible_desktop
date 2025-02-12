@@ -20,6 +20,7 @@
         - kate                                  # KDE Editor
         - veyon-configurator                    # Veyon für Schülergeräte
         - chromium                              # Chromium-Browser, benötigt für LEGO Spike web App etc.
+        - chromium-l10n                         # Chromium-Sprachlokalisation
         - shotcut                               # einfaches Videoschnitt-Programm
         - python-is-python3                     # Python  
         - python3-psutil                        # Abrufen von Informationen über laufende Prozesse
