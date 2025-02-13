@@ -19,6 +19,9 @@
         - gedit                                 # GNOME-Editor
         - kate                                  # KDE Editor
         - veyon-configurator                    # Veyon für Schülergeräte
+        - veyon-plugins
+        - veyon-service
+        - x11vnc                                
         - chromium                              # Chromium-Browser, benötigt für LEGO Spike web App etc.
         - chromium-l10n                         # Chromium-Sprachlokalisation
         - shotcut                               # einfaches Videoschnitt-Programm
