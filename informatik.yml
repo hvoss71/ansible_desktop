@@ -41,13 +41,16 @@
       name: 
         - aisleriot
         - 2048
+        - iagno
+        - robots
         - mahjongg
         - mines
         - sudoku
         - five-or-more
         - hitori
         - four-in-a-row
-        - klotski 
+        - klotski
+        - lightsoff 
         - nibbles
         - quadrapassel
         - swell-foop
