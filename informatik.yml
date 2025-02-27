@@ -18,14 +18,15 @@
         - emacs                                 # Emacs
         - gedit                                 # GNOME-Editor
         - kate                                  # KDE Editor
-        - veyon-configurator                    # Veyon für Schülergeräte
-        - veyon-plugins
-        - veyon-service
+#        - veyon-configurator                    # aktuellere Version erforderlich
+#        - veyon-plugins
+#        - veyon-service
         - x11vnc                                # VNC-Server für X11
         - gnome-connections                     # RDP / VNC-Verbindung
         - chromium-browser                      # Chromium-Browser, benötigt für LEGO Spike web App etc.
         - chromium-browser-l10n                 # Chromium-Sprachlokalisation
         - shotcut                               # einfaches Videoschnitt-Programm
+        - thonny                                # Python für Einsteiger
         - python-is-python3                     # Python  
         - python3-psutil                        # Abrufen von Informationen über laufende Prozesse
         - inkscape                              # Vektorgrafik
