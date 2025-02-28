@@ -34,7 +34,7 @@
         - flatpak                               # Flatpak 
         - gnome-software-plugin-flatpak         # Integration von Flatpak in GNOME
         - gnome-tweaks                          # GNOME-Optimierungen
-        - speedtest-cli                         # Testen der Internet-Bandbreite mit speedtest.net
+        - kolourpaint                           # Malprogramm
       state: latest
       update_cache: yes
 
