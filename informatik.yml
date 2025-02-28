@@ -34,7 +34,7 @@
         - flatpak                               # Flatpak 
         - gnome-software-plugin-flatpak         # Integration von Flatpak in GNOME
         - gnome-tweaks                          # GNOME-Optimierungen
-        - kolourpaint                           # Malprogramm
+#        - kolourpaint                           # Malprogramm
       state: latest
       update_cache: yes
 
@@ -113,7 +113,9 @@
   - name: Füge den Ansible-pull Cronjob hinzu
     ansible.builtin.cron: 
       name: ansible auto-provision
-      user: velociraptor
+      user: root
       minute: "*/10"
+      hour: "*"
+      day: "*"
       job: sudo ansible-pull -o -U https://github.com/hvoss71/ansible_desktop.git informatik.yml
  
