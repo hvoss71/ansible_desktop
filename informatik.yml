@@ -102,14 +102,14 @@
         - com.vscodium.codium                    # Java und Visual Studio Editor
       state: present
 
-  - name: Make sure a service unit is running
+  - name: Stelle sicher, dass der Cronjob-Demon läuft
     ansible.builtin.systemd_service:
-      state: restarted
+      state: started
       name: cron
       daemon_reload: true
       enabled: true
 
-  - name: Ansible-pull Cronjob hinzufügen
+  - name: Füge den Ansible-pull Cronjob hinzu
     ansible.builtin.cron: 
       name: ansible auto-provision
       user: velociraptor
