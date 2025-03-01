@@ -46,7 +46,6 @@
 #        - kolourpaint                           # Malprogramm
         - libreoffice
         - libreoffice-l10n-de
-        - coot                                  # Macromoleküle bauen
       state: latest
 
   - name: Deinstalliere Spiele aus dem Debian-Repository
@@ -112,6 +111,7 @@
         - org.bluej.BlueJ                        # Java-Editor
         - com.jetbrains.IntelliJ-IDEA-Community  # Java und Kotlin-Editor
         - com.vscodium.codium                    # Java und Visual Studio Editor
+        - io.github.pemsley.coot                 # Makromoleküle bauen
       state: present
 
   - name: Stelle sicher, dass der Cronjob-Demon läuft
