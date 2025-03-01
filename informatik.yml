@@ -114,7 +114,7 @@
         - io.github.pemsley.coot                 # Makromoleküle bauen
       state: present
 
-  - name: Stelle sicher, dass der Cronjob-Demon läuft
+  - name: Stelle sicher, dass der Cronjob-Daemon läuft
     ansible.builtin.systemd_service:
       state: started
       name: cron
