@@ -46,6 +46,7 @@
 #        - kolourpaint                           # Malprogramm
         - libreoffice
         - libreoffice-l10n-de
+        - coot                                  # Macromoleküle bauen
       state: latest
 
   - name: Deinstalliere Spiele aus dem Debian-Repository
