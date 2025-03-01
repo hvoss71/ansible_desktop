@@ -11,7 +11,16 @@
   become: true
 
   tasks:
-  - name: Installiere Pakete aus dem Debian-Repository
+  - name: Installiere die Sprachpakete des Systems und des Desktops
+    package:
+      name: 
+        - language-pack-de
+        - task-german 
+        - task-german-desktop
+      state: latest
+      update_cache: yes
+
+  - name: Installiere Anwendungen aus dem Debian-Repository
     package:
       name: 
         - arduino                               # Arduino 1
@@ -35,8 +44,9 @@
         - gnome-software-plugin-flatpak         # Integration von Flatpak in GNOME
         - gnome-tweaks                          # GNOME-Optimierungen
 #        - kolourpaint                           # Malprogramm
+        - libreoffice
+        - libreoffice-l10n-de
       state: latest
-      update_cache: yes
 
   - name: Deinstalliere Spiele aus dem Debian-Repository
     package:
@@ -86,7 +96,7 @@
       flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
       method: system
 
-  - name: Installiere die Flatpak-Pakete
+  - name: Installiere Anwendungen aus dem Flathub-Repository
     community.general.flatpak:
       name:  
         - ch.tigerjython.TigerJython2            # TigerJython Programmier-Lernumgebung für Python
