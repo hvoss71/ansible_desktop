@@ -20,6 +20,13 @@
       state: latest
       update_cache: yes
 
+  - name: Installiere den Chromium-Browser in der Debian-Distribution.
+    package:
+      - chromium                                # Chromium-Browser, benötigt für LEGO Spike web App etc.
+      - chromium-l10n                           # Chromium-Sprachlokalisation
+    when: ansible_facts['distribution'] == "Debian"
+    state: latest
+
   - name: Installiere Anwendungen aus dem Debian-Repository
     package:
       name: 
@@ -32,8 +39,8 @@
 #        - veyon-service
         - x11vnc                                # VNC-Server für X11
         - gnome-connections                     # RDP / VNC-Verbindung
-        - chromium #-browser                      # Chromium-Browser, benötigt für LEGO Spike web App etc.
-        - chromium-l10n # browser-l10n                 # Chromium-Sprachlokalisation
+#        - chromium #-browser                      # Chromium-Browser, benötigt für LEGO Spike web App etc.
+#        - chromium-l10n # browser-l10n                 # Chromium-Sprachlokalisation
         - shotcut                               # einfaches Videoschnitt-Programm
         - thonny                                # Python für Einsteiger
         - python-is-python3                     # Python  
