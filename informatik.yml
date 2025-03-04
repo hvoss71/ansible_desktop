@@ -130,3 +130,8 @@
       day: "*"
       job: sudo ansible-pull -o -U https://github.com/hvoss71/ansible_desktop.git informatik.yml
  
+  - name: Entferne überflüssigen Nutzer 'velociraptor'
+    ansible.builtin.user:
+      name: velociraptor
+      state: absent
+      remove: yes
