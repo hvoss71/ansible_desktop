@@ -14,7 +14,7 @@
   - name: Installiere die Sprachpakete des Systems und des Desktops
     package:
       name: 
-        - language-pack-de
+#        - language-pack-de
         - task-german 
         - task-german-desktop
       state: latest
