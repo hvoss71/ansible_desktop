@@ -59,6 +59,9 @@
         - thonny                                # Python für Einsteiger
         - python-is-python3                     # Python  
         - python3-psutil                        # Abrufen von Informationen über laufende Prozesse
+        - python3-numpy                         # weiteres Python-Zubehör
+        - python3-pygame
+        - python3-matplotlib
         - inkscape                              # Vektorgrafik
         - catfish                               # Datei- und Volltextsuche
         - flatpak                               # Flatpak 

@@ -1,0 +1,14 @@
+---
+- hosts: localhost
+  connection: local
+  become: true
+
+  tasks:
+
+  - name: Start service uxplay, based on running process /usr/bin/uxplay
+    ansible.builtin.service:
+      name: uxplay
+      pattern: /usr/bin/uxplay # -n Arbeitszimmer -nh
+      state: started
+#  daemon_reload: true
+#      enabled: true
