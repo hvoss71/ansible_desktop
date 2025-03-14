@@ -1,6 +1,6 @@
 ---
 - name: Setze Proxy-Server für Benutzer administrator
-  hosts: debian
+  hosts: localhost
   become: yes
   tasks:
     - name: Erstelle die Konfigurationsdatei für den Proxy-Server
