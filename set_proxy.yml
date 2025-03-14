@@ -1,6 +1,6 @@
 ---
 - name: Setze Proxy für Benutzer administrator auf Debian
-  hosts: all
+  hosts: local
   become: yes
   tasks:
 
