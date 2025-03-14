@@ -1,37 +1,52 @@
 ---
-- name: Setze Proxy-Server für Benutzer administrator
+- name: Setze Proxy für localhost und Benutzer administrator
   hosts: localhost
   become: yes
   tasks:
-    - name: Erstelle die Konfigurationsdatei für den Proxy-Server
-      copy:
-        dest: "/home/administrator/.bashrc"
-        content: |
-          # Proxy-Einstellungen für administrator
-          export http_proxy="http://hg-gym.de/proxy.pac"
-          export https_proxy="http://hg-gym.de/proxy.pac"
-          export ftp_proxy="http://hg-gym.de/proxy.pac"
-          export no_proxy="localhost,127.0.0.1,*.hg-gym.de"
-        owner: administrator
-        group: administrator
-        mode: '0644'
 
-    - name: Setze Proxy-Einstellungen für apt
-      blockinfile:
-        path: /etc/apt/apt.conf.d/95proxies
-        block: |
+    # Schritt 1: Erstelle die APT-Konfigurationsdatei für Proxy
+    - name: Erstelle eine APT-Konfigurationsdatei für Proxy
+      copy:
+        dest: "/etc/apt/apt.conf.d/95proxies"
+        content: |
           Acquire::http::Proxy "http://hg-gym.de/proxy.pac";
           Acquire::https::Proxy "http://hg-gym.de/proxy.pac";
           Acquire::ftp::Proxy "http://hg-gym.de/proxy.pac";
+          Acquire::http::No-Cache "true";  # optional, je nach Bedarf
+      when: not ansible_facts['distribution'] == 'Debian'
 
-    - name: Setze Proxy-Einstellungen für das System
+    # Schritt 2: Setze Proxy für den Benutzer administrator
+    - name: Erstelle Proxy-Umgebungsvariablen für administrator
       lineinfile:
-        path: /etc/environment
-        regexp: '^http_proxy'
-        line: 'http_proxy="http://hg-gym.de/proxy.pac"'
+        path: "/home/administrator/.bashrc"
+        regexp: '^export {{ item.name }}='
+        line: "export {{ item.name }}={{ item.value }}"
+      loop:
+        - { name: 'http_proxy', value: 'http://hg-gym.de/proxy.pac' }
+        - { name: 'https_proxy', value: 'http://hg-gym.de/proxy.pac' }
+        - { name: 'ftp_proxy', value: 'http://hg-gym.de/proxy.pac' }
+        - { name: 'no_proxy', value: 'localhost,127.0.0.1' }
+      become_user: administrator
 
-  handlers:
-    - name: Neustart der Dienste
-      service:
-        name: networking
-        state: restarted
+    # Schritt 3: Setze den Proxy in der Systemumgebung (für alle Benutzer)
+    - name: Setze Proxy in der Systemumgebung
+      lineinfile:
+        path: "/etc/environment"
+        regexp: '^{{ item.name }}='
+        line: "{{ item.name }}={{ item.value }}"
+      loop:
+        - { name: 'http_proxy', value: 'http://hg-gym.de/proxy.pac' }
+        - { name: 'https_proxy', value: 'http://hg-gym.de/proxy.pac' }
+        - { name: 'ftp_proxy', value: 'http://hg-gym.de/proxy.pac' }
+        - { name: 'no_proxy', value: 'localhost,127.0.0.1' }
+
+    # Schritt 4: Bestätige, dass der Proxy korrekt gesetzt ist (für administrator)
+    - name: Bestätige, dass der Proxy korrekt gesetzt ist
+      command: echo $http_proxy
+      become_user: administrator
+      register: result
+
+    # Schritt 5: Zeige den Proxy-Wert an
+    - name: Zeige den Proxy-Wert an
+      debug:
+        var: result.stdout
