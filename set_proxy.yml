@@ -1,41 +1,37 @@
 ---
-- name: Setze Proxy für Benutzer administrator auf Debian
-  hosts: localhost
+- name: Setze Proxy-Server für Benutzer administrator
+  hosts: debian
   become: yes
   tasks:
+    - name: Erstelle die Konfigurationsdatei für den Proxy-Server
+      copy:
+        dest: "/home/administrator/.bashrc"
+        content: |
+          # Proxy-Einstellungen für administrator
+          export http_proxy="http://hg-gym.de/proxy.pac"
+          export https_proxy="http://hg-gym.de/proxy.pac"
+          export ftp_proxy="http://hg-gym.de/proxy.pac"
+          export no_proxy="localhost,127.0.0.1,*.hg-gym.de"
+        owner: administrator
+        group: administrator
+        mode: '0644'
 
-    - name: Erstelle die Proxy-Umgebungsvariablen für administrator
+    - name: Setze Proxy-Einstellungen für apt
+      blockinfile:
+        path: /etc/apt/apt.conf.d/95proxies
+        block: |
+          Acquire::http::Proxy "http://hg-gym.de/proxy.pac";
+          Acquire::https::Proxy "http://hg-gym.de/proxy.pac";
+          Acquire::ftp::Proxy "http://hg-gym.de/proxy.pac";
+
+    - name: Setze Proxy-Einstellungen für das System
       lineinfile:
-        path: "/home/administrator/.bashrc"
-        regexp: '^export {{ item.name }}='
-        line: "export {{ item.name }}={{ item.value }}"
-      loop:
-        - { name: 'http_proxy', value: 'http://hg-gym.de/proxy.pac' }
-        - { name: 'https_proxy', value: 'http://hg-gym.de/proxy.pac' }
-        - { name: 'ftp_proxy', value: 'http://hg-gym.de/proxy.pac' }
-        - { name: 'no_proxy', value: 'localhost,127.0.0.1' }
-      become_user: administrator
+        path: /etc/environment
+        regexp: '^http_proxy'
+        line: 'http_proxy="http://hg-gym.de/proxy.pac"'
 
-    - name: Setze den Proxy in der Systemumgebung (für alle Benutzer)
-      lineinfile:
-        path: "/etc/environment"
-        regexp: '^{{ item.name }}='
-        line: "{{ item.name }}={{ item.value }}"
-      loop:
-        - { name: 'http_proxy', value: 'http://hg-gym.de/proxy.pac' }
-        - { name: 'https_proxy', value: 'http://hg-gym.de/proxy.pac' }
-        - { name: 'ftp_proxy', value: 'http://hg-gym.de/proxy.pac' }
-        - { name: 'no_proxy', value: 'localhost,127.0.0.1' }
-
-    - name: Aktualisiere die Umgebungsvariablen
-      command: source /home/administrator/.bashrc
-      become_user: administrator
-
-    - name: Bestätige, dass der Proxy korrekt gesetzt ist
-      command: echo $http_proxy
-      become_user: administrator
-      register: result
-
-    - name: Zeige den Proxy-Wert an
-      debug:
-        var: result.stdout
+  handlers:
+    - name: Neustart der Dienste
+      service:
+        name: networking
+        state: restarted
