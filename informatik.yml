@@ -10,8 +10,8 @@
   connection: local
   become: true
   
-  environment: 
-    http_proxy: http://hg-gym.de/proxy.pac
+#  environment: 
+#    http_proxy: http://hg-gym.de/proxy.pac
 
   tasks:
 
@@ -138,6 +138,7 @@
         - com.jetbrains.IntelliJ-IDEA-Community  # Java und Kotlin-Editor
         - com.vscodium.codium                    # Java und Visual Studio Editor
         - io.github.pemsley.coot                 # Makromoleküle bauen
+        - org.localsend.localsend_app            # plattformübergreifendes Airdropping
       state: present
 
   - name: Stelle sicher, dass der Cronjob-Daemon läuft
