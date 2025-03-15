@@ -1,0 +1,114 @@
+{
+    "AccessControl": {
+        "AccessRestrictedToUserGroups": "false",
+        "UserGroupsBackend": "2917cdeb-ac13-4099-8715-20368254a367"
+    },
+    "Authentication": {
+        "Method": "1",
+        "PrivateKeyBaseDir": "%GLOBALAPPDATA%/keys/private",
+        "PublicKeyBaseDir": "%GLOBALAPPDATA%/keys/public"
+    },
+    "BuiltinDirectory": {
+        "NetworkObjects": {
+            "JsonStoreArray": [
+                {
+                    "Name": "Raum311",
+                    "Type": 2,
+                    "Uid": "{fecfdd0f-6915-4437-9383-25608845ea1b}"
+                },
+                {
+                    "HostAddress": "10.3.11.0",
+                    "MacAddress": "EC:B1:D7:68:E0:40",
+                    "Name": "r311c00",
+                    "ParentUid": "{fecfdd0f-6915-4437-9383-25608845ea1b}",
+                    "Type": 3,
+                    "Uid": "{b9a2509c-106e-4120-b308-baaf3bde1f8c}"
+                },
+                {
+                    "HostAddress": "10.3.11.1",
+                    "MacAddress": "ec:b1:d7:6b:a6:9a",
+                    "Name": "r311c01",
+                    "ParentUid": "{fecfdd0f-6915-4437-9383-25608845ea1b}",
+                    "Type": 3,
+                    "Uid": "{2d6bfde5-f77f-48f6-a8ac-92b952c91298}"
+                }
+            ]
+        }
+    },
+    "Core": {
+        "ApplicationVersion": 7,
+        "InstallationID": "2c10156c-92b5-4c36-8c2d-b7aa745da37c",
+        "PluginVersions": {
+            "JsonStoreObject": {
+                "{14bacaaa-ebe5-449c-b881-5b382f952571}": "1.1",
+                "{1b08265b-348f-4978-acaa-45d4f6b90bd9}": "1.1",
+                "{2917cdeb-ac13-4099-8715-20368254a367}": "1.1",
+                "{2ad98ccb-e9a5-43ef-8c4c-876ac5efbcb1}": "1.1",
+                "{387a0c43-1355-4ff6-9e1f-d098e9ce5127}": "1.1",
+                "{39d7a07f-94db-4912-aa1a-c4df8aee3879}": "1.1",
+                "{4122e8ca-b617-4e36-b851-8e050ed2d82e}": "1.2",
+                "{4790bad8-4c56-40d5-8361-099a68f0c24b}": "1.1",
+                "{63928a8a-4c51-4bfd-888e-9e13c6f3907a}": "1.1",
+                "{67dfc1c1-8f37-4539-a298-16e74e34fd8b}": "1.1",
+                "{6f0a491e-c1c6-4338-8244-f823b0bf8670}": "1.2",
+                "{80580500-2e59-4297-9e35-e53959b028cd}": "1.2",
+                "{8ae6668b-9c12-4b29-9bfc-ff89f6604164}": "1.1",
+                "{a54ee018-42bf-4569-90c7-0d8470125ccf}": "2.0",
+                "{d4bb9c42-9eef-4ecb-8dd5-dfd84b355481}": "1.0",
+                "{e11bee03-b99c-465c-bf90-7e5339b83f6b}": "1.0",
+                "{ee322521-f4fb-482d-b082-82a79003afa7}": "1.1",
+                "{f626f759-7691-45c0-bd4a-37171d98d219}": "1.0"
+            }
+        }
+    },
+    "Directories": {
+        "Screenshots": "%APPDATA%/Screenshots",
+        "UserConfiguration": "%APPDATA%/Config"
+    },
+    "FileTransfer": {
+        "DefaultSourceDirectory": "%HOME%",
+        "DestinationDirectory": "%HOME%"
+    },
+    "LDAP": {
+        "ComputerLocationAttribute": "",
+        "ComputerLocationsByAttribute": "false",
+        "ComputerLocationsByContainer": "false",
+        "LocationNameAttribute": "",
+        "UserLoginNameAttribute": ""
+    },
+    "Logging": {
+        "LogFileDirectory": "%TEMP%",
+        "LogFileSizeLimit": "100",
+        "LogFileSizeLimitEnabled": "false",
+        "LogLevel": "3"
+    },
+    "Master": {
+        "AccessControlForMasterEnabled": "true",
+        "AllowAddingHiddenLocations": "false",
+        "AutoAdjustMonitoringIconSize": "false",
+        "AutoOpenComputerSelectPanel": "false",
+        "AutoSelectCurrentLocation": "false",
+        "ConfirmUnsafeActions": "false",
+        "HideComputerFilter": "false",
+        "HideEmptyLocations": "false",
+        "HideLocalComputer": "false",
+        "ShowCurrentLocationOnly": "false"
+    },
+    "Network": {
+        "VeyonServerPort": "11100"
+    },
+    "NetworkObjectDirectory": {
+        "Plugin": "14bacaaa-ebe5-449c-b881-5b382f952571"
+    },
+    "Service": {
+        "ActiveSession": "true",
+        "RemoteConnectionNotifications": "true",
+        "SessionMetaDataContent": "0"
+    },
+    "UI": {
+        "ApplicationName": "Veyon"
+    },
+    "VncServer": {
+        "Plugin": "39d7a07f-94db-4912-aa1a-c4df8aee3879"
+    }
+}
