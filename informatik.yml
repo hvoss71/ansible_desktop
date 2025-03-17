@@ -199,3 +199,21 @@
     ansible.builtin.file:
       path: /home/administrator/packages/veyon_4.9.3.0-debian.12_amd64.deb
       state: absent
+
+  - name: Lade Veyon Konfigurationsdatei herunter
+    get_url:
+      url: https://raw.githubusercontent.com/hvoss71/ansible_desktop/main/veyon-settings-HG-Linux.json
+      dest: /tmp/veyon-settings-HG-Linux.json
+      mode: '0644'
+
+  - name: Lade Veyon Netzwerkobjekte CSV herunter
+    get_url:
+      url: https://raw.githubusercontent.com/hvoss71/ansible_desktop/main/raum311-import-file.csv
+      dest: /tmp/raum311-import-file.csv
+      mode: '0644'
+
+  - name: Importiere Veyon Konfigurationsdatei
+    command: sudo veyon-cli config import /tmp/veyon-settings-HG-Linux.json
+ 
+  - name: Importiere Veyon Netzwerkobjekte
+    command: sudo veyon-cli networkobjects import /tmp/raum311-import-file.csv format "%location%,%name%,%host%,%mac%"
