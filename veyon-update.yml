@@ -46,10 +46,10 @@
       deb: /home/administrator/packages/veyon_4.9.3.0-debian.12_amd64.deb
     when: '"veyon" not in ansible_facts.packages'
 
-  - name: Entferne die Installationsdatei von Veyon
-    ansible.builtin.file:
-      path: /home/administrator/packages/veyon_4.9.3.0-debian.12_amd64.deb
-      state: absent
+#  - name: Entferne die Installationsdatei von Veyon
+#    ansible.builtin.file:
+#      path: /home/administrator/packages/veyon_4.9.3.0-debian.12_amd64.deb
+#      state: absent
 
   - name: Lade Veyon Konfigurationsdatei herunter
     get_url:
