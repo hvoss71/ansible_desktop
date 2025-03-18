@@ -193,7 +193,8 @@
   - name: Installiere die aktuelle Version des Programms Veyon
     ansible.builtin.apt:
       deb: /home/administrator/packages/veyon_4.9.3.0-debian.12_amd64.deb
-    when: '"veyon" not in ansible_facts.packages'
+      state: present
+#    when: '"veyon" not in ansible_facts.packages'
 
   - name: Entferne die Installationsdatei von Veyon
     ansible.builtin.file:
