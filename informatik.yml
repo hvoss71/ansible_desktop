@@ -194,7 +194,7 @@
   - name: Kopiere die Installationsdatei von Veyon in ein lokales Verzeichnis des Administrators
     ansible.builtin.get_url:
       url: https://github.com/veyon/veyon/releases/download/v4.9.3/veyon_4.9.3.0-debian.12_amd64.deb
-      dest: /home/administrator/packages/veyon_4.9.3.0-debian.12_amd64.de
+      dest: /home/administrator/packages/veyon_4.9.3.0-debian.12_amd64.deb
       mode: '0644'
 #    when: '"veyon" not in ansible_facts.packages'
 
