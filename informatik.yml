@@ -68,6 +68,8 @@
         - python3-numpy                       
         - python3-pygame
         - python3-matplotlib
+        - python3-pip
+        - python3-venv
 #        - libtensorflow-cc2
 #        - libtensorflow-dev
 #        - libtensorflow-framework2
