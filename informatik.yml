@@ -61,10 +61,18 @@
         - shotcut                               # einfaches Videoschnitt-Programm
         - thonny                                # Python für Einsteiger
         - python-is-python3                     # Python  
-        - python3-psutil                        # Abrufen von Informationen über laufende Prozesse
-        - python3-numpy                         # weiteres Python-Zubehör
+#        - python3-keras                         # ... sowie weitere Python-Module
+        - python3-keras-applications
+        - python3-keras-preprocessing
+        - python3-psutil                       
+        - python3-numpy                       
         - python3-pygame
         - python3-matplotlib
+        - python3-pip
+        - python3-venv
+#        - libtensorflow-cc2
+#        - libtensorflow-dev
+#        - libtensorflow-framework2
         - inkscape                              # Vektorgrafik
         - catfish                               # Datei- und Volltextsuche
         - flatpak                               # Flatpak 
@@ -186,9 +194,9 @@
   - name: Kopiere die Installationsdatei von Veyon in ein lokales Verzeichnis des Administrators
     ansible.builtin.get_url:
       url: https://github.com/veyon/veyon/releases/download/v4.9.3/veyon_4.9.3.0-debian.12_amd64.deb
-      dest: /home/administrator/packages/veyon_4.9.3.0-debian.12_amd64.de
+      dest: /home/administrator/packages/veyon_4.9.3.0-debian.12_amd64.deb
       mode: '0644'
-    when: '"structorizer" not in ansible_facts.packages'
+#    when: '"veyon" not in ansible_facts.packages'
 
   - name: Installiere die aktuelle Version des Programms Veyon
     ansible.builtin.apt:
