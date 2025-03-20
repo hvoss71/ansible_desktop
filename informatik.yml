@@ -202,6 +202,7 @@
     ansible.builtin.apt:
       deb: /home/administrator/packages/veyon_4.9.3.0-debian.12_amd64.deb
       state: present
+    when: ansible_facts['distribution'] == "Debian"
 #    when: '"veyon" not in ansible_facts.packages'
 
   - name: Entferne die Installationsdatei von Veyon
