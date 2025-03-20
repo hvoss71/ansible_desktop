@@ -235,10 +235,12 @@
       mode: '0644'
 
   - name: Import the Veyon public key
-    ansible.builtin.command:
-      cmd: "veyon-cli authkeys import /tmp/PC-Raum311_public_key.pem"
-    register: veyon_import_result
-    changed_when: veyon_import_result.rc == 0
+    command: sudo veyon-cli authkeys import veyon-key/public /tmp/PC-Raum311_public_key.pem
+
+#    ansible.builtin.command:
+#      cmd: "veyon-cli authkeys import /tmp/PC-Raum311_public_key.pem"
+#    register: veyon_import_result
+#    changed_when: veyon_import_result.rc == 0
 
   - name: Remove the temporary key file
     ansible.builtin.file:
