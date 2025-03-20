@@ -238,7 +238,7 @@
     command: sudo veyon-cli authkeys import PC-Raum311/public /tmp/PC-Raum311_public_key.pem # setaccessgroup schueler.innen
 
   - name: Set access group
-    command: sudo veyon-cli setaccessgroup PC-Raum311/public schueler.innen
+    command: sudo veyon-cli authkeys setaccessgroup PC-Raum311/public schueler.innen
 
 #    ansible.builtin.command:
 #      cmd: "veyon-cli authkeys import /tmp/PC-Raum311_public_key.pem"
