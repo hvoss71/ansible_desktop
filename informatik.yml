@@ -228,10 +228,10 @@
 #    command: sudo veyon-cli networkobjects import /tmp/raum311-import-file.csv format "%location%,%name%,%host%,%mac%"
 
   - name: Download Veyon public key
-       ansible.builtin.get_url:
-         url: "https://raw.githubusercontent.com/hvoss71/ansible_desktop/main/PC-Raum311_public_key.pem"
-         dest: "/tmp/PC-Raum311_public_key.pem"
-         mode: '0644'
+    ansible.builtin.get_url:
+      url: "https://raw.githubusercontent.com/hvoss71/ansible_desktop/main/PC-Raum311_public_key.pem"
+      dest: "/tmp/PC-Raum311_public_key.pem"
+      mode: '0644'
 
   - name: Import the Veyon public key
     ansible.builtin.command:
