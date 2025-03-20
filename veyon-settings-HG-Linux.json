@@ -12,31 +12,183 @@
         "NetworkObjects": {
             "JsonStoreArray": [
                 {
-                    "Name": "Raum311",
+                    "Name": "Raum 311",
                     "Type": 2,
-                    "Uid": "{fecfdd0f-6915-4437-9383-25608845ea1b}"
+                    "Uid": "{43d67f50-326b-59a8-a215-a52dfa332d1f}"
                 },
                 {
                     "HostAddress": "10.3.11.0",
-                    "MacAddress": "EC:B1:D7:68:E0:40",
+                    "MacAddress": "ec:b1:d7:68:e0:40",
                     "Name": "r311c00",
-                    "ParentUid": "{fecfdd0f-6915-4437-9383-25608845ea1b}",
+                    "ParentUid": "{43d67f50-326b-59a8-a215-a52dfa332d1f}",
                     "Type": 3,
-                    "Uid": "{b9a2509c-106e-4120-b308-baaf3bde1f8c}"
+                    "Uid": "{71685041-2c9d-5875-8470-33f1bc512f03}"
                 },
                 {
                     "HostAddress": "10.3.11.1",
                     "MacAddress": "ec:b1:d7:6b:a6:9a",
                     "Name": "r311c01",
-                    "ParentUid": "{fecfdd0f-6915-4437-9383-25608845ea1b}",
+                    "ParentUid": "{43d67f50-326b-59a8-a215-a52dfa332d1f}",
                     "Type": 3,
-                    "Uid": "{2d6bfde5-f77f-48f6-a8ac-92b952c91298}"
+                    "Uid": "{8f4ebac5-b31a-55f6-8b44-fa8fd7afe334}"
+                },
+                {
+                    "HostAddress": "10.3.11.2",
+                    "MacAddress": "ec:b1:d7:68:67:08",
+                    "Name": "r311c02",
+                    "ParentUid": "{43d67f50-326b-59a8-a215-a52dfa332d1f}",
+                    "Type": 3,
+                    "Uid": "{c9f668c5-c69b-5d3e-86ac-fa5b4d227693}"
+                },
+                {
+                    "HostAddress": "10.3.11.3",
+                    "MacAddress": "ec:b1:d7:68:64:ae",
+                    "Name": "r311c03",
+                    "ParentUid": "{43d67f50-326b-59a8-a215-a52dfa332d1f}",
+                    "Type": 3,
+                    "Uid": "{bf4c3489-9df9-583d-98d6-917ccffb4487}"
+                },
+                {
+                    "HostAddress": "10.3.11.4",
+                    "MacAddress": "ec:b1:d7:69:8c:29",
+                    "Name": "r311c04",
+                    "ParentUid": "{43d67f50-326b-59a8-a215-a52dfa332d1f}",
+                    "Type": 3,
+                    "Uid": "{d55aa612-7576-510c-92e4-80e1d3e37910}"
+                },
+                {
+                    "HostAddress": "10.3.11.5",
+                    "MacAddress": "ec:b1:d7:63:e9:ea",
+                    "Name": "r311c05",
+                    "ParentUid": "{43d67f50-326b-59a8-a215-a52dfa332d1f}",
+                    "Type": 3,
+                    "Uid": "{de3fd81a-59d6-5c12-ac58-e0f3c9eda19c}"
+                },
+                {
+                    "HostAddress": "10.3.11.6",
+                    "MacAddress": "ec:b1:d7:6a:d3:87",
+                    "Name": "r311c06",
+                    "ParentUid": "{43d67f50-326b-59a8-a215-a52dfa332d1f}",
+                    "Type": 3,
+                    "Uid": "{f55c6687-ff9c-5c21-9e53-2d23f44c6552}"
+                },
+                {
+                    "HostAddress": "10.3.11.7",
+                    "MacAddress": "ec:b1:d7:67:fb:10",
+                    "Name": "r311c07",
+                    "ParentUid": "{43d67f50-326b-59a8-a215-a52dfa332d1f}",
+                    "Type": 3,
+                    "Uid": "{038c1b6e-c834-54a8-85f6-cb48f377ff4e}"
+                },
+                {
+                    "HostAddress": "10.3.11.8",
+                    "MacAddress": "ec:b1:d7:68:66:ad",
+                    "Name": "r311c08",
+                    "ParentUid": "{43d67f50-326b-59a8-a215-a52dfa332d1f}",
+                    "Type": 3,
+                    "Uid": "{422afa1e-5ebd-5061-84e8-7a5231fd1a78}"
+                },
+                {
+                    "HostAddress": "10.3.11.9",
+                    "MacAddress": "00:19:99:89:5d:46",
+                    "Name": "r311c09",
+                    "ParentUid": "{43d67f50-326b-59a8-a215-a52dfa332d1f}",
+                    "Type": 3,
+                    "Uid": "{51115b3a-298f-52fb-b8d1-873339569431}"
+                },
+                {
+                    "HostAddress": "10.3.11.10",
+                    "MacAddress": "00:19:99:89:5d:e7",
+                    "Name": "r311c10",
+                    "ParentUid": "{43d67f50-326b-59a8-a215-a52dfa332d1f}",
+                    "Type": 3,
+                    "Uid": "{1e98a51a-c8cf-5e5d-a493-2984610be22b}"
+                },
+                {
+                    "HostAddress": "10.3.11.11",
+                    "MacAddress": "ec:b1:d7:6a:dc:87",
+                    "Name": "r311c11",
+                    "ParentUid": "{43d67f50-326b-59a8-a215-a52dfa332d1f}",
+                    "Type": 3,
+                    "Uid": "{6734e81b-2926-5772-85ef-3c028244acee}"
+                },
+                {
+                    "HostAddress": "10.3.11.12",
+                    "MacAddress": "ec:b1:d7:69:8c:a7",
+                    "Name": "r311c12",
+                    "ParentUid": "{43d67f50-326b-59a8-a215-a52dfa332d1f}",
+                    "Type": 3,
+                    "Uid": "{1df6c0bf-c9c0-5cd6-9252-9d72e183d8b9}"
+                },
+                {
+                    "HostAddress": "10.3.11.13",
+                    "MacAddress": "ec:b1:d7:6b:72:f4",
+                    "Name": "r311c13",
+                    "ParentUid": "{43d67f50-326b-59a8-a215-a52dfa332d1f}",
+                    "Type": 3,
+                    "Uid": "{861cae18-4269-5a2c-9fac-95bf154725f6}"
+                },
+                {
+                    "HostAddress": "10.3.11.14",
+                    "MacAddress": "ec:b1:d7:68:67:96",
+                    "Name": "r311c14",
+                    "ParentUid": "{43d67f50-326b-59a8-a215-a52dfa332d1f}",
+                    "Type": 3,
+                    "Uid": "{643d3b94-8d3d-5dd4-9b03-783a76405b12}"
+                },
+                {
+                    "HostAddress": "10.3.11.15",
+                    "MacAddress": "ec:b1:d7:64:28:d1",
+                    "Name": "r311c15",
+                    "ParentUid": "{43d67f50-326b-59a8-a215-a52dfa332d1f}",
+                    "Type": 3,
+                    "Uid": "{7e2cb81c-f28a-597c-96a6-70e149086718}"
+                },
+                {
+                    "HostAddress": "10.3.11.16",
+                    "MacAddress": "ec:b1:d7:69:dd:df",
+                    "Name": "r311c16",
+                    "ParentUid": "{43d67f50-326b-59a8-a215-a52dfa332d1f}",
+                    "Type": 3,
+                    "Uid": "{32439732-08a3-5b37-acd8-1078cbafaeae}"
+                },
+                {
+                    "HostAddress": "10.3.11.17",
+                    "MacAddress": "ec:b1:d7:65:08:e0",
+                    "Name": "r311c17",
+                    "ParentUid": "{43d67f50-326b-59a8-a215-a52dfa332d1f}",
+                    "Type": 3,
+                    "Uid": "{60a100ea-162b-5e29-8fc8-3d3e174ae80b}"
+                },
+                {
+                    "HostAddress": "10.3.11.18",
+                    "MacAddress": "00:19:99:8a:bc:28",
+                    "Name": "r311c18",
+                    "ParentUid": "{43d67f50-326b-59a8-a215-a52dfa332d1f}",
+                    "Type": 3,
+                    "Uid": "{47d95737-6ab0-5819-9763-6ee98a604701}"
+                },
+                {
+                    "HostAddress": "10.3.11.19",
+                    "MacAddress": "00:19:99:a0:8e:e4",
+                    "Name": "r311c19",
+                    "ParentUid": "{43d67f50-326b-59a8-a215-a52dfa332d1f}",
+                    "Type": 3,
+                    "Uid": "{7ea4952d-9b52-5b80-a847-253097e08453}"
+                },
+                {
+                    "HostAddress": "10.3.11.20",
+                    "MacAddress": "00:19:99:a0:8e:2b",
+                    "Name": "r311c20",
+                    "ParentUid": "{43d67f50-326b-59a8-a215-a52dfa332d1f}",
+                    "Type": 3,
+                    "Uid": "{ba3aa383-4d4f-53f5-891a-8687dbe8becf}"
                 }
             ]
         }
     },
     "Core": {
-        "ApplicationVersion": 7,
+        "ApplicationVersion": 9,
         "InstallationID": "2c10156c-92b5-4c36-8c2d-b7aa745da37c",
         "PluginVersions": {
             "JsonStoreObject": {
@@ -76,6 +228,9 @@
         "LocationNameAttribute": "",
         "UserLoginNameAttribute": ""
     },
+    "Linux": {
+        "PamServiceName": ""
+    },
     "Logging": {
         "LogFileDirectory": "%TEMP%",
         "LogFileSizeLimit": "100",
@@ -107,6 +262,10 @@
     },
     "UI": {
         "ApplicationName": "Veyon"
+    },
+    "UserGroups": {
+        "Backend": "2917cdeb-ac13-4099-8715-20368254a367",
+        "UseDomainUserGroups": "false"
     },
     "VncServer": {
         "Plugin": "39d7a07f-94db-4912-aa1a-c4df8aee3879"
