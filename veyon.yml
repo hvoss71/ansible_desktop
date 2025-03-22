@@ -54,19 +54,19 @@
 
   - name: Lade Veyon Konfigurationsdatei herunter
     get_url:
-      url: https://raw.githubusercontent.com/hvoss71/ansible_desktop/main/veyon-settings-HG-Linux.json
+      url: https://raw.githubusercontent.com/hvoss71/ansible_desktop/main/veyonfiles/veyon-settings-HG-Linux.json
       dest: /tmp/veyon-settings-HG-Linux.json
       mode: '0644'
 
   - name: Lade Veyon Netzwerkobjekte CSV herunter
     get_url:
-      url: https://raw.githubusercontent.com/hvoss71/ansible_desktop/main/raum311-import-file.csv
+      url: https://raw.githubusercontent.com/hvoss71/ansible_desktop/main/veyonfiles/raum311-import-file.csv
       dest: /tmp/raum311-import-file.csv
       mode: '0644'
 
   - name: Download Veyon public key
     ansible.builtin.get_url:
-      url: "https://raw.githubusercontent.com/hvoss71/ansible_desktop/main/PC-Raum311_public_key.pem"
+      url: "https://raw.githubusercontent.com/hvoss71/ansible_desktop/main/veyonfiles/PC-Raum311_public_key.pem"
       dest: "/tmp/PC-Raum311_public_key.pem"
       mode: '0644'
 
