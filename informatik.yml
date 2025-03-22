@@ -46,16 +46,13 @@
     when: ansible_facts['distribution'] == "Ubuntu"
 
 
-  - name: Installiere allgemeine Anwendungen aus dem Debian-Repository
+  - name: Installiere Anwendungen aus dem Debian-Repository
     package:
       name: 
         - arduino                               # Arduino 1
         - emacs                                 # Emacs
         - gedit                                 # GNOME-Editor
         - kate                                  # KDE Editor
-#        - veyon-configurator                    # aktuellere Version erforderlich
-#        - veyon-plugins
-#        - veyon-service
         - x11vnc                                # VNC-Server für X11
         - gnome-connections                     # RDP / VNC-Verbindung
         - shotcut                               # einfaches Videoschnitt-Programm
@@ -70,9 +67,6 @@
         - python3-matplotlib
         - python3-pip
         - python3-venv
-#        - libtensorflow-cc2
-#        - libtensorflow-dev
-#        - libtensorflow-framework2
         - inkscape                              # Vektorgrafik
         - catfish                               # Datei- und Volltextsuche
         - flatpak                               # Flatpak 
@@ -164,88 +158,3 @@
       hour: "*"
       day: "*"
       job: sudo ansible-pull -o -U https://github.com/hvoss71/ansible_desktop.git informatik.yml
- 
-  - name: Entferne überflüssigen Nutzer 'velociraptor'
-    ansible.builtin.user:
-      name: velociraptor
-      state: absent
-      remove: yes
-
-  - name: Deinstalliere die alte Veyon-Version aus dem Debian-Repository
-    package:
-      name: 
-        - libveyon-core
-        - veyon-configurator
-        - veyon-master
-        - veyon-plugins
-        - veyon-service
-      state: absent
-
-  - name: Prüfe, welche Pakete vorhanden sind
-    package_facts:
-      manager: apt
-
-  - name: Erzeuge das Verzeichnis packages, falls es noch nicht existiert
-    ansible.builtin.file:
-      path: /home/administrator/packages
-      state: directory
-      mode: '0755'
-
-  - name: Kopiere die Installationsdatei von Veyon in ein lokales Verzeichnis des Administrators
-    ansible.builtin.get_url:
-      url: https://github.com/veyon/veyon/releases/download/v4.9.3/veyon_4.9.3.0-debian.12_amd64.deb
-      dest: /home/administrator/packages/veyon_4.9.3.0-debian.12_amd64.deb
-      mode: '0644'
-#    when: '"veyon" not in ansible_facts.packages'
-
-  - name: Installiere die aktuelle Version des Programms Veyon
-    ansible.builtin.apt:
-      deb: /home/administrator/packages/veyon_4.9.3.0-debian.12_amd64.deb
-      state: present
-    when: ansible_facts['distribution'] == "Debian"
-#    when: '"veyon" not in ansible_facts.packages'
-
-  - name: Entferne die Installationsdatei von Veyon
-    ansible.builtin.file:
-      path: /home/administrator/packages/veyon_4.9.3.0-debian.12_amd64.deb
-      state: absent
-
-  - name: Lade Veyon Konfigurationsdatei herunter
-    get_url:
-      url: https://raw.githubusercontent.com/hvoss71/ansible_desktop/main/veyon-settings-HG-Linux.json
-      dest: /tmp/veyon-settings-HG-Linux.json
-      mode: '0644'
-
-  - name: Lade Veyon Netzwerkobjekte CSV herunter
-    get_url:
-      url: https://raw.githubusercontent.com/hvoss71/ansible_desktop/main/raum311-import-file.csv
-      dest: /tmp/raum311-import-file.csv
-      mode: '0644'
-
-  - name: Importiere Veyon Konfigurationsdatei
-    command: sudo veyon-cli config import /tmp/veyon-settings-HG-Linux.json
- 
-#  - name: Importiere Veyon Netzwerkobjekte
-#    command: sudo veyon-cli networkobjects import /tmp/raum311-import-file.csv format "%location%,%name%,%host%,%mac%"
-
-  - name: Download Veyon public key
-    ansible.builtin.get_url:
-      url: "https://raw.githubusercontent.com/hvoss71/ansible_desktop/main/PC-Raum311_public_key.pem"
-      dest: "/tmp/PC-Raum311_public_key.pem"
-      mode: '0644'
-
-  - name: Import the Veyon public key
-    command: sudo veyon-cli authkeys import PC-Raum311/public /tmp/PC-Raum311_public_key.pem # setaccessgroup schueler.innen
-
-  - name: Set access group
-    command: sudo veyon-cli authkeys setaccessgroup PC-Raum311/public schueler.innen
-
-#    ansible.builtin.command:
-#      cmd: "veyon-cli authkeys import /tmp/PC-Raum311_public_key.pem"
-#    register: veyon_import_result
-#    changed_when: veyon_import_result.rc == 0
-
-  - name: Remove the temporary key file
-    ansible.builtin.file:
-      path: "/tmp/PC-Raum311_public_key.pem"
-      state: absent
