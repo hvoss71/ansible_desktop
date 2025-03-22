@@ -188,7 +188,7 @@
         }
     },
     "Core": {
-        "ApplicationVersion": 9,
+        "ApplicationVersion": "9",
         "InstallationID": "2c10156c-92b5-4c36-8c2d-b7aa745da37c",
         "PluginVersions": {
             "JsonStoreObject": {
@@ -240,13 +240,13 @@
     "Master": {
         "AccessControlForMasterEnabled": "true",
         "AllowAddingHiddenLocations": "false",
-        "AutoAdjustMonitoringIconSize": "false",
+        "AutoAdjustMonitoringIconSize": false,
         "AutoOpenComputerSelectPanel": "false",
-        "AutoSelectCurrentLocation": "false",
+        "AutoSelectCurrentLocation": false,
         "ConfirmUnsafeActions": "false",
         "HideComputerFilter": "false",
-        "HideEmptyLocations": "false",
-        "HideLocalComputer": "false",
+        "HideEmptyLocations": true,
+        "HideLocalComputer": true,
         "ShowCurrentLocationOnly": "false"
     },
     "Network": {
