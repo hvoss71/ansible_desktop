@@ -141,6 +141,7 @@
         - com.vscodium.codium                    # Java und Visual Studio Editor
         - io.github.pemsley.coot                 # Makromoleküle bauen
         - org.localsend.localsend_app            # plattformübergreifendes Airdropping
+        - org.greenfoot.Greenfoot                # integrated development environment using Java or Stride
       state: present
 
   - name: Stelle sicher, dass der Cronjob-Daemon läuft
