@@ -1,6 +1,6 @@
 ---
-# Dieses Skript enthält die Software-Grundausstattung der PC-Räume, soweit sie über Debian oder Flatpak verfügbar ist. Es erzeugt zudem einen Cronjob,
-# der dieses Script alle 10 Minuten neu über Github aufruft. Nach erstmaliger Ausführung des Skriptes über ssh ist also keine weitere manuelle Ausführung 
+# Dieses Skript enthält die Software-Grundausstattung der Leihgeräte, soweit sie über Debian oder Flatpak verfügbar ist. Es erzeugt zudem einen Cronjob,
+# der dieses Script alle 15 Minuten neu über Github aufruft. Nach erstmaliger Ausführung des Skriptes über ssh ist also keine weitere manuelle Ausführung 
 # erforderlich, da Änderungen am Skript auf Github bei Nutzung der Rechner automatisch nach 10 Minuten von den Clients übernommen werden. Ein Schlüssel
 # ist nicht erforderlich, da das Playbook öffentlich im Netz steht. Das Installieren, Aktualisieren oder auch Löschen von Software kann so einmalig im 
 # Playbook informatik.yml vorgenommen werden und wird dann automatisch auf alle Clients ausgerollt. Diese Vorgänge finden im Hintergrund statt 
@@ -155,7 +155,7 @@
     ansible.builtin.cron: 
       name: ansible auto-provision
       user: root
-      minute: "*/10"
+      minute: "*/15"
       hour: "*"
       day: "*"
-      job: sudo ansible-pull -o -U https://github.com/hvoss71/ansible_desktop.git informatik.yml
+      job: sudo ansible-pull -o -U https://github.com/hvoss71/ansible_desktop.git leihgeraete.yml
