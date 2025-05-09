@@ -46,16 +46,13 @@
     when: ansible_facts['distribution'] == "Ubuntu"
 
 
-  - name: Installiere allgemeine Anwendungen aus dem Debian-Repository
+  - name: Installiere Anwendungen aus dem Debian-Repository
     package:
       name: 
         - arduino                               # Arduino 1
         - emacs                                 # Emacs
         - gedit                                 # GNOME-Editor
         - kate                                  # KDE Editor
-#        - veyon-configurator                    # aktuellere Version erforderlich
-#        - veyon-plugins
-#        - veyon-service
         - x11vnc                                # VNC-Server für X11
         - gnome-connections                     # RDP / VNC-Verbindung
         - shotcut                               # einfaches Videoschnitt-Programm
@@ -70,9 +67,6 @@
         - python3-matplotlib
         - python3-pip
         - python3-venv
-#        - libtensorflow-cc2
-#        - libtensorflow-dev
-#        - libtensorflow-framework2
         - inkscape                              # Vektorgrafik
         - catfish                               # Datei- und Volltextsuche
         - flatpak                               # Flatpak 
@@ -147,6 +141,7 @@
         - com.vscodium.codium                    # Java und Visual Studio Editor
         - io.github.pemsley.coot                 # Makromoleküle bauen
         - org.localsend.localsend_app            # plattformübergreifendes Airdropping
+        - org.greenfoot.Greenfoot                # integrated development environment using Java or Stride
       state: present
 
   - name: Stelle sicher, dass der Cronjob-Daemon läuft
@@ -164,6 +159,7 @@
       hour: "*"
       day: "*"
       job: sudo ansible-pull -o -U https://github.com/hvoss71/ansible_desktop.git informatik.yml
+<<<<<<< HEAD
  
   - name: Entferne überflüssigen Nutzer 'velociraptor'
     ansible.builtin.user:
@@ -247,3 +243,5 @@
     ansible.builtin.file:
       path: "/tmp/PC-Raum311_public_key.pem"
       state: absent
+=======
+>>>>>>> 6b8756298830f98fac4b672d9fe71846f6356bbc
