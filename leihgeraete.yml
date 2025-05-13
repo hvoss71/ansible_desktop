@@ -53,11 +53,11 @@
         - chromium                                # Chromium-Browser, benötigt für LEGO Spike web App etc.
         - chromium-l10n                           # Chromium-Sprachlokalisation
       state: latest
-      environment:
-        http_proxy: "{{ http_proxy }}"
-        https_proxy: "http://proxy.hg-gym.de:3128"
-        no_proxy: "localhost,127.0.0.1,.local"
     when: ansible_facts['distribution'] == "Debian"
+    environment:
+        http_proxy: "{{ http_proxy }}"
+        https_proxy: "{{ https_proxy }}"
+        no_proxy: "{{ no_proxy }}"
 
   - name: Installiere den Chromium-Browser und andere distributionsspezifische Pakete in Ubuntu.
     package:
@@ -69,8 +69,9 @@
     when: ansible_facts['distribution'] == "Ubuntu"
     environment:
       http_proxy: "{{ http_proxy }}"
-      https_proxy: "http://proxy.hg-gym.de:3128"
-      no_proxy: "localhost,127.0.0.1,.local"
+      https_proxy: "{{ https_proxy }}"
+      no_proxy: "{{ no_proxy }}"
+
 
   - name: Installiere Anwendungen aus dem Debian-Repository
     package:
@@ -107,9 +108,8 @@
       state: latest
     environment:
       http_proxy: "{{ http_proxy }}"
-      https_proxy: "http://proxy.hg-gym.de:3128"
-      no_proxy: "localhost,127.0.0.1,.local"
-
+      https_proxy: "{{ https_proxy }}"
+      no_proxy: "{{ no_proxy }}"
 
   - name: Deinstalliere Spiele aus dem Debian-Repository
     package:
@@ -153,9 +153,9 @@
       state: absent
     environment:
       http_proxy: "{{ http_proxy }}"
-      https_proxy: "http://proxy.hg-gym.de:3128"
-      no_proxy: "localhost,127.0.0.1,.local"
-
+      https_proxy: "{{ https_proxy }}"
+      no_proxy: "{{ no_proxy }}"
+      
   - name: Füge das Flathub Flatpak Repository zur System-Installation hinzu
     community.general.flatpak_remote:
       name: flathub
@@ -164,9 +164,9 @@
       method: system
     environment:
       http_proxy: "{{ http_proxy }}"
-      https_proxy: "http://proxy.hg-gym.de:3128"
-      no_proxy: "localhost,127.0.0.1,.local"
-
+      https_proxy: "{{ https_proxy }}"
+      no_proxy: "{{ no_proxy }}"
+      
   - name: Installiere Anwendungen aus dem Flathub-Repository
     community.general.flatpak:
       name:  
@@ -189,8 +189,8 @@
       state: present
     environment:
       http_proxy: "{{ http_proxy }}"
-      https_proxy: "http://proxy.hg-gym.de:3128"
-      no_proxy: "localhost,127.0.0.1,.local"
+      https_proxy: "{{ https_proxy }}"
+      no_proxy: "{{ no_proxy }}"
 
   - name: Stelle sicher, dass der Cronjob-Daemon läuft
     ansible.builtin.systemd_service:
