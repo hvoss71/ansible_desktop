@@ -10,8 +10,8 @@
   connection: local
   become: true
 
-  vars:
-    pac_url: "http://hg-gym.de/proxy.pac"
+#  vars:
+#    pac_url: "http://hg-gym.de/proxy.pac"
 
   tasks:
 
