@@ -163,4 +163,4 @@
       minute: "*/15"
       hour: "*"
       day: "*"
-      job: sudo ansible-pull -o sudo http_proxy=http://hg-gym.de/proxy.pac ansible-pull -U https://github.com/hvoss71/ansible_desktop.git leihgeraete.yml
+      job: sudo ansible-pull -o http_proxy=http://hg-gym.de/proxy.pac ansible-pull -U https://github.com/hvoss71/ansible_desktop.git leihgeraete.yml
