@@ -10,7 +10,8 @@
   connection: local
   become: true
 
-- environment: 
+- environment:
+    hosts: localhost 
     http_proxy: http://hg-gym.de/proxy.pac
 
   tasks:
