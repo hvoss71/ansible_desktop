@@ -12,9 +12,6 @@
   environment: 
     http_proxy: http://hg-gym.de/proxy.pac
 
-environment:
-        http_proxy: http://proxy.example.com:8080
-
   tasks:
 
 #  - name: Ermittle Daten über das Betriebssystem
