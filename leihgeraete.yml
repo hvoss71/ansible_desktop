@@ -9,9 +9,11 @@
 - hosts: localhost
   connection: local
   become: true
-  
-#  environment: 
-#    http_proxy: http://hg-gym.de/proxy.pac
+  environment: 
+    http_proxy: http://hg-gym.de/proxy.pac
+
+environment:
+        http_proxy: http://proxy.example.com:8080
 
   tasks:
 
@@ -33,6 +35,7 @@
         - chromium                                # Chromium-Browser, benötigt für LEGO Spike web App etc.
         - chromium-l10n                           # Chromium-Sprachlokalisation
       state: latest
+
  #   when: ansible_facts['distribution'] == "Debian"
 
 
@@ -163,4 +166,4 @@
       minute: "*/15"
       hour: "*"
       day: "*"
-      job: sudo http_proxy=http://hg-gym.de/proxy.pac ansible-pull -o -U https://github.com/hvoss71/ansible_desktop.git leihgeraete.yml
+      job: sudo ansible-pull -o -U https://github.com/hvoss71/ansible_desktop.git leihgeraete.yml
