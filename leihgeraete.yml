@@ -32,8 +32,8 @@
         - chromium                                # Chromium-Browser, benötigt für LEGO Spike web App etc.
         - chromium-l10n                           # Chromium-Sprachlokalisation
       state: latest
-      environment:
-        http_proxy: http://hg-gym.de/proxy.pac
+    environment:
+      http_proxy: http://hg-gym.de/proxy.pac
 
 
  #   when: ansible_facts['distribution'] == "Debian"
