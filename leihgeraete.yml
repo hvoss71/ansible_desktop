@@ -3,7 +3,7 @@
 # der dieses Script alle 15 Minuten neu über Github aufruft. Nach erstmaliger Ausführung des Skriptes über ssh ist also keine weitere manuelle Ausführung 
 # erforderlich, da Änderungen am Skript auf Github bei Nutzung der Rechner automatisch nach 10 Minuten von den Clients übernommen werden. Ein Schlüssel
 # ist nicht erforderlich, da das Playbook öffentlich im Netz steht. Das Installieren, Aktualisieren oder auch Löschen von Software kann so einmalig im 
-# Playbook informatik.yml vorgenommen werden und wird dann automatisch auf alle Clients ausgerollt. Diese Vorgänge finden im Hintergrund statt 
+# Playbook vorgenommen werden und wird dann automatisch auf alle Clients ausgerollt. Diese Vorgänge finden im Hintergrund statt 
 # und stören die Arbeit an den Clients in der Regel nicht.
 
 - hosts: localhost
