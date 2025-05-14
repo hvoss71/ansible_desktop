@@ -18,7 +18,7 @@
 
 #  vars:
 #    pac_url: "http://hg-gym.de/proxy.pac" 
-#    http_proxy: "http://proxy.hg-gym.de:3128"
+#    http_proxy: "http://hg-gym.de:3128"
 #    no_proxy: "localhost,127.0.0.1,.local"
 
   tasks:
@@ -29,8 +29,8 @@
 
   - name: Setze Proxy-Variablen, wenn im Netzwerk hg-gym.de
     ansible.builtin.set_fact:
-      http_proxy: "http://proxy.hg-gym.de:3128"
-      https_proxy: "http://proxy.hg-gym.de:3128"
+      http_proxy: "http://hg-gym.de:3128"
+      https_proxy: "http://hg-gym.de:3128"
       no_proxy: "localhost,127.0.0.1,.local"
     when: ansible_facts['hostname'] == "hg-gym.de"
 
@@ -43,8 +43,8 @@
 #      update_cache: yes
 #   environment:
 #      http_proxy: "{{ http_proxy }}"
-#      https_proxy: "http://proxy.hg-gym.de:3128"
-#      no_proxy: "localhost,127.0.0.1,.local"
+#      https_proxy: "{{ https_proxy }}"
+#      no_proxy: "{{ no_proxy }}"
 
 
   - name: Installiere den Chromium-Browser und andere distributionsspezifische Pakete in Debian.
