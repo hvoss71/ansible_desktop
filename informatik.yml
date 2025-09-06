@@ -68,10 +68,12 @@
         - arduino                               # Arduino 1
         - emacs                                 # Emacs
         - gedit                                 # GNOME-Editor
+        - gimp					# professionelle Bildbearbeitung
+        - gwenview				# einfache Bildbearbeitung
         - kate                                  # KDE Editor
         - x11vnc                                # VNC-Server für X11
         - gnome-connections                     # RDP / VNC-Verbindung
-        - shotcut                               # einfaches Videoschnitt-Programm
+        - shotcut                               # einfacher Videoschnitt
         - thonny                                # Python für Einsteiger
         - python-is-python3                     # Python  
 #        - python3-keras                         # ... sowie weitere Python-Module
@@ -158,4 +160,5 @@
         - io.github.pemsley.coot                 # Makromoleküle bauen
         - org.localsend.localsend_app            # plattformübergreifendes Airdropping
         - org.greenfoot.Greenfoot                # integrated development environment using Java or Stride
+        - com.bambulab.BambuStudio		 # 3D-Drucker für BambuLab
       state: present
