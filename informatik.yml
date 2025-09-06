@@ -14,10 +14,26 @@
 #    http_proxy: http://hg-gym.de/proxy.pac
 
   tasks:
+  
+  - name: Stelle sicher, dass der Cronjob-Daemon läuft
+    ansible.builtin.systemd_service:
+      state: started
+      name: cron
+      daemon_reload: true
+      enabled: true
 
-  - name: Ermittle Daten über das Betriebssystem
-    ansible.builtin.debug:
-      var: ansible_facts
+  - name: Füge den Ansible-pull Cronjob hinzu
+    ansible.builtin.cron: 
+      name: ansible auto-provision
+      user: root
+      minute: "*/10"
+      hour: "*"
+      day: "*"
+      job: sudo ansible-pull -o -U https://github.com/hvoss71/ansible_desktop.git informatik.yml
+
+#  - name: Ermittle Daten über das Betriebssystem
+#    ansible.builtin.debug:
+#      var: ansible_facts
 
   - name: Installiere die Sprachpakete des Systems und des Desktops
     package:
@@ -33,17 +49,17 @@
         - chromium                                # Chromium-Browser, benötigt für LEGO Spike web App etc.
         - chromium-l10n                           # Chromium-Sprachlokalisation
       state: latest
-    when: ansible_facts['distribution'] == "Debian"
+#    when: ansible_facts['distribution'] == "Debian"
 
 
-  - name: Installiere den Chromium-Browser und andere distributionsspezifische Pakete in Ubuntu.
-    package:
-      name:
-        - chromium-browser                        # Chromium-Browser, benötigt für LEGO Spike web App etc.
-        - chromium-browser-l10n                   # Chromium-Sprachlokalisation
-        - language-pack-de                        # deutsches Sprachpaket für Ubuntu
-      state: latest
-    when: ansible_facts['distribution'] == "Ubuntu"
+#  - name: Installiere den Chromium-Browser und andere distributionsspezifische Pakete in Ubuntu.
+#    package:
+#      name:
+#        - chromium-browser                        # Chromium-Browser, benötigt für LEGO Spike web App etc.
+#        - chromium-browser-l10n                   # Chromium-Sprachlokalisation
+#        - language-pack-de                        # deutsches Sprachpaket für Ubuntu
+#      state: latest
+#    when: ansible_facts['distribution'] == "Ubuntu"
 
 
   - name: Installiere Anwendungen aus dem Debian-Repository
@@ -143,19 +159,3 @@
         - org.localsend.localsend_app            # plattformübergreifendes Airdropping
         - org.greenfoot.Greenfoot                # integrated development environment using Java or Stride
       state: present
-
-  - name: Stelle sicher, dass der Cronjob-Daemon läuft
-    ansible.builtin.systemd_service:
-      state: started
-      name: cron
-      daemon_reload: true
-      enabled: true
-
-  - name: Füge den Ansible-pull Cronjob hinzu
-    ansible.builtin.cron: 
-      name: ansible auto-provision
-      user: root
-      minute: "*/10"
-      hour: "*"
-      day: "*"
-      job: sudo ansible-pull -o -U https://github.com/hvoss71/ansible_desktop.git informatik.yml
