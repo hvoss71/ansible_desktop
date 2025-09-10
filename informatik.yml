@@ -161,4 +161,5 @@
         - org.localsend.localsend_app            # plattformübergreifendes Airdropping
         - org.greenfoot.Greenfoot                # integrated development environment using Java or Stride
         - com.bambulab.BambuStudio		 # 3D-Drucker für BambuLab
+        - org.apache.netbeans                    # Netbeans Java-Editor
       state: present
