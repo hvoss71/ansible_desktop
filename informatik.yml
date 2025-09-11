@@ -46,11 +46,11 @@
       uid: 1200
       create_home: yes
       state: present
-#      password: 'hainberg'
-#      update_password: always
+      password: 'hainberg'
+      update_password: always
 
-  - name: Initiale Passwort-Erzeugung für den Nutzer "Hainberg"
-    shell: usermod -p $(echo 'hainberg' | openssl passwd -1 -stdin) 'hainberg'
+#  - name: Initiale Passwort-Erzeugung für den Nutzer "Hainberg"
+#    shell: usermod -p $(echo 'hainberg' | openssl passwd -1 -stdin) 'hainberg'
 
 #  - name: Ermittle Daten über das Betriebssystem
 #    ansible.builtin.debug:
