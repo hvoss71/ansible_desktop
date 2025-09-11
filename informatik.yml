@@ -40,8 +40,8 @@
   - name: Erzeuge einen Nutzer 'Hainberg' mit einem eigenen Home-Verzeichnis
     ansible.builtin.user:
       name: hainberg
-      comment: "Hainberg"
-      group: hainberg
+#      comment: "Hainberg"
+#      group: hainberg
 #      create_home: yes
       state: present
 #      password: "{{ 'hainberg' | password_hash('sha512') }}"
