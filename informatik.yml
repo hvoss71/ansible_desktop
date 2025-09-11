@@ -56,7 +56,8 @@
       create_home: yes
       shell: /bin/bash
       state: present
-#      password: "{{ 'hainberg' | password_hash('sha512') }}"
+      system: no
+      password: "{{ 'hainberg' | password_hash('sha512') }}"
       update_password: always
     # Falls du eine feste UID brauchst, erst wieder aktivieren, wenn du GID/UID-Konflikte geprüft hast:
   # uid: 1200
