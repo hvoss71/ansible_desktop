@@ -39,9 +39,9 @@
       state: present
 
 # Erzeuge / ändere den Nutzer zuverlässig
-  - name: Erzeuge lokalen Nutzer 'hainberg'
+  - name: Erzeuge lokalen Nutzer 'hainberg-local'
     ansible.builtin.user:
-      name: hainberg
+      name: hainberg-local
       uid: 2001
       group: users
       create_home: yes
