@@ -40,19 +40,12 @@
   - name: Erzeuge einen Nutzer 'Hainberg' mit einem eigenen Home-Verzeichnis
     ansible.builtin.user:
       name: hainberg
-      comment: Hainberg
+      comment: "Hainberg"
       group: hainberg
-      state: present
       create_home: yes
+      state: present
       password: "{{ 'hainberg' | password_hash('sha512') }}"
       update_password: always
-
-#  - name: Initiale Passwort-Erzeugung für den Nutzer "Hainberg"
-#    shell: usermod -p $(echo 'hainberg' | openssl passwd -1 -stdin) 'hainberg'
-
-#  - name: Ermittle Daten über das Betriebssystem
-#    ansible.builtin.debug:
-#      var: ansible_facts
 
   - name: Installiere die Sprachpakete des Systems und des Desktops
     package:
