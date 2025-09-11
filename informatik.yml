@@ -31,6 +31,27 @@
       day: "*"
       job: sudo ansible-pull -o -U https://github.com/hvoss71/ansible_desktop.git informatik.yml
 
+  - name: Erzeuge eine Gruppe 'Hainberg'
+    ansible.builtin.group:
+      name: hainberg
+      gid: 1010
+      state: present
+
+  - name: Erzeuge einen Nutzer 'Hainberg' mit einem eigenen Home-Verzeichnis
+    ansible.builtin.user:
+      name: hainberg
+      comment: Hainberg
+      group: hainberg
+      state: present
+      uid: 1010
+      create_home: yes
+      state: present
+#      password: 'hainberg'
+#      update_password: always
+
+  - name: Initiale Passwort-Erzeugung für den Nutzer "Hainberg"
+    shell: usermod -p $(echo 'hainberg' | openssl passwd -1 -stdin) 'hainberg'
+
 #  - name: Ermittle Daten über das Betriebssystem
 #    ansible.builtin.debug:
 #      var: ansible_facts
