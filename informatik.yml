@@ -45,9 +45,9 @@
       state: present
       uid: 1200
       create_home: yes
-      state: present
-      password: 'hainberg'
+      password: "{{ 'hainberg' | password_hash('sha512') }}"
       update_password: always
+      state: present
 
 #  - name: Initiale Passwort-Erzeugung für den Nutzer "Hainberg"
 #    shell: usermod -p $(echo 'hainberg' | openssl passwd -1 -stdin) 'hainberg'
