@@ -34,7 +34,7 @@
   - name: Erzeuge eine Gruppe 'Hainberg'
     ansible.builtin.group:
       name: hainberg
-      gid: 1200
+#      gid: 1200
       state: present
 
   - name: Erzeuge einen Nutzer 'Hainberg' mit einem eigenen Home-Verzeichnis
@@ -42,7 +42,7 @@
       name: hainberg
       comment: "Hainberg"
       group: hainberg
-      create_home: yes
+#      create_home: yes
       state: present
       password: "{{ 'hainberg' | password_hash('sha512') }}"
       update_password: always
