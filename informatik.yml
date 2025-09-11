@@ -31,18 +31,50 @@
       day: "*"
       job: sudo ansible-pull -o -U https://github.com/hvoss71/ansible_desktop.git informatik.yml
 
-  - name: Erzeuge eine Gruppe 'Hainberg'
+      # Stelle sicher, dass die Gruppe existiert
+  - name: Ensure group 'hainberg' exists
     ansible.builtin.group:
       name: hainberg
+      gid: 1200
       state: present
 
-  - name: Erzeuge einen Nutzer 'Hainberg' mit einem eigenen Home-Verzeichnis
+# Optional: Debug / Check (zeigt an, ob die Gruppe wirklich vorhanden ist)
+  - name: Debug - show group entry
+    ansible.builtin.command: getent group hainberg
+    register: grp_check
+    failed_when: false
+  - debug:
+      var: grp_check.stdout
+
+# Erzeuge / ändere den Nutzer zuverlässig
+  - name: Ensure user 'hainberg' exists with home and fixed password
     ansible.builtin.user:
       name: hainberg
-#     comment: "Hainberg"
-      create_home: yes
+      comment: "Hainberg"
       group: hainberg
+      home: /home/hainberg
+      create_home: yes
+      shell: /bin/bash
       state: present
+      password: "{{ 'hainberg' | password_hash('sha512') }}"
+      update_password: always
+    # Falls du eine feste UID brauchst, erst wieder aktivieren, wenn du GID/UID-Konflikte geprüft hast:
+  # uid: 1200
+
+
+
+#  - name: Erzeuge eine Gruppe 'Hainberg'
+#    ansible.builtin.group:
+#      name: hainberg
+#      state: present
+
+#  - name: Erzeuge einen Nutzer 'Hainberg' mit einem eigenen Home-Verzeichnis
+#    ansible.builtin.user:
+#      name: hainberg
+#     comment: "Hainberg"
+#      create_home: yes
+#      group: hainberg
+#      state: present
 #      password: "{{ 'hainberg' | password_hash('sha512') }}"
 #      update_password: always
 
