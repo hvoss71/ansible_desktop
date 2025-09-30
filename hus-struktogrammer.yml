@@ -8,28 +8,48 @@
   become: true
 
   tasks:
+   - name: Ensure required packages are installed
+      ansible.builtin.apt:
+        name:
+          - default-jre
+          - tar
+        state: present
+   #   when: ansible_os_family == "Debian"
 
-# Für die lokale Installation wird das Programm zunächst über scp in das administrator-Verzeichnis kopiert.
+    - name: Download Struktogrammer installer
+      ansible.builtin.get_url:
+        url: https://sourceforge.net/projects/struktogrammer/files/InstallStgr_Linux.tar.gz/download
+        dest: /tmp/InstallStgr_Linux.tar.gz
+        mode: '0644'
 
-  - name: Erzeuge das Verzeichnis packages, falls es noch nicht existiert
-    ansible.builtin.file:
-      path: /home/administrator/packages
-      state: directory
-      mode: '0755'
-  - name: Erzeuge das Verzeichnis husStruktogrammer, falls es noch nicht existiert
-    ansible.builtin.file:
-      path: /home/administrator/packages/husStruktogrammer
-      state: directory
-      mode: '0755'
+    - name: Extract installer archive
+      ansible.builtin.unarchive:
+        src: /tmp/InstallStgr_Linux.tar.gz
+        dest: /tmp/struktogrammer_installer
+        remote_src: yes
+        creates: /tmp/struktogrammer_installer
 
-  - name: Synchronization of src on the control machine to dest on the remote hosts
-    ansible.posix.synchronize:
-      src: /home/holger/Programme/Struktogrammer/InstallStgr_Linux/
-      dest: /home/administrator/packages/husStruktogrammer
+    - name: Run installer script
+      ansible.builtin.command: ./install.sh
+      args:
+        chdir: /tmp/struktogrammer_installer
+      register: install_output
 
+    - name: Debug installation output (optional)
+      ansible.builtin.debug:
+        var: install_output.stdout
 
-  - name: Starte das Installationsskript, falls es existiert
-    ansible.builtin.script: /home/administrator/packages/husStruktogrammer/installStgr.sh 
-#    args:
-#      creates: /home/administrator/packages/husStruktogrammer/installStgr.sh
-
+    - name: Create desktop entry
+      ansible.builtin.copy:
+        dest: /usr/share/applications/struktogrammer.desktop
+        mode: '0644'
+        content: |
+          [Desktop Entry]
+          Version=1.0
+          Name=HUS Struktogrammer
+          Comment=Programmieren mit Struktogrammen
+          Exec=/usr/local/bin/struktogrammer
+          Icon=/opt/struktogrammer/stgr.png
+          Terminal=false
+          Type=Application
+          Categories=Education;Development;
