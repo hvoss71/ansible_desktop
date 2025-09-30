@@ -36,7 +36,7 @@
         extra_opts: [--strip-components=1]
 
     - name: Run installer script
-      ansible.builtin.command: ./install.sh
+      ansible.builtin.command: ./InstallStgr.sh
       args:
         chdir: /tmp/struktogrammer_installer
       register: install_output
@@ -59,3 +59,4 @@
           Terminal=false
           Type=Application
           Categories=Education;Development;
+
