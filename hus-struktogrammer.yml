@@ -14,7 +14,13 @@
           - default-jre
           - tar
         state: present
-   #   when: ansible_os_family == "Debian"
+      when: ansible_os_family == "Debian"
+
+    - name: Create temp installer directory
+      ansible.builtin.file:
+        path: /tmp/struktogrammer_installer
+        state: directory
+        mode: '0755'
 
     - name: Download Struktogrammer installer
       ansible.builtin.get_url:
@@ -27,7 +33,7 @@
         src: /tmp/InstallStgr_Linux.tar.gz
         dest: /tmp/struktogrammer_installer
         remote_src: yes
-        creates: /tmp/struktogrammer_installer
+        extra_opts: [--strip-components=1]
 
     - name: Run installer script
       ansible.builtin.command: ./install.sh
