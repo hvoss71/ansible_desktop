@@ -8,7 +8,7 @@
   become: true
 
   tasks:
-   - name: Ensure required packages are installed
+    - name: Ensure required packages are installed
       ansible.builtin.apt:
         name:
           - default-jre
