@@ -50,13 +50,13 @@
       state: present
       password: "{{ 'hainberg' | password_hash('sha512') }}"
       
-  - name: Installiere den Cinnamon-Desktop
-    package:
-      name: 
-        - cinnamon
-        - cinnamon-desktop-environment
-      state: latest
-      update_cache: yes
+#  - name: Installiere den Cinnamon-Desktop
+#    package:
+#      name:
+#        - cinnamon
+#        - cinnamon-desktop-environment
+#      state: latest
+#      update_cache: yes
 
 #  - name: Erzeuge eine Gruppe 'Hainberg'
 #    ansible.builtin.group:
