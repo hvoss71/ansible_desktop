@@ -31,14 +31,11 @@
       day: "*"
       job: sudo ansible-pull -o -U https://github.com/hvoss71/ansible_desktop.git informatik.yml
 
-      # Stelle sicher, dass die Gruppe existiert
-  - name: Ensure group 'hainberg' exists
+  - name: Stelle sicher, dass die Gruppe 'hainberg' existiert.
     ansible.builtin.group:
       name: hainberg
-# gid: 1200
       state: present
-
-# Erzeuge / ändere den Nutzer zuverlässig
+      
   - name: Erzeuge lokalen Nutzer 'hainberg-local'
     ansible.builtin.user:
       name: hainberg-local
@@ -49,29 +46,6 @@
       system: no
       state: present
       password: "{{ 'hainberg' | password_hash('sha512') }}"
-      
-#  - name: Installiere den Cinnamon-Desktop
-#    package:
-#      name:
-#        - cinnamon
-#        - cinnamon-desktop-environment
-#      state: latest
-#      update_cache: yes
-
-#  - name: Erzeuge eine Gruppe 'Hainberg'
-#    ansible.builtin.group:
-#      name: hainberg
-#      state: present
-
-#  - name: Erzeuge einen Nutzer 'Hainberg' mit einem eigenen Home-Verzeichnis
-#    ansible.builtin.user:
-#      name: hainberg
-#     comment: "Hainberg"
-#      create_home: yes
-#      group: hainberg
-#      state: present
-#      password: "{{ 'hainberg' | password_hash('sha512') }}"
-#      update_password: always
 
   - name: Installiere die Sprachpakete des Systems und des Desktops
     package:
@@ -87,20 +61,7 @@
         - chromium                                # Chromium-Browser, benötigt für LEGO Spike web App etc.
         - chromium-l10n                           # Chromium-Sprachlokalisation
       state: latest
-#    when: ansible_facts['distribution'] == "Debian"
 
-
-#  - name: Installiere den Chromium-Browser und andere distributionsspezifische Pakete in Ubuntu.
-#    package:
-#      name:
-#        - chromium-browser                        # Chromium-Browser, benötigt für LEGO Spike web App etc.
-#        - chromium-browser-l10n                   # Chromium-Sprachlokalisation
-#        - language-pack-de                        # deutsches Sprachpaket für Ubuntu
-#      state: latest
-#    when: ansible_facts['distribution'] == "Ubuntu"
-
-#  - name: Struktogramm-Software installieren
-#    import_playbook: hus-struktogrammer.yml
 
   - name: Installiere Anwendungen aus dem Debian-Repository
     package:
@@ -132,6 +93,9 @@
         - gnome-tweaks                          # GNOME-Optimierungen
         - libreoffice
         - libreoffice-l10n-de
+        - veyon-configurator                    # virtual eye on Network für gesteuerte Geräte
+        - libveyon-core
+        - veyon-plugins
       state: latest
 
   - name: Deinstalliere Spiele aus dem Debian-Repository
