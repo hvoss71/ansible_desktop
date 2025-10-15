@@ -55,12 +55,12 @@
       state: latest
       update_cache: yes
 
-  - name: Installiere den Chromium-Browser und andere distributionsspezifische Pakete in Debian.
-    package:
-      name:
-        - chromium                                # Chromium-Browser, benötigt für LEGO Spike web App etc.
-        - chromium-l10n                           # Chromium-Sprachlokalisation
-      state: latest
+#  - name: Installiere den Chromium-Browser und andere distributionsspezifische Pakete in Debian.
+#    package:
+#      name:
+#        - chromium                                # Chromium-Browser, benötigt für LEGO Spike web App etc.
+#        - chromium-l10n                           # Chromium-Sprachlokalisation
+#      state: latest
 
 
   - name: Installiere Anwendungen aus dem Debian-Repository
