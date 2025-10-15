@@ -93,9 +93,6 @@
         - gnome-tweaks                          # GNOME-Optimierungen
         - libreoffice
         - libreoffice-l10n-de
-        - veyon-configurator                    # virtual eye on Network für gesteuerte Geräte
-        - libveyon-core
-        - veyon-plugins
       state: latest
 
   - name: Deinstalliere Spiele aus dem Debian-Repository
