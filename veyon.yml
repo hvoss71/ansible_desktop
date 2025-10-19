@@ -36,20 +36,20 @@
 
   - name: Kopiere die Installationsdatei von Veyon in ein lokales Verzeichnis des Administrators
     ansible.builtin.get_url:
-      url: https://github.com/veyon/veyon/releases/download/v4.9.3/veyon_4.9.3.0-debian.12_amd64.deb
-      dest: /home/administrator/packages/veyon_4.9.3.0-debian.12_amd64.deb
+      url: https://github.com/veyon/veyon/releases/download/v4.9.7/veyon_4.9.7.0-debian.12_amd64.deb
+      dest: /home/administrator/packages/veyon_4.9.7.0-debian.12_amd64.deb
       mode: '0644'
 #    when: '"veyon" not in ansible_facts.packages'
 
   - name: Installiere die aktuelle Version des Programms Veyon
     ansible.builtin.apt:
-      deb: /home/administrator/packages/veyon_4.9.3.0-debian.12_amd64.deb
+      deb: /home/administrator/packages/veyon_4.9.7.0-debian.12_amd64.deb
       state: present
     when: ansible_facts['distribution'] == "Debian"
 
   - name: Entferne die Installationsdatei von Veyon
     ansible.builtin.file:
-      path: /home/administrator/packages/veyon_4.9.3.0-debian.12_amd64.deb
+      path: /home/administrator/packages/veyon_4.9.7.0-debian.12_amd64.deb
       state: absent
 
   - name: Lade Veyon Konfigurationsdatei herunter
@@ -60,8 +60,8 @@
 
   - name: Lade Veyon Netzwerkobjekte CSV herunter
     get_url:
-      url: https://raw.githubusercontent.com/hvoss71/ansible_desktop/main/veyonfiles/raum311-import-file.csv
-      dest: /tmp/raum311-import-file.csv
+      url: https://raw.githubusercontent.com/hvoss71/ansible_desktop/main/veyonfiles/network-device-import-file.csv
+      dest: /tmp/network-device-import-file.csv
       mode: '0644'
 
   - name: Download Veyon public key
@@ -74,7 +74,9 @@
     command: sudo veyon-cli config import /tmp/veyon-settings-HG-Linux.json
  
   - name: Importiere Veyon Netzwerkobjekte
-    command: sudo veyon-cli networkobjects import /tmp/raum311-import-file.csv format "%location%,%name%,%host%,%mac%"
+    command: 
+      - sudo veyon-cli networkobjects clear
+      - sudo veyon-cli networkobjects import /tmp/device-import-file.csv format "%location%,%name%,%host%,%mac%"
 
   - name: Import the Veyon public key
     command: sudo veyon-cli authkeys import PC-Raum311/public /tmp/PC-Raum311_public_key.pem # setaccessgroup schueler.innen
