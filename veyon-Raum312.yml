@@ -100,7 +100,7 @@
   - name: Lade Veyon Netzwerkobjekte CSV herunter
     ansible.builtin.get_url:
       url: "https://raw.githubusercontent.com/hvoss71/ansible_desktop/main/veyonfiles/{{ room }}-import-file.csv"
-      dest: /tmp/device-import-file.csv
+      dest: /tmp/{{ room }}-import-file.csv
       mode: '0644'
 
   - name: Lade den öffentlichen Schlüssel herunter
@@ -129,9 +129,8 @@
       state: absent
     loop:
       - /tmp/veyon-settings-HG-Linux.json
-      - /tmp/device-import-file.csv
-      - /tmp/Raum312_public_key.pem
- #     - /home/administrator/packages/veyon_{{ veyon_version }}.deb
+      - /tmp/{{ room }}-import-file.csv
+      - /tmp/{{ room }}_public_key.pem
 
   - name: Entferne lokale Installationsdatei
     file:
