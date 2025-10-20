@@ -13,6 +13,16 @@
   
   tasks:
 
+  - name: Deaktiviere Wayland in GDM3-Konfiguration
+    become: yes
+    ansible.builtin.lineinfile:
+      path: /etc/gdm3/daemon.conf
+      regexp: '^#?WaylandEnable='
+      line: 'WaylandEnable=false'
+      state: present
+    notify: Restart GDM
+
+
   - name: Update repositories cache
     ansible.builtin.apt:
       update_cache: yes
@@ -89,3 +99,9 @@
     - /tmp/PC-Raum311_public_key.pem
     - /home/administrator/packages/veyon_{{ veyon_version }}.deb
 
+  handlers:
+    - name: Restart GDM
+      become: yes
+      ansible.builtin.systemd:
+        name: gdm3
+        state: restarted
