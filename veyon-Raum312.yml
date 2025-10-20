@@ -1,0 +1,140 @@
+---
+# Dieses Playbook installiert die aktuelle Version von Veyon.
+# Das Debian-Paket des Herstellers ist weder über die Debian-Repositories
+# noch über Flathub verfügbar und kann daher nur direkt beim Hersteller bezogen werden.
+
+- hosts: localhost
+  connection: local
+  become: true
+
+  vars:
+    veyon_version: "4.9.7.0-debian.12_amd64"
+    veyon_folder: "4.9.7"
+    room: "Raum312"
+
+  pre_tasks:
+    - name: Abbrechen, falls kein Debian-System
+      fail:
+        msg: "Dieses Playbook ist nur für Debian-Systeme vorgesehen."
+      when: ansible_facts['os_family'] != "Debian"
+
+  tasks:
+
+  # --------------------------------------------------------------------------
+  # Wayland deaktivieren, falls GDM3 verwendet wird
+  # --------------------------------------------------------------------------
+  - name: Deaktiviere Wayland, falls GDM3 verwendet wird
+    block:
+      - name: Prüfe, welcher Display-Manager aktiv ist
+        command: cat /etc/X11/default-display-manager
+        register: display_manager
+        changed_when: false
+        failed_when: false
+
+      - name: Deaktiviere Wayland in GDM3, falls aktiv
+        when: "'gdm3' in display_manager.stdout"
+        lineinfile:
+          path: /etc/gdm3/daemon.conf
+          regexp: '^#?WaylandEnable='
+          line: 'WaylandEnable=false'
+          state: present
+          create: no
+          backup: yes
+
+      - name: GDM3 neu starten, falls geändert
+        when: "'gdm3' in display_manager.stdout"
+        systemd:
+          name: gdm3
+          state: restarted
+    tags: wayland
+
+  # --------------------------------------------------------------------------
+  # Veyon installieren
+  # --------------------------------------------------------------------------
+  - name: Update repositories cache
+    ansible.builtin.apt:
+      update_cache: yes
+
+  - name: Deinstalliere eventuell alte Veyon-Versionen aus dem Debian-Repository
+    ansible.builtin.package:
+      name:
+        - libveyon-core
+        - veyon-configurator
+        - veyon-master
+        - veyon-plugins
+        - veyon-service
+      state: absent
+
+  - name: Prüfe, welche Pakete vorhanden sind
+    ansible.builtin.package_facts:
+      manager: apt
+
+  - name: Erzeuge das Verzeichnis /home/administrator/packages, falls es noch nicht existiert
+    ansible.builtin.file:
+      path: /home/administrator/packages
+      state: directory
+      mode: '0755'
+
+  - name: Lade die aktuelle Installationsdatei von Veyon herunter (falls nicht installiert)
+    ansible.builtin.get_url:
+      url: "https://github.com/veyon/veyon/releases/download/v{{ veyon_folder }}/veyon_{{ veyon_version }}.deb"
+      dest: "/home/administrator/packages/veyon_{{ veyon_version }}.deb"
+      mode: '0644'
+    when: ansible_facts.packages | dict2items | selectattr('key', 'match', '^veyon') | list | length == 0
+
+  - name: Installiere Veyon
+    ansible.builtin.apt:
+      deb: "/home/administrator/packages/veyon_{{ veyon_version }}.deb"
+      state: present
+    when: ansible_facts['distribution'] == "Debian"
+
+  # --------------------------------------------------------------------------
+  # Konfigurations- und Netzobjekte importieren
+  # --------------------------------------------------------------------------
+  - name: Lade die Veyon-Konfigurationsdatei herunter
+    ansible.builtin.get_url:
+      url: "https://raw.githubusercontent.com/hvoss71/ansible_desktop/main/veyonfiles/veyon-settings-HG-Linux.json"
+      dest: /tmp/veyon-settings-HG-Linux.json
+      mode: '0644'
+
+  - name: Lade Veyon Netzwerkobjekte CSV herunter
+    ansible.builtin.get_url:
+      url: "https://raw.githubusercontent.com/hvoss71/ansible_desktop/main/veyonfiles/device-import-file.csv"
+      dest: /tmp/device-import-file.csv
+      mode: '0644'
+
+  - name: Lade den öffentlichen Schlüssel herunter
+    ansible.builtin.get_url:
+      url: "https://raw.githubusercontent.com/hvoss71/ansible_desktop/main/veyonfiles/Veyon_public_key.pem"
+      dest: /tmp/Veyon_public_key.pem
+      mode: '0644'
+
+  - name: Importiere Veyon-Konfiguration und Netzwerkobjekte
+    become: yes
+    shell: |
+      set -e
+      veyon-cli config import /tmp/veyon-settings-HG-Linux.json
+      veyon-cli networkobjects clear
+      veyon-cli networkobjects import /tmp/device-import-file.csv format "%name%;%location%;%host%;%mac%"
+      veyon-cli authkeys import {{ room }}/public /tmp/Veyon_public_key.pem
+      veyon-cli authkeys setaccessgroup {{ room }}/public schueler.innen
+    changed_when: false
+
+  # --------------------------------------------------------------------------
+  # Aufräumen
+  # --------------------------------------------------------------------------
+  - name: Entferne temporäre Veyon-Dateien
+    ansible.builtin.file:
+      path: "{{ item }}"
+      state: absent
+    loop:
+      - /tmp/veyon-settings-HG-Linux.json
+      - /tmp/device-import-file.csv
+      - /tmp/Veyon_public_key.pem
+ #     - /home/administrator/packages/veyon_{{ veyon_version }}.deb
+
+  - name: Entferne lokale Installationsdatei
+    file:
+      path: "/home/administrator/packages/veyon_{{ veyon_version }}.deb"
+      state: absent
+
