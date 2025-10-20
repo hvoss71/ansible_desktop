@@ -99,14 +99,14 @@
 
   - name: Lade Veyon Netzwerkobjekte CSV herunter
     ansible.builtin.get_url:
-      url: "https://raw.githubusercontent.com/hvoss71/ansible_desktop/main/veyonfiles/device-import-file.csv"
+      url: "https://raw.githubusercontent.com/hvoss71/ansible_desktop/main/veyonfiles/{{ room }}-import-file.csv"
       dest: /tmp/device-import-file.csv
       mode: '0644'
 
   - name: Lade den öffentlichen Schlüssel herunter
     ansible.builtin.get_url:
-      url: "https://raw.githubusercontent.com/hvoss71/ansible_desktop/main/veyonfiles/Veyon_public_key.pem"
-      dest: /tmp/Veyon_public_key.pem
+      url: "https://raw.githubusercontent.com/hvoss71/ansible_desktop/main/veyonfiles/Raum312_public_key.pem"
+      dest: /tmp/Raum312_public_key.pem
       mode: '0644'
 
   - name: Importiere Veyon-Konfiguration und Netzwerkobjekte
@@ -115,8 +115,8 @@
       set -e
       veyon-cli config import /tmp/veyon-settings-HG-Linux.json
       veyon-cli networkobjects clear
-      veyon-cli networkobjects import /tmp/device-import-file.csv format "%name%;%location%;%host%;%mac%"
-      veyon-cli authkeys import {{ room }}/public /tmp/Veyon_public_key.pem
+      veyon-cli networkobjects import /tmp/{{ room }}-import-file.csv format "%name%;%location%;%host%;%mac%"
+      veyon-cli authkeys import {{ room }}/public /tmp/Raum312_public_key.pem
       veyon-cli authkeys setaccessgroup {{ room }}/public schueler.innen
     changed_when: false
 
@@ -130,7 +130,7 @@
     loop:
       - /tmp/veyon-settings-HG-Linux.json
       - /tmp/device-import-file.csv
-      - /tmp/Veyon_public_key.pem
+      - /tmp/Raum312_public_key.pem
  #     - /home/administrator/packages/veyon_{{ veyon_version }}.deb
 
   - name: Entferne lokale Installationsdatei
