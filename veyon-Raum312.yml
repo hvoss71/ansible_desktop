@@ -87,7 +87,7 @@
     ansible.builtin.apt:
       deb: "/home/administrator/packages/veyon_{{ veyon_version }}.deb"
       state: present
-#    when: ansible_facts['distribution'] == "Debian"
+    when: ansible_facts['distribution'] == "Debian"
 
   # --------------------------------------------------------------------------
   # Konfigurations- und Netzobjekte importieren
