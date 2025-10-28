@@ -81,7 +81,7 @@
       dest: "/home/administrator/packages/veyon_{{ veyon_version }}.deb"
       mode: '0644'
       force: no
-    when: ansible_facts.packages | dict2items | selectattr('key', 'match', '^veyon') | list | length == 0
+#    when: ansible_facts.packages | dict2items | selectattr('key', 'match', '^veyon') | list | length == 0
 
   - name: Installiere Veyon
     ansible.builtin.apt:
