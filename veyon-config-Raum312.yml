@@ -33,15 +33,15 @@
 
   - name: Lade die Veyon Netzwerkobjekte CSV herunter
     ansible.builtin.get_url:
-      url: "https://raw.githubusercontent.com/hvoss71/ansible_desktop/main/veyonfiles/{{ room }}-import-file.csv"
-      dest: /tmp/{{ room }}-import-file.csv
+      url: "https://raw.githubusercontent.com/hvoss71/ansible_desktop/main/veyonfiles/{{ room }}-devices.csv"
+      dest: /tmp/{{ room }}-devices.csv
       mode: '0644'
       
   # Die Veyon-Netzwerkobjekte-Datei ist ein direkter Export aus IServ. Sie enthält 4 Spalten zu viel
       
   - name: Kürze die CSV-Datei auf relevante Spalten
     shell: |
-      cut -d';' -f1-4 /tmp/{{ room }}-import-file.csv > /tmp/{{ room }}-import-file-trimmed.csv
+      cut -d';' -f1-4 /tmp/{{ room }}-devices.csv > /tmp/{{ room }}-devices-trimmed.csv
     args: 
       executable: /bin/bash
 
@@ -63,7 +63,7 @@
       set -e
       veyon-cli config import /tmp/veyon-settings-HG-Linux.json
       veyon-cli networkobjects clear
-      veyon-cli networkobjects import /tmp/{{ room }}-import-file-trimmed.csv format "%name%;%location%;%host%;%mac%"
+      veyon-cli networkobjects import /tmp/{{ room }}-devices-trimmed.csv format "%name%;%location%;%host%;%mac%"
 
       # Vorhandene Schlüssel löschen, um Konflikte zu vermeiden
       veyon-cli authkeys delete {{ room }}/public || true
@@ -87,8 +87,8 @@
       state: absent
     loop:
       - /tmp/veyon-settings-HG-Linux.json
-      - /tmp/{{ room }}-import-file.csv
-      - /tmp/{{ room }}-import-file-trimmed.csv
+      - /tmp/{{ room }}-devices.csv
+      - /tmp/{{ room }}-devices-trimmed.csv
       - /tmp/{{ room }}_public_key.pem
       - /tmp/{{ room }}_private_key.pem
     ignore_errors: true
