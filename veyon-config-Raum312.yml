@@ -1,7 +1,5 @@
 ---
-# Dieses Playbook installiert die aktuelle Version von Veyon.
-# Das Debian-Paket des Herstellers ist weder über die Debian-Repositories
-# noch über Flathub verfügbar und kann daher nur direkt beim Hersteller bezogen werden.
+# Dieses Playbook konfiguriert Veyon raumbezogen über das Commmand Line Interface
 
 - hosts: localhost
   connection: local
