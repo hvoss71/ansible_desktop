@@ -10,13 +10,17 @@
   vars:
     room: "Raum312"
 
-  pre_tasks:
-    - name: Abbrechen, falls kein Debian-System vorliegt
-      fail:
-        msg: "Dieses Playbook ist nur für Debian-Systeme vorgesehen."
-      when: ansible_facts['os_family'] != "Debian"
-
   tasks:
+
+  # --------------------------------------------------------------------------
+  # Prüfen, ob das Command Line Interface installiert ist
+  # --------------------------------------------------------------------------
+
+    - name: Prüfe, ob veyon-cli installiert ist
+    ansible.builtin.command: which veyon-cli
+    register: veyon_cli
+    failed_when: veyon_cli.rc != 0
+    changed_when: false
 
   # --------------------------------------------------------------------------
   # Konfigurations- und Netzobjekte importieren
@@ -60,13 +64,19 @@
       veyon-cli config import /tmp/veyon-settings-HG-Linux.json
       veyon-cli networkobjects clear
       veyon-cli networkobjects import /tmp/{{ room }}-import-file-trimmed.csv format "%name%;%location%;%host%;%mac%"
+
+      # Vorhandene Schlüssel löschen, um Konflikte zu vermeiden
+      veyon-cli authkeys delete {{ room }}/public || true
+      veyon-cli authkeys delete {{ room }}/private || true
+
+      # Neue Schlüssel importieren und Zugriffsgruppen setzen
       veyon-cli authkeys import {{ room }}/public /tmp/{{ room }}_public_key.pem
       veyon-cli authkeys setaccessgroup {{ room }}/public schueler.innen
       veyon-cli authkeys import {{ room }}/private /tmp/{{ room }}_private_key.pem
       veyon-cli authkeys setaccessgroup {{ room }}/private lehrer.innen
-    args: 
+    args:
       executable: /bin/bash
-    changed_when: false
+    changed_when: true
 
   # --------------------------------------------------------------------------
   # Aufräumen
@@ -81,3 +91,4 @@
       - /tmp/{{ room }}-import-file-trimmed.csv
       - /tmp/{{ room }}_public_key.pem
       - /tmp/{{ room }}_private_key.pem
+    ignore_errors: true
