@@ -1,0 +1,98 @@
+---
+# Dieses Playbook installiert die aktuelle Version von Veyon.
+# Das Debian-Paket des Herstellers ist weder über die Debian-Repositories
+# noch über Flathub verfügbar und kann daher nur direkt beim Hersteller bezogen werden.
+
+- hosts: localhost
+  connection: local
+  become: true
+
+  vars:
+    veyon_version: "4.9.7.0-debian.12_amd64"
+    veyon_folder: "4.9.7"
+
+  pre_tasks:
+    - name: Abbrechen, falls kein Debian-System vorliegt
+      fail:
+        msg: "Dieses Playbook ist nur für Debian-Systeme vorgesehen."
+      when: ansible_facts['os_family'] != "Debian"
+
+  tasks:
+
+  # --------------------------------------------------------------------------
+  # Wayland deaktivieren, falls GDM3 verwendet wird
+  # --------------------------------------------------------------------------
+  - name: Deaktiviere Wayland, falls GDM3 verwendet wird
+    block:
+      - name: Prüfe, welcher Display-Manager aktiv ist
+        command: cat /etc/X11/default-display-manager
+        register: display_manager
+        changed_when: false
+        failed_when: false
+
+      - name: Deaktiviere Wayland in GDM3, falls aktiv
+        when: "'gdm3' in display_manager.stdout"
+        lineinfile:
+          path: /etc/gdm3/daemon.conf
+          regexp: '^#?WaylandEnable='
+          line: 'WaylandEnable=false'
+          state: present
+          create: no
+          backup: yes
+
+      - name: GDM3 neu starten, falls geändert
+        when: "'gdm3' in display_manager.stdout"
+        systemd:
+          name: gdm3
+          state: restarted
+    tags: wayland
+
+  # --------------------------------------------------------------------------
+  # Veyon installieren
+  # --------------------------------------------------------------------------
+  - name: Update repositories cache
+    ansible.builtin.apt:
+      update_cache: yes
+
+  - name: Deinstalliere eventuell alte Veyon-Versionen aus dem Debian-Repository
+    ansible.builtin.package:
+      name:
+        - libveyon-core
+        - veyon-configurator
+        - veyon-master
+        - veyon-plugins
+        - veyon-service
+      state: absent
+
+  - name: Prüfe, welche Pakete vorhanden sind
+    ansible.builtin.package_facts:
+      manager: apt
+
+  - name: Erzeuge das Verzeichnis /home/administrator/packages, falls es noch nicht existiert
+    ansible.builtin.file:
+      path: /home/administrator/packages
+      state: directory
+      mode: '0755'
+
+  - name: Lade die aktuelle Installationsdatei von Veyon herunter (falls nicht installiert)
+    ansible.builtin.get_url:
+      url: "https://github.com/veyon/veyon/releases/download/v{{ veyon_folder }}/veyon_{{ veyon_version }}.deb"
+      dest: "/home/administrator/packages/veyon_{{ veyon_version }}.deb"
+      mode: '0644'
+      force: no
+    when: ansible_facts.packages | dict2items | selectattr('key', 'match', '^veyon') | list | length == 0
+
+  - name: Installiere Veyon
+    ansible.builtin.apt:
+      deb: "/home/administrator/packages/veyon_{{ veyon_version }}.deb"
+      state: present
+
+  # --------------------------------------------------------------------------
+  # Aufräumen
+  # --------------------------------------------------------------------------
+
+  - name: Entferne die lokale Installationsdatei
+    ansible.builtin.file:
+      path: "/home/administrator/packages/veyon_{{ veyon_version }}.deb"
+      state: absent
+
