@@ -1,0 +1,92 @@
+---
+# ======================================================================
+# Playbook: start-Raum313.yml
+# Zweck:    Initial-Setup für Clients im Raum 313
+#           - SSH-Key für den Administrator installieren
+#           - Veyon & Basiskonfiguration einspielen
+#           - Standardsoftware installieren
+# ======================================================================
+
+- hosts: localhost
+  connection: local
+  become: true
+
+  vars:
+    # GitHub-Repository mit den weiteren Playbooks
+    repo_url: "https://github.com/hvoss71/ansible_desktop.git"
+
+    # Öffentlicher SSH-Schlüssel, z. B. aus GitHub Pages oder raw.githubusercontent.com
+    ssh_key_url: "https://raw.githubusercontent.com/hvoss71/ansible_desktop/main/public_keys/hvoss_ed25519.pub"
+
+    # Benutzer, für den der SSH-Key eingerichtet werden soll
+    user_name: "administrator"
+
+    # Nachgelagerte Playbooks (werden aus dem GitHub-Repo geladen)
+    playbooks:
+      - "veyon-installer.yml"
+      - "veyon-config-Raum313.yml"
+      - "informatik.yml"
+
+  pre_tasks:
+    - name: Aktualisiere Paketquellen
+      ansible.builtin.apt:
+        update_cache: yes
+
+    - name: Installiere erforderliche Basis-Tools
+      ansible.builtin.apt:
+        name:
+          - curl
+          - wget
+          - openssh-server
+          - python3
+          - python3-apt
+          - python3-pip
+          - git
+          - ansible
+        state: present
+        update_cache: yes
+
+  tasks:
+  ###########################################################################
+  # 1. SSH-Schlüssel aus dem Netz laden und installieren
+  ###########################################################################
+
+    - name: Lade öffentlichen SSH-Schlüssel herunter
+      ansible.builtin.get_url:
+        url: "{{ ssh_key_url }}"
+        dest: "/tmp/admin_key.pub"
+        mode: '0644'
+
+    - name: Stelle sicher, dass das .ssh-Verzeichnis des Administrators existiert
+      ansible.builtin.file:
+        path: "/home/{{ user_name }}/.ssh"
+        state: directory
+        owner: "{{ user_name }}"
+        group: "{{ user_name }}"
+        mode: '0700'
+
+    - name: Installiere öffentlichen SSH-Schlüssel für Administrator
+      ansible.builtin.authorized_key:
+        user: "{{ user_name }}"
+        key: "{{ lookup('file', '/tmp/admin_key.pub') }}"
+        state: present
+
+  ###########################################################################
+  # 2. Starte Veyon-Installer, Veyon-Konfiguration und Informatik-Setup
+  ###########################################################################
+
+    - name: Führe die Playbooks direkt aus dem GitHub-Repository aus
+      ansible.builtin.command:
+        cmd: "ansible-pull -o -U {{ repo_url }} {{ item }}"
+      loop: "{{ playbooks }}"
+      register: pull_results
+      changed_when: "'changed' in (pull_results.stdout | lower) or 'changed' in (pull_results.stderr | lower)"
+
+  ###########################################################################
+  # 3. Aufräumen
+  ###########################################################################
+
+    - name: Entferne temporäre Schlüsseldatei
+      ansible.builtin.file:
+        path: "/tmp/admin_key.pub"
+        state: absent
