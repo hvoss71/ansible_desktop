@@ -1,5 +1,6 @@
 ---
-# Dieses Playbook installiert die Software-Grundausstattung der PC-Räume für Debian- und Ubuntu-Systeme.
+# Dieses Playbook installiert die Software-Grundausstattung der PC-Räume
+# für Debian- und Ubuntu-Systeme mit Cinnamon-Desktop.
 # Es richtet einen Cronjob ein, der das Playbook alle 10 Minuten über GitHub neu ausführt.
 # Änderungen am zentralen Playbook werden dadurch automatisch auf allen Clients übernommen.
 
@@ -14,19 +15,19 @@
   tasks:
 
   ###########################################################################
-  # 1. Grundlegende Systemdienste
+  # 1. Cronjob für automatische Aktualisierung
   ###########################################################################
 
-  - name: Stelle sicher, dass der Cronjob-Daemon läuft
-    ansible.builtin.systemd_service:
-      name: "{{ 'cron' if ansible_facts['os_family'] == 'Debian' else 'cron' }}"
+  - name: Stelle sicher, dass der Cron-Dienst aktiv ist
+    ansible.builtin.systemd:
+      name: cron
       state: started
       enabled: true
       daemon_reload: true
 
-  - name: Füge den Ansible-pull Cronjob hinzu
+  - name: Füge Cronjob für automatischen ansible-pull hinzu
     ansible.builtin.cron:
-      name: ansible auto-provision
+      name: "Ansible Auto-Provision"
       user: root
       minute: "*/10"
       job: "ansible-pull -o -U {{ repo_url }} {{ playbook_file }} > /var/log/ansible-pull.log 2>&1"
@@ -41,31 +42,32 @@
       name: hainberg
       state: present
 
-  - name: Erzeuge lokalen Nutzer 'hainberg-local'
+  - name: Erzeuge lokalen Notfall-Benutzer 'hainberg-local'
     ansible.builtin.user:
       name: hainberg-local
       uid: 2001
       group: users
       create_home: yes
       shell: /bin/bash
-      system: no
+      password: "{{ 'hainberg' | password_hash('sha512') }}"
       state: present
-      password: "{{ 'hainberg' | password_hash('sha512', 'schule') }}"
 
   ###########################################################################
   # 3. System- und Sprachpakete
   ###########################################################################
 
-  - name: Aktualisiere Paketquellen und installiere Updates
+  - name: Aktualisiere Paketquellen und installiere Systemupdates
     ansible.builtin.apt:
       update_cache: yes
       upgrade: dist
-
-  - name: Installiere Sprachpakete für Debian oder Ubuntu
+      
+  - name: Installiere System- und Desktop-Sprachpakete (Deutsch)
     ansible.builtin.apt:
-      name: "{{ ['language-pack-de', 'language-pack-gnome-de'] if ansible_facts['distribution'] == 'Ubuntu' else ['task-german', 'task-german-desktop'] }}"
+      name: "{{ (['task-german'] if ansible_facts['distribution'] == 'Debian' else ['language-pack-de', 'language-pack-gnome-de']) + ['cinnamon-translations'] }}"
       state: latest
       update_cache: yes
+
+
 
   ###########################################################################
   # 4. Anwendungen aus Debian-/Ubuntu-Repositories
@@ -74,17 +76,13 @@
   - name: Installiere Standardanwendungen
     ansible.builtin.apt:
       name:
+        # --- Browser ---
         - chromium-browser
         - chromium-l10n
+
+        # --- Entwicklung / Informatik ---
         - arduino
         - emacs
-        - gedit
-        - gimp
-        - gwenview
-        - kate
-        - x11vnc
-        - gnome-connections
-        - shotcut
         - thonny
         - python-is-python3
         - python3-keras-applications
@@ -95,28 +93,40 @@
         - python3-matplotlib
         - python3-pip
         - python3-venv
+
+        # --- Grafik / Multimedia ---
+        - gimp
+        - gwenview
         - inkscape
-        - catfish
-        - flatpak
-        - gnome-software-plugin-flatpak
-        - gnome-tweaks
+        - shotcut
+
+        # --- Büro / Unterricht ---
         - libreoffice
         - libreoffice-l10n-de
+
+        # --- Netzwerk / Fernzugriff ---
+        - x11vnc
+        - remmina
+
+        # --- Cinnamon Desktop ---
+        - cinnamon
+        - cinnamon-common
+        - nemo-fileroller
+        - nemo-share
+        - xed
+        - catfish
+        - flatpak
+        - mintinstall
+
       state: latest
       update_cache: yes
-    ignore_errors: yes  # Manche Pakete heißen unter Ubuntu anders
-
-  - name: Falls Chromium nicht im Repo vorhanden ist, installiere über Snap (Ubuntu)
-    community.general.snap:
-      name: chromium
-      state: present
-    when: ansible_facts['distribution'] == 'Ubuntu'
+    ignore_errors: yes
 
   ###########################################################################
   # 5. Entferne unerwünschte Spiele
   ###########################################################################
 
-  - name: Deinstalliere Spiele aus dem Repository
+  - name: Entferne überflüssige GNOME-Spiele
     ansible.builtin.apt:
       name:
         - aisleriot
@@ -137,29 +147,11 @@
         - tetravex
         - taquin
         - tali
-        - gnome-aisleriot
-        - gnome-2048
-        - gnome-lightsoff
-        - gnome-mahjongg
-        - gnome-mines
-        - gnome-sudoku
-        - gnome-five-or-more
-        - gnome-hitori
-        - gnome-four-in-a-row
-        - gnome-klotski
-        - gnome-nibbles
-        - gnome-quadrapassel
-        - gnome-iagno
-        - gnome-robots
-        - gnome-swell-foop
-        - gnome-tetravex
-        - gnome-taquin
-        - gnome-tali
       state: absent
-    ignore_errors: yes  # falls manche Spiele nicht existieren
+    ignore_errors: yes
 
   ###########################################################################
-  # 6. Flatpak-Integration und Software
+  # 6. Flatpak-Integration und externe Software
   ###########################################################################
 
   - name: Stelle sicher, dass Flatpak installiert ist
@@ -167,14 +159,14 @@
       name: flatpak
       state: present
 
-  - name: Füge das Flathub Flatpak Repository hinzu
+  - name: Füge Flathub-Repository hinzu
     community.general.flatpak_remote:
       name: flathub
       state: present
-      flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
+      flatpakrepo_url: "https://dl.flathub.org/repo/flathub.flatpakrepo"
       method: system
 
-  - name: Installiere Anwendungen aus dem Flathub-Repository
+  - name: Installiere Unterrichtssoftware über Flatpak
     community.general.flatpak:
       name:
         - ch.tigerjython.TigerJython2
@@ -189,8 +181,6 @@
         - org.bluej.BlueJ
         - com.jetbrains.IntelliJ-IDEA-Community
         - com.vscodium.codium
-        - io.github.pemsley.coot
-        - org.localsend.localsend_app
         - org.greenfoot.Greenfoot
         - com.bambulab.BambuStudio
         - org.apache.netbeans
@@ -204,3 +194,12 @@
   - name: Entferne nicht mehr benötigte Pakete
     ansible.builtin.apt:
       autoremove: yes
+      autoclean: yes
+
+
+  - name: Ausgabe nach erfolgreicher Installation
+    ansible.builtin.debug:
+      msg: >
+        Informatik-Grundausstattung (Cinnamon) wurde installiert.
+        Das System prüft alle 10 Minuten auf Aktualisierungen über GitHub.
+        Ein Neustart ist empfehlenswert, um Sprach- und Desktopkomponenten zu aktivieren.
