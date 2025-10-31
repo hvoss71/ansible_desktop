@@ -1,0 +1,41 @@
+---
+# ======================================================================
+# Playbook: ssh-key-setup.yml
+# Zweck:    Öffentlichen SSH-Schlüssel für den Administrator installieren
+# ======================================================================
+
+- hosts: localhost
+  connection: local
+  become: true
+
+  vars:
+    user_name: "administrator"
+    ssh_key_url: "https://raw.githubusercontent.com/hvoss71/ansible_desktop/main/public_keys/hgadmin_ed25519.pub"
+
+  tasks:
+    - name: Stelle sicher, dass das .ssh-Verzeichnis des Administrators existiert
+      ansible.builtin.file:
+        path: "/home/{{ user_name }}/.ssh"
+        state: directory
+        owner: "{{ user_name }}"
+        group: "{{ user_name }}"
+        mode: '0700'
+
+    - name: Lade öffentlichen SSH-Schlüssel herunter
+      ansible.builtin.get_url:
+        url: "{{ ssh_key_url }}"
+        dest: "/home/{{ user_name }}/.ssh/admin_key.pub"
+        owner: "{{ user_name }}"
+        group: "{{ user_name }}"
+        mode: '0644'
+
+    - name: Installiere öffentlichen SSH-Schlüssel für Administrator
+      ansible.builtin.authorized_key:
+        user: "{{ user_name }}"
+        key: "{{ lookup('file', '/home/' + user_name + '/.ssh/admin_key.pub') }}"
+        state: present
+
+    - name: Entferne temporäre Schlüsseldatei
+      ansible.builtin.file:
+        path: "/home/{{ user_name }}/.ssh/admin_key.pub"
+        state: absent
