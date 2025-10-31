@@ -1,7 +1,7 @@
 ---
 # ======================================================================
-# Playbook: start-Raum313.yml
-# Zweck:    Initialisierung von Clients im Raum 313
+# Playbook: start-Monitore.yml
+# Zweck:    Initialisierung der Mini-PCs für die Monitore
 #           - SSH-Key-Setup starten
 #           - Veyon-Installer, Raumkonfiguration und Basissoftware ausrollen
 # ======================================================================
@@ -11,7 +11,7 @@
   become: true
   
   vars:
-    room: "Raum313"
+    room: "Monitore"
 
   vars:
     repo_url: "https://github.com/hvoss71/ansible_desktop.git"
@@ -19,7 +19,6 @@
       - "ssh-key-setup.yml"
       - "veyon-installer.yml"
       - "veyon-config-{{ room }}.yml"
-      - "informatik.yml"
 
   tasks:
     - name: Stelle sicher, dass Git, Python und Ansible installiert sind
