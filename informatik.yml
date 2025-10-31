@@ -1,41 +1,43 @@
 ---
-# Dieses Skript enthält die Software-Grundausstattung der PC-Räume, soweit sie über Debian oder Flatpak verfügbar ist. Es erzeugt zudem einen Cronjob,
-# der dieses Script alle 10 Minuten neu über Github aufruft. Nach erstmaliger Ausführung des Skriptes über ssh ist also keine weitere manuelle Ausführung 
-# erforderlich, da Änderungen am Skript auf Github bei Nutzung der Rechner automatisch nach 10 Minuten von den Clients übernommen werden. Ein Schlüssel
-# ist nicht erforderlich, da das Playbook öffentlich im Netz steht. Das Installieren, Aktualisieren oder auch Löschen von Software kann so einmalig im 
-# Playbook informatik.yml vorgenommen werden und wird dann automatisch auf alle Clients ausgerollt. Diese Vorgänge finden im Hintergrund statt 
-# und stören die Arbeit an den Clients in der Regel nicht.
+# Dieses Playbook installiert die Software-Grundausstattung der PC-Räume, soweit sie über Debian oder Flatpak verfügbar ist.
+# Es richtet zudem einen Cronjob ein, der das Playbook alle 10 Minuten automatisch über Github neu ausführt.
+# Dadurch werden Änderungen am zentralen Playbook automatisch auf allen Clients übernommen.
+# Ein SSH-Schlüssel ist nicht erforderlich, da das Playbook öffentlich bereitsteht.
 
 - hosts: localhost
   connection: local
   become: true
-  
-#  environment: 
-#    http_proxy: http://hg-gym.de/proxy.pac
 
   tasks:
-  
+
+  ###########################################################################
+  # 1. Grundlegende Systemdienste
+  ###########################################################################
+
   - name: Stelle sicher, dass der Cronjob-Daemon läuft
     ansible.builtin.systemd_service:
-      state: started
       name: cron
-      daemon_reload: true
+      state: started
       enabled: true
+      daemon_reload: true
 
   - name: Füge den Ansible-pull Cronjob hinzu
-    ansible.builtin.cron: 
+    ansible.builtin.cron:
       name: ansible auto-provision
       user: root
       minute: "*/10"
-      hour: "*"
-      day: "*"
-      job: sudo ansible-pull -o -U https://github.com/hvoss71/ansible_desktop.git informatik.yml
+      job: ansible-pull -o -U https://github.com/hvoss71/ansible_desktop.git informatik.yml > /var/log/ansible-pull.log 2>&1
+      state: present
 
-  - name: Stelle sicher, dass die Gruppe 'hainberg' existiert.
+  ###########################################################################
+  # 2. Benutzer- und Gruppenverwaltung
+  ###########################################################################
+
+  - name: Stelle sicher, dass die Gruppe 'hainberg' existiert
     ansible.builtin.group:
       name: hainberg
       state: present
-      
+
   - name: Erzeuge lokalen Nutzer 'hainberg-local'
     ansible.builtin.user:
       name: hainberg-local
@@ -45,59 +47,69 @@
       shell: /bin/bash
       system: no
       state: present
-      password: "{{ 'hainberg' | password_hash('sha512') }}"
+      password: "{{ 'hainberg' | password_hash('sha512', 'schule') }}"
+
+  ###########################################################################
+  # 3. System- und Sprachpakete
+  ###########################################################################
+
+  - name: Aktualisiere Paketquellen und installiere Updates
+    ansible.builtin.apt:
+      update_cache: yes
+      upgrade: dist
 
   - name: Installiere die Sprachpakete des Systems und des Desktops
-    package:
-      name: 
-        - task-german 
+    ansible.builtin.apt:
+      name:
+        - task-german
         - task-german-desktop
       state: latest
-      update_cache: yes
 
-  - name: Installiere den Chromium-Browser und andere distributionsspezifische Pakete in Debian.
-    package:
+  ###########################################################################
+  # 4. Anwendungen aus Debian-Repositories
+  ###########################################################################
+
+  - name: Installiere Chromium und weitere Standardanwendungen
+    ansible.builtin.apt:
       name:
-        - chromium                                # Chromium-Browser, benötigt für LEGO Spike web App etc.
-        - chromium-l10n                           # Chromium-Sprachlokalisation
-      state: latest
-
-
-  - name: Installiere Anwendungen aus dem Debian-Repository
-    package:
-      name: 
-        - arduino                               # Arduino 1
-        - emacs                                 # Emacs
-        - gedit                                 # GNOME-Editor
-        - gimp					# professionelle Bildbearbeitung
-        - gwenview				# einfache Bildbearbeitung
-        - kate                                  # KDE Editor
-        - x11vnc                                # VNC-Server für X11
-        - gnome-connections                     # RDP / VNC-Verbindung
-        - shotcut                               # einfacher Videoschnitt
-        - thonny                                # Python für Einsteiger
-        - python-is-python3                     # Python  
-#        - python3-keras                         # ... sowie weitere Python-Module
+        - chromium                                # Browser, u.a. für LEGO Spike Web App
+        - chromium-l10n                           # Sprachunterstützung
+        - arduino                                 # Arduino 1.x
+        - emacs
+        - gedit
+        - gimp
+        - gwenview
+        - kate
+        - x11vnc                                 # VNC-Server für Fernwartung
+        - gnome-connections                      # RDP/VNC-Verbindungen
+        - shotcut                                # einfacher Videoschnitt
+        - thonny                                 # Python-IDE für Einsteiger
+        - python-is-python3
         - python3-keras-applications
         - python3-keras-preprocessing
-        - python3-psutil                       
-        - python3-numpy                       
+        - python3-psutil
+        - python3-numpy
         - python3-pygame
         - python3-matplotlib
         - python3-pip
         - python3-venv
-        - inkscape                              # Vektorgrafik
-        - catfish                               # Datei- und Volltextsuche
-        - flatpak                               # Flatpak 
-        - gnome-software-plugin-flatpak         # Integration von Flatpak in GNOME
-        - gnome-tweaks                          # GNOME-Optimierungen
+        - inkscape
+        - catfish
+        - flatpak
+        - gnome-software-plugin-flatpak
+        - gnome-tweaks
         - libreoffice
         - libreoffice-l10n-de
       state: latest
+      update_cache: yes
+
+  ###########################################################################
+  # 5. Entferne unerwünschte Spiele
+  ###########################################################################
 
   - name: Deinstalliere Spiele aus dem Debian-Repository
-    package:
-      name: 
+    ansible.builtin.apt:
+      name:
         - aisleriot
         - 2048
         - iagno
@@ -109,7 +121,7 @@
         - hitori
         - four-in-a-row
         - klotski
-        - lightsoff 
+        - lightsoff
         - nibbles
         - quadrapassel
         - swell-foop
@@ -125,7 +137,7 @@
         - gnome-five-or-more
         - gnome-hitori
         - gnome-four-in-a-row
-        - gnome-klotski 
+        - gnome-klotski
         - gnome-nibbles
         - gnome-quadrapassel
         - gnome-iagno
@@ -136,7 +148,16 @@
         - gnome-tali
       state: absent
 
-  - name: Füge das Flathub Flatpak Repository zur System-Installation hinzu
+  ###########################################################################
+  # 6. Flatpak-Integration und Software
+  ###########################################################################
+
+  - name: Stelle sicher, dass Flatpak installiert ist
+    ansible.builtin.apt:
+      name: flatpak
+      state: present
+
+  - name: Füge das Flathub Flatpak Repository hinzu
     community.general.flatpak_remote:
       name: flathub
       state: present
@@ -145,22 +166,31 @@
 
   - name: Installiere Anwendungen aus dem Flathub-Repository
     community.general.flatpak:
-      name:  
-        - ch.tigerjython.TigerJython2            # TigerJython Programmier-Lernumgebung für Python
-        - de.lernsoftware_filius.Filius          # Filius Netwerkbau
-        - org.eclipse.Java                       # Eclipse Java-Editor
-        - org.processing.processingide           # Processing Java-Editor 
+      name:
+        - ch.tigerjython.TigerJython2            # Python-IDE für Einsteiger
+        - de.lernsoftware_filius.Filius          # Netzwerksimulation
+        - org.eclipse.Java                       # Eclipse Java-IDE
+        - org.processing.processingide           # Processing-IDE
         - com.prusa3d.PrusaSlicer                # 3D-Druck
-        - com.visualstudio.code                  # Microsoft Visual Studio
-        - edu.mit.Scratch                        # Scratch 3 (deb-Paket ist veraltet)
-        - com.github.PintaProject.Pinta          # Pendant zu Paint in der Windows-Welt
-        - cc.arduino.IDE2                        # Arduino 2
-        - org.bluej.BlueJ                        # Java-Editor
-        - com.jetbrains.IntelliJ-IDEA-Community  # Java und Kotlin-Editor
-        - com.vscodium.codium                    # Java und Visual Studio Editor
-        - io.github.pemsley.coot                 # Makromoleküle bauen
-        - org.localsend.localsend_app            # plattformübergreifendes Airdropping
-        - org.greenfoot.Greenfoot                # integrated development environment using Java or Stride
-        - com.bambulab.BambuStudio		 # 3D-Drucker für BambuLab
-        - org.apache.netbeans                    # Netbeans Java-Editor
+        - com.visualstudio.code                  # Visual Studio Code
+        - edu.mit.Scratch                        # Scratch 3
+        - com.github.PintaProject.Pinta          # einfache Bildbearbeitung
+        - cc.arduino.IDE2                        # Arduino 2.x
+        - org.bluej.BlueJ                        # Java-IDE
+        - com.jetbrains.IntelliJ-IDEA-Community  # IntelliJ Community
+        - com.vscodium.codium                    # Open-Source VSCode
+        - io.github.pemsley.coot                 # Molekülmodellierung
+        - org.localsend.localsend_app            # AirDrop-Alternative
+        - org.greenfoot.Greenfoot                # Java/Stride IDE für Lernzwecke
+        - com.bambulab.BambuStudio               # 3D-Druck für BambuLab
+        - org.apache.netbeans                    # NetBeans Java-IDE
       state: present
+      method: system
+
+  ###########################################################################
+  # 7. Systempflege
+  ###########################################################################
+
+  - name: Entferne nicht mehr benötigte Pakete
+    ansible.builtin.apt:
+      autoremove: yes
