@@ -1,12 +1,15 @@
 ---
-# Dieses Playbook installiert die Software-Grundausstattung der PC-Räume, soweit sie über Debian oder Flatpak verfügbar ist.
-# Es richtet zudem einen Cronjob ein, der das Playbook alle 10 Minuten automatisch über Github neu ausführt.
-# Dadurch werden Änderungen am zentralen Playbook automatisch auf allen Clients übernommen.
-# Ein SSH-Schlüssel ist nicht erforderlich, da das Playbook öffentlich bereitsteht.
+# Dieses Playbook installiert die Software-Grundausstattung der PC-Räume für Debian- und Ubuntu-Systeme.
+# Es richtet einen Cronjob ein, der das Playbook alle 10 Minuten über GitHub neu ausführt.
+# Änderungen am zentralen Playbook werden dadurch automatisch auf allen Clients übernommen.
 
 - hosts: localhost
   connection: local
   become: true
+
+  vars:
+    repo_url: "https://github.com/hvoss71/ansible_desktop.git"
+    playbook_file: "informatik.yml"
 
   tasks:
 
@@ -16,7 +19,7 @@
 
   - name: Stelle sicher, dass der Cronjob-Daemon läuft
     ansible.builtin.systemd_service:
-      name: cron
+      name: "{{ 'cron' if ansible_facts['os_family'] == 'Debian' else 'cron' }}"
       state: started
       enabled: true
       daemon_reload: true
@@ -26,7 +29,7 @@
       name: ansible auto-provision
       user: root
       minute: "*/10"
-      job: ansible-pull -o -U https://github.com/hvoss71/ansible_desktop.git informatik.yml > /var/log/ansible-pull.log 2>&1
+      job: "ansible-pull -o -U {{ repo_url }} {{ playbook_file }} > /var/log/ansible-pull.log 2>&1"
       state: present
 
   ###########################################################################
@@ -58,32 +61,31 @@
       update_cache: yes
       upgrade: dist
 
-  - name: Installiere die Sprachpakete des Systems und des Desktops
+  - name: Installiere Sprachpakete für Debian oder Ubuntu
     ansible.builtin.apt:
-      name:
-        - task-german
-        - task-german-desktop
+      name: "{{ ['language-pack-de', 'language-pack-gnome-de'] if ansible_facts['distribution'] == 'Ubuntu' else ['task-german', 'task-german-desktop'] }}"
       state: latest
+      update_cache: yes
 
   ###########################################################################
-  # 4. Anwendungen aus Debian-Repositories
+  # 4. Anwendungen aus Debian-/Ubuntu-Repositories
   ###########################################################################
 
-  - name: Installiere Chromium und weitere Standardanwendungen
+  - name: Installiere Standardanwendungen
     ansible.builtin.apt:
       name:
-        - chromium                                # Browser, u.a. für LEGO Spike Web App
-        - chromium-l10n                           # Sprachunterstützung
-        - arduino                                 # Arduino 1.x
+        - chromium-browser
+        - chromium-l10n
+        - arduino
         - emacs
         - gedit
         - gimp
         - gwenview
         - kate
-        - x11vnc                                 # VNC-Server für Fernwartung
-        - gnome-connections                      # RDP/VNC-Verbindungen
-        - shotcut                                # einfacher Videoschnitt
-        - thonny                                 # Python-IDE für Einsteiger
+        - x11vnc
+        - gnome-connections
+        - shotcut
+        - thonny
         - python-is-python3
         - python3-keras-applications
         - python3-keras-preprocessing
@@ -102,12 +104,19 @@
         - libreoffice-l10n-de
       state: latest
       update_cache: yes
+    ignore_errors: yes  # Manche Pakete heißen unter Ubuntu anders
+
+  - name: Falls Chromium nicht im Repo vorhanden ist, installiere über Snap (Ubuntu)
+    community.general.snap:
+      name: chromium
+      state: present
+    when: ansible_facts['distribution'] == 'Ubuntu'
 
   ###########################################################################
   # 5. Entferne unerwünschte Spiele
   ###########################################################################
 
-  - name: Deinstalliere Spiele aus dem Debian-Repository
+  - name: Deinstalliere Spiele aus dem Repository
     ansible.builtin.apt:
       name:
         - aisleriot
@@ -147,6 +156,7 @@
         - gnome-taquin
         - gnome-tali
       state: absent
+    ignore_errors: yes  # falls manche Spiele nicht existieren
 
   ###########################################################################
   # 6. Flatpak-Integration und Software
@@ -167,23 +177,23 @@
   - name: Installiere Anwendungen aus dem Flathub-Repository
     community.general.flatpak:
       name:
-        - ch.tigerjython.TigerJython2            # Python-IDE für Einsteiger
-        - de.lernsoftware_filius.Filius          # Netzwerksimulation
-        - org.eclipse.Java                       # Eclipse Java-IDE
-        - org.processing.processingide           # Processing-IDE
-        - com.prusa3d.PrusaSlicer                # 3D-Druck
-        - com.visualstudio.code                  # Visual Studio Code
-        - edu.mit.Scratch                        # Scratch 3
-        - com.github.PintaProject.Pinta          # einfache Bildbearbeitung
-        - cc.arduino.IDE2                        # Arduino 2.x
-        - org.bluej.BlueJ                        # Java-IDE
-        - com.jetbrains.IntelliJ-IDEA-Community  # IntelliJ Community
-        - com.vscodium.codium                    # Open-Source VSCode
-        - io.github.pemsley.coot                 # Molekülmodellierung
-        - org.localsend.localsend_app            # AirDrop-Alternative
-        - org.greenfoot.Greenfoot                # Java/Stride IDE für Lernzwecke
-        - com.bambulab.BambuStudio               # 3D-Druck für BambuLab
-        - org.apache.netbeans                    # NetBeans Java-IDE
+        - ch.tigerjython.TigerJython2
+        - de.lernsoftware_filius.Filius
+        - org.eclipse.Java
+        - org.processing.processingide
+        - com.prusa3d.PrusaSlicer
+        - com.visualstudio.code
+        - edu.mit.Scratch
+        - com.github.PintaProject.Pinta
+        - cc.arduino.IDE2
+        - org.bluej.BlueJ
+        - com.jetbrains.IntelliJ-IDEA-Community
+        - com.vscodium.codium
+        - io.github.pemsley.coot
+        - org.localsend.localsend_app
+        - org.greenfoot.Greenfoot
+        - com.bambulab.BambuStudio
+        - org.apache.netbeans
       state: present
       method: system
 
