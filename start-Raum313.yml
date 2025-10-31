@@ -9,13 +9,16 @@
 - hosts: localhost
   connection: local
   become: true
+  
+  vars:
+    room: "Raum312"
 
   vars:
     repo_url: "https://github.com/hvoss71/ansible_desktop.git"
     playbooks:
       - "ssh-key-setup.yml"
       - "veyon-installer.yml"
-      - "veyon-config-Raum313.yml"
+      - "veyon-config-{{ room }}.yml"
       - "informatik.yml"
 
   tasks:
