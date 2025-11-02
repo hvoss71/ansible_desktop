@@ -36,17 +36,20 @@
       group: root
       mode: "0644"
       content: |
-        [Unit]
-        Description=AirPlay Receiver (uxplay) - Benutzerkontext
-        After=graphical-session.target
+       [Unit]
+       Description=AirPlay Receiver (uxplay) - Benutzerkontext
+       After=graphical-session.target
 
-        [Service]
-        Type=simple
-        ExecStart={{ uxplay_path }} -n {{ room_name }} -nh
-        Restart=on-failure
+       [Service]
+       Type=simple
+       Environment=DISPLAY=:0
+       Environment=DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/%U/bus
+       ExecStart=/usr/bin/uxplay -n %h -nh
+       Restart=on-failure
 
-        [Install]
-        WantedBy=default.target
+       [Install]
+       WantedBy=default.target
+
 
   - name: systemd daemon neu laden (systemweit)
     ansible.builtin.systemd:
