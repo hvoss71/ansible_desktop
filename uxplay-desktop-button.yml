@@ -54,9 +54,9 @@
     # --------------------------------------------------------------
     # 4. Desktop-Verzeichnisse sicherstellen (deutsche Cinnamon-Variante)
     # --------------------------------------------------------------
-    - name: Stelle sicher, dass Verzeichnis Arbeitsfläche existiert
+    - name: Stelle sicher, dass Verzeichnis Desktop existiert
       file:
-        path: "{{ item.home }}/Arbeitsfläche"
+        path: "{{ item.home }}/Desktop"
         state: directory
         owner: "{{ item.name }}"
         group: "{{ item.name }}"
@@ -66,9 +66,9 @@
     # --------------------------------------------------------------
     # 5. Desktopstarter anlegen (Terminalstart)
     # --------------------------------------------------------------
-    - name: Erstelle uxplay-Starter auf der Arbeitsfläche
+    - name: Erstelle uxplay-Starter auf der Desktop
       copy:
-        dest: "{{ item.home }}/Arbeitsfläche/uxplay-terminal.desktop"
+        dest: "{{ item.home }}/Desktop/uxplay-terminal.desktop"
         content: |
           [Desktop Entry]
           Type=Application
@@ -88,4 +88,4 @@
     # --------------------------------------------------------------
     - name: Erfolgsmeldung
       debug:
-        msg: "Desktopstarter für uxplay (mit Terminal) wurde auf der Arbeitsfläche aller Benutzer erstellt."
+        msg: "Desktopstarter für uxplay (mit Terminal) wurde auf der Desktop aller Benutzer erstellt."
