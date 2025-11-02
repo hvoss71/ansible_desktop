@@ -1,27 +1,98 @@
 ---
+# ======================================================================
+# Playbook: uxplay-desktop-button.yml
+# Zweck:    Erstellt einen Starter für uxplay (AirPlay Receiver)
+#           auf dem Desktop aller regulären Benutzer (UID >= 1000).
+#           Benutzer nobody und Systemkonten werden ignoriert.
+# ======================================================================
+
 - hosts: localhost
   connection: local
   become: true
 
   vars:
-    uxplay_path: "/usr/bin/uxplay"
-    room_name: "{{ ansible_hostname }}"
+    uxplay_icon: "/usr/share/icons/hicolor/128x128/apps/uxplay.png"
 
   tasks:
 
-  - name: Desktop-Button für uxplay im Terminal auf Cinnamon-Clients
-    copy:
-      dest: "/home/{{ item }}/Desktop/uxplay-terminal.desktop"
-      content: |
-       [Desktop Entry]
-       Type=Application
-       Name=AirPlay Receiver (Terminal)
-       Comment=Starte uxplay im Terminal
-       Exec=gnome-terminal -- /usr/bin/uxplay -n {{ ansible_hostname }} -nh
-       Icon=/usr/share/icons/hicolor/128x128/apps/uxplay.png
-       Terminal=false
-       StartupNotify=true
-      owner: "{{ item | basename }}"
-      group: "{{ item | basename }}"
-      mode: "0755"
-    loop: "{{ lookup('ansible.builtin.pipe', \"getent passwd | awk -F: '$3 >= 1000 && $1 != \\\"nobody\\\" {print $6}'\", wantlist=True) }}"
+    # --------------------------------------------------------------
+    # 1. Stelle sicher, dass das community.general Plugin vorhanden ist
+    # --------------------------------------------------------------
+    - name: Prüfe, ob die Collection community.general installiert ist
+      ansible.builtin.command: ansible-galaxy collection list community.general
+      register: cg_check
+      failed_when: false
+      changed_when: false
+
+    - name: Installiere community.general bei Bedarf
+      ansible.builtin.command: ansible-galaxy collection install community.general
+      when: "'community.general' not in cg_check.stdout"
+
+    # --------------------------------------------------------------
+    # 2. Sammle alle "normalen" Benutzer (UID >= 1000, kein nobody)
+    # --------------------------------------------------------------
+    - name: Sammle alle normalen Benutzer
+      set_fact:
+        ansible_users: >-
+          {{
+            lookup('ansible.builtin.pipe', 'getent passwd', wantlist=True)
+            | map('split', ':')
+            | selectattr('2', 'int', '>=', 1000)
+            | selectattr('0', 'ne', 'nobody')
+            | map('community.general.dict_kv', ['name','home'], [0,5])
+            | list
+          }}
+
+    - name: Debug-Ausgabe aller gefundenen Benutzer
+      debug:
+        var: ansible_users
+
+    # --------------------------------------------------------------
+    # 3. Stelle sicher, dass Desktop-Verzeichnisse existieren
+    # --------------------------------------------------------------
+    - name: Stelle sicher, dass Desktop-Verzeichnisse existieren
+      ansible.builtin.file:
+        path: "{{ item.home }}/Desktop"
+        state: directory
+        owner: "{{ item.name }}"
+        group: "{{ item.name }}"
+        mode: "0755"
+      loop: "{{ ansible_users }}"
+
+    # --------------------------------------------------------------
+    # 4. Lege uxplay-Desktopstarter (Terminal) an
+    # --------------------------------------------------------------
+    - name: Desktop-Button für uxplay im Terminal anlegen
+      ansible.builtin.copy:
+        dest: "{{ item.home }}/Desktop/uxplay-terminal.desktop"
+        content: |
+          [Desktop Entry]
+          Type=Application
+          Name=AirPlay Receiver (Terminal)
+          Comment=Starte uxplay im Terminal
+          Exec=gnome-terminal -- /usr/bin/uxplay -n {{ ansible_hostname }} -nh
+          Icon={{ uxplay_icon }}
+          Terminal=false
+          StartupNotify=true
+        owner: "{{ item.name }}"
+        group: "{{ item.name }}"
+        mode: "0755"
+      loop: "{{ ansible_users }}"
+
+    # --------------------------------------------------------------
+    # 5. Optional: Datei ausführbar machen (sicherheitshalber)
+    # --------------------------------------------------------------
+    - name: Setze Ausführungsrechte auf Desktopstarter
+      ansible.builtin.file:
+        path: "{{ item.home }}/Desktop/uxplay-terminal.desktop"
+        mode: "0755"
+      loop: "{{ ansible_users }}"
+      ignore_errors: true
+
+    # --------------------------------------------------------------
+    # 6. Ausgabe
+    # --------------------------------------------------------------
+    - name: Fertigmeldung
+      ansible.builtin.debug:
+        msg: "uxplay-Desktopstarter wurde für alle Benutzer erstellt."
+
