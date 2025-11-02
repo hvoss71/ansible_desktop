@@ -2,7 +2,9 @@
 # ======================================================================
 # Playbook: uxplay-desktop-button.yml
 # Zweck:    Erstellt Desktopstarter für uxplay (AirPlay Receiver)
-#           für alle echten Benutzer mit /home/* (UID >= 1000)
+#           auf deutschsprachigen Cinnamon-Systemen
+#           - Terminal-Start
+#           - Icon liegt in files/uxplay.png
 # ======================================================================
 
 - hosts: localhost
@@ -15,7 +17,16 @@
   tasks:
 
     # --------------------------------------------------------------
-    # 1. Lese alle Benutzerzeilen aus /etc/passwd
+    # 1. Kopiere uxplay-Icon (aus Repository)
+    # --------------------------------------------------------------
+    - name: Kopiere uxplay-Icon nach Systempfad
+      copy:
+        src: "files/uxplay.png"
+        dest: "{{ uxplay_icon }}"
+        mode: "0644"
+
+    # --------------------------------------------------------------
+    # 2. Alle Benutzer aus /etc/passwd lesen
     # --------------------------------------------------------------
     - name: Lese alle Benutzer aus /etc/passwd
       command: getent passwd
@@ -23,7 +34,7 @@
       changed_when: false
 
     # --------------------------------------------------------------
-    # 2. Extrahiere nur echte Benutzer (UID >= 1000, /home/*)
+    # 3. Filtere echte Benutzer (UID >= 1000, kein nobody)
     # --------------------------------------------------------------
     - name: Erzeuge Liste der realen Benutzer
       set_fact:
@@ -41,11 +52,11 @@
         var: ansible_users
 
     # --------------------------------------------------------------
-    # 3. Stelle sicher, dass Desktop-Verzeichnisse existieren
+    # 4. Desktop-Verzeichnisse sicherstellen (deutsche Cinnamon-Variante)
     # --------------------------------------------------------------
-    - name: Stelle sicher, dass Desktop-Verzeichnisse existieren
+    - name: Stelle sicher, dass Verzeichnis Arbeitsfläche existiert
       file:
-        path: "{{ item.home }}/Desktop"
+        path: "{{ item.home }}/Arbeitsfläche"
         state: directory
         owner: "{{ item.name }}"
         group: "{{ item.name }}"
@@ -53,11 +64,11 @@
       loop: "{{ ansible_users }}"
 
     # --------------------------------------------------------------
-    # 4. Desktopstarter anlegen (im Terminal)
+    # 5. Desktopstarter anlegen (Terminalstart)
     # --------------------------------------------------------------
-    - name: Erstelle uxplay-Starter auf dem Desktop
+    - name: Erstelle uxplay-Starter auf der Arbeitsfläche
       copy:
-        dest: "{{ item.home }}/Desktop/uxplay-terminal.desktop"
+        dest: "{{ item.home }}/Arbeitsfläche/uxplay-terminal.desktop"
         content: |
           [Desktop Entry]
           Type=Application
@@ -73,8 +84,8 @@
       loop: "{{ ansible_users }}"
 
     # --------------------------------------------------------------
-    # 5. Ausgabe
+    # 6. Erfolgsmeldung
     # --------------------------------------------------------------
     - name: Erfolgsmeldung
       debug:
-        msg: "Desktopstarter für uxplay wurde auf allen Benutzer-Desktops erstellt."
+        msg: "Desktopstarter für uxplay (mit Terminal) wurde auf der Arbeitsfläche aller Benutzer erstellt."
