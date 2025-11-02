@@ -24,4 +24,4 @@
       owner: "{{ item | basename }}"
       group: "{{ item | basename }}"
       mode: "0755"
-    loop: "{{ lookup('ansible.builtin.pipe','getent passwd | awk -F: '\''$3 >= 1000 && $1 != \"nobody\" {print $6}'\'', wantlist=True) }}"
+    loop: "{{ lookup('ansible.builtin.pipe', \"getent passwd | awk -F: '$3 >= 1000 && $1 != \\\"nobody\\\" {print $6}'\", wantlist=True) }}"
