@@ -54,14 +54,14 @@
     # --------------------------------------------------------------
     # 4. Desktop-Verzeichnisse sicherstellen (deutsche Cinnamon-Variante)
     # --------------------------------------------------------------
-    - name: Stelle sicher, dass Verzeichnis Desktop existiert
-      file:
-        path: "{{ item.home }}/Desktop"
-        state: directory
-        owner: "{{ item.name }}"
-        group: "{{ item.name }}"
-        mode: "0755"
-      loop: "{{ ansible_users }}"
+#    - name: Stelle sicher, dass Verzeichnis Desktop existiert
+#      file:
+ #       path: "{{ item.home }}/Desktop"
+  #      state: directory
+   #     owner: "{{ item.name }}"
+    #    group: "{{ item.name }}"
+     #   mode: "0755"
+      #loop: "{{ ansible_users }}"
 
     # --------------------------------------------------------------
     # 5. Arbeitsflächestarter anlegen (Terminalstart)
