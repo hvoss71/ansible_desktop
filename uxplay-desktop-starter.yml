@@ -5,7 +5,7 @@
 
   vars:
     uxplay_path: "/usr/bin/uxplay"
-    room_name: "{{ ansible_hostname }}"
+    room_name: "Raum 123"
 
   tasks:
 
