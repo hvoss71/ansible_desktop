@@ -1,4 +1,4 @@
-/home/holger/Dokumente/GitHub/ansible_desktop/files/uxplay-desktop-button.yml---
+---
 - hosts: localhost
   connection: local
   become: true
@@ -9,24 +9,19 @@
 
   tasks:
 
-    - name: Stelle sicher, dass Autostart-Verzeichnis existiert
-      file:
-        path: /etc/xdg/autostart
-        state: directory
-        mode: "0755"
-
-    - name: Erstelle systemweiten Autostart für uxplay
-      copy:
-        dest: /etc/xdg/autostart/uxplay.desktop
-        owner: root
-        group: root
-        mode: "0644"
-        content: |
-          [Desktop Entry]
-          Type=Application
-          Name=AirPlay Receiver
-          Comment=Startet uxplay automatisch
-          Exec={{ uxplay_path }} -n {{ room_name }} -nh
-          Icon=display
-          Terminal=false
-          X-GNOME-Autostart-enabled=true
+  - name: Desktop-Button für uxplay im Terminal auf Cinnamon-Clients
+    copy:
+      dest: "/home/{{ item }}/Desktop/uxplay-terminal.desktop"
+      content: |
+       [Desktop Entry]
+       Type=Application
+       Name=AirPlay Receiver (Terminal)
+       Comment=Starte uxplay im Terminal
+       Exec=gnome-terminal -- /usr/bin/uxplay -n {{ ansible_hostname }} -nh
+       Icon=/usr/share/icons/hicolor/128x128/apps/uxplay.png
+       Terminal=false
+       StartupNotify=true
+      owner: "{{ item }}"
+      group: "{{ item }}"
+      mode: "0755"
+    loop: "{{ lookup('ansible.builtin.pipe','getent passwd | cut -d: -f1 | grep -v nobody', wantlist=True) }}"
