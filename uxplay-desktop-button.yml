@@ -56,11 +56,10 @@
     # --------------------------------------------------------------
         
     - name: Installiere UnixPlay
-    ansible.builtin.apt:
-      name: uxplay
-      state: latest
-      update_cache: yes    
-        
+      ansible.builtin.apt:
+        name: uxplay
+        state: latest
+        update_cache: yes    
 
     # --------------------------------------------------------------
     # 5. Desktopstarter anlegen (Terminalstart)
