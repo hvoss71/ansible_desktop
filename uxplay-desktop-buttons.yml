@@ -1,0 +1,102 @@
+---
+# ======================================================================
+# Playbook: uxplay-desktop-buttons.yml
+# Zweck:    Erstellt zwei Desktopstarter für uxplay:
+#           - Terminal-Start (sichtbar)
+#           - Hintergrund-Start (still)
+#           für alle echten Benutzer (UID >= 1000, /home/*)
+# ======================================================================
+
+- hosts: localhost
+  connection: local
+  become: true
+
+  vars:
+    uxplay_icon: "/usr/share/icons/hicolor/128x128/apps/uxplay.png"
+
+  tasks:
+
+    # --------------------------------------------------------------
+    # 1. Alle Benutzer aus /etc/passwd lesen
+    # --------------------------------------------------------------
+    - name: Lese alle Benutzer aus /etc/passwd
+      command: getent passwd
+      register: passwd_entries
+      changed_when: false
+
+    # --------------------------------------------------------------
+    # 2. Filtere echte Benutzer (UID >= 1000, kein nobody)
+    # --------------------------------------------------------------
+    - name: Erzeuge Liste der realen Benutzer
+      set_fact:
+        ansible_users: "{{ ansible_users | default([]) + [ {'name': fields[0], 'home': fields[5]} ] }}"
+      vars:
+        fields: "{{ item.split(':') }}"
+      loop: "{{ passwd_entries.stdout_lines }}"
+      when:
+        - fields[2] | int >= 1000
+        - fields[0] != 'nobody'
+        - fields[5] is match('^/home/')
+
+    - name: Zeige gefundene Benutzer
+      debug:
+        var: ansible_users
+
+    # --------------------------------------------------------------
+    # 3. Desktop-Verzeichnisse sicherstellen
+    # --------------------------------------------------------------
+    - name: Stelle sicher, dass Desktop-Verzeichnisse existieren
+      file:
+        path: "{{ item.home }}/Desktop"
+        state: directory
+        owner: "{{ item.name }}"
+        group: "{{ item.name }}"
+        mode: "0755"
+      loop: "{{ ansible_users }}"
+
+    # --------------------------------------------------------------
+    # 4. Desktopstarter: uxplay im Terminal
+    # --------------------------------------------------------------
+    - name: Erstelle uxplay-Starter (Terminal)
+      copy:
+        dest: "{{ item.home }}/Desktop/uxplay-terminal.desktop"
+        content: |
+          [Desktop Entry]
+          Type=Application
+          Name=AirPlay Receiver (Terminal)
+          Comment=Starte uxplay im Terminal (sichtbar)
+          Exec=gnome-terminal -- /usr/bin/uxplay -n {{ ansible_hostname }} -nh
+          Icon={{ uxplay_icon }}
+          Terminal=false
+          StartupNotify=true
+        owner: "{{ item.name }}"
+        group: "{{ item.name }}"
+        mode: "0755"
+      loop: "{{ ansible_users }}"
+
+    # --------------------------------------------------------------
+    # 5. Desktopstarter: uxplay im Hintergrund
+    # --------------------------------------------------------------
+    - name: Erstelle uxplay-Starter (Hintergrund)
+      copy:
+        dest: "{{ item.home }}/Desktop/uxplay-background.desktop"
+        content: |
+          [Desktop Entry]
+          Type=Application
+          Name=AirPlay Receiver (Hintergrund)
+          Comment=Starte uxplay im Hintergrund (ohne Terminal)
+          Exec=/usr/bin/uxplay -n {{ ansible_hostname }} -nh
+          Icon={{ uxplay_icon }}
+          Terminal=false
+          StartupNotify=false
+        owner: "{{ item.name }}"
+        group: "{{ item.name }}"
+        mode: "0755"
+      loop: "{{ ansible_users }}"
+
+    # --------------------------------------------------------------
+    # 6. Erfolgsmeldung
+    # --------------------------------------------------------------
+    - name: Erfolgsmeldung
+      debug:
+        msg: "Desktopstarter für uxplay (Terminal & Hintergrund) wurden auf allen Benutzer-Desktops erstellt."
