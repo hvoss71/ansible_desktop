@@ -1,8 +1,0 @@
-[Unit]
-Description=uxplay
-
-[Service]
-ExecStart=usr/bin/uxplay -n Raum311 -nh
-
-[Install]
-WantedBy=multi-user.target
