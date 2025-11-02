@@ -1,0 +1,56 @@
+---
+# ================================================================
+# Playbook: uxplay-user-service.yml
+# Zweck:    Startet uxplay automatisch für jeden eingeloggten Nutzer
+#           mit einem raum-/geräteabhängigen Anzeigenamen.
+# ================================================================
+
+- hosts: localhost
+  connection: local
+  become: true
+
+  vars:
+    room_name: "Raum313"       # ← Anpassen oder per Inventory überschreiben
+    uxplay_path: "/usr/bin/uxplay"
+
+  tasks:
+
+  - name: Ensure systemd user directory exists
+    ansible.builtin.file:
+      path: /etc/systemd/user
+      state: directory
+      owner: root
+      group: root
+      mode: "0755"
+
+  - name: Install uxplay user service
+    ansible.builtin.copy:
+      dest: /etc/systemd/user/uxplay.service
+      owner: root
+      group: root
+      mode: "0644"
+      content: |
+        [Unit]
+        Description=AirPlay Receiver (uxplay)
+        After=graphical-session.target
+
+        [Service]
+        ExecStart={{ uxplay_path }} -n {{ room_name }} -nh
+        Restart=on-failure
+
+        [Install]
+        WantedBy=default.target
+
+  - name: Reload systemd user units
+    ansible.builtin.systemd:
+      daemon_reload: true
+      scope: user
+
+  - name: Enable uxplay for all logged-in users (local + Kerberos)
+    ansible.builtin.shell: |
+      loginctl list-users --no-legend | awk '{print $1}' | while read uid; do
+        sudo -u "#$uid" systemctl --user enable uxplay.service
+      done
+    args:
+      executable: /bin/bash
+    changed_when: false
