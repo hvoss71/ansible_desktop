@@ -56,7 +56,7 @@
     # --------------------------------------------------------------
     - name: Stelle sicher, dass Verzeichnis Desktop existiert
       file:
-        path: "{{ item.home }}/Arbeitsfläche"
+        path: "{{ item.home }}/Desktop"
         state: directory
         owner: "{{ item.name }}"
         group: "{{ item.name }}"
@@ -68,7 +68,7 @@
     # --------------------------------------------------------------
     - name: Erstelle uxplay-Starter auf der Desktop
       copy:
-        dest: "{{ item.home }}/Arbeitsfläche/uxplay-terminal.desktop"
+        dest: "{{ item.home }}/Desktop/uxplay-terminal.desktop"
         content: |
           [Desktop Entry]
           Type=Application
