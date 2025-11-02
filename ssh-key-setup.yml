@@ -21,21 +21,16 @@
         group: "{{ user_name }}"
         mode: '0700'
 
-    - name: Lade öffentlichen SSH-Schlüssel herunter
-      ansible.builtin.get_url:
-        url: "{{ ssh_key_url }}"
-        dest: "/home/{{ user_name }}/.ssh/admin_key.pub"
-        owner: "{{ user_name }}"
-        group: "{{ user_name }}"
-        mode: '0644'
-
-    - name: Installiere öffentlichen SSH-Schlüssel für Administrator
+    - name: Installiere öffentlichen SSH-Schlüssel für Administrator direkt von GitHub
       ansible.builtin.authorized_key:
         user: "{{ user_name }}"
-        key: "{{ lookup('file', '/home/' + user_name + '/.ssh/admin_key.pub') }}"
+        key: "{{ lookup('url', ssh_key_url) }}"
         state: present
 
-    - name: Entferne temporäre Schlüsseldatei
+    - name: Stelle Berechtigungen für authorized_keys sicher
       ansible.builtin.file:
-        path: "/home/{{ user_name }}/.ssh/admin_key.pub"
-        state: absent
+        path: "/home/{{ user_name }}/.ssh/authorized_keys"
+        owner: "{{ user_name }}"
+        group: "{{ user_name }}"
+        mode: '0600'
+        state: file
