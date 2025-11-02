@@ -1,4 +1,3 @@
-/home/holger/Dokumente/GitHub/ansible_desktop/files/uxplay-desktop-starter---
 - hosts: localhost
   connection: local
   become: true
