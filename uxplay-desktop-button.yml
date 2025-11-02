@@ -2,7 +2,7 @@
 # ======================================================================
 # Playbook: uxplay-desktop-button.yml
 # Zweck:    Erstellt Desktopstarter für uxplay (AirPlay Receiver)
-#           auf allen realen Benutzerkonten (UID >= 1000, kein nobody)
+#           für alle echten Benutzer mit /home/* (UID >= 1000)
 # ======================================================================
 
 - hosts: localhost
@@ -15,7 +15,7 @@
   tasks:
 
     # --------------------------------------------------------------
-    # 1. Rohdaten aus /etc/passwd holen
+    # 1. Lese alle Benutzerzeilen aus /etc/passwd
     # --------------------------------------------------------------
     - name: Lese alle Benutzer aus /etc/passwd
       command: getent passwd
@@ -23,27 +23,25 @@
       changed_when: false
 
     # --------------------------------------------------------------
-    # 2. Filtern nach echten Benutzern (UID >= 1000, kein nobody)
+    # 2. Extrahiere nur echte Benutzer (UID >= 1000, /home/*)
     # --------------------------------------------------------------
-    - name: Filtere reale Benutzer mit Home-Verzeichnis
+    - name: Erzeuge Liste der realen Benutzer
       set_fact:
-        ansible_users: >-
-          {{
-            passwd_entries.stdout_lines
-            | map('split', ':')
-            | selectattr('2', 'int', '>=', 1000)
-            | selectattr('0', 'ne', 'nobody')
-            | selectattr('5', 'match', '^/home/')
-            | map('community.general.dict_kv', ['name', 'home'], [0,5])
-            | list
-          }}
+        ansible_users: "{{ ansible_users | default([]) + [ {'name': fields[0], 'home': fields[5]} ] }}"
+      vars:
+        fields: "{{ item.split(':') }}"
+      loop: "{{ passwd_entries.stdout_lines }}"
+      when:
+        - fields[2] | int >= 1000
+        - fields[0] != 'nobody'
+        - fields[5] is match('^/home/')
 
     - name: Zeige gefundene Benutzer
       debug:
         var: ansible_users
 
     # --------------------------------------------------------------
-    # 3. Desktop-Verzeichnisse sicherstellen
+    # 3. Stelle sicher, dass Desktop-Verzeichnisse existieren
     # --------------------------------------------------------------
     - name: Stelle sicher, dass Desktop-Verzeichnisse existieren
       file:
@@ -55,7 +53,7 @@
       loop: "{{ ansible_users }}"
 
     # --------------------------------------------------------------
-    # 4. Desktopstarter anlegen (Terminalstart)
+    # 4. Desktopstarter anlegen (im Terminal)
     # --------------------------------------------------------------
     - name: Erstelle uxplay-Starter auf dem Desktop
       copy:
@@ -80,4 +78,3 @@
     - name: Erfolgsmeldung
       debug:
         msg: "Desktopstarter für uxplay wurde auf allen Benutzer-Desktops erstellt."
-
