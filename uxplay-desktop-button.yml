@@ -1,8 +1,8 @@
 ---
 # ======================================================================
 # Playbook: uxplay-desktop-button.yml
-# Zweck:    Erstellt Desktopstarter für uxplay (AirPlay Receiver)
-#           auf deutschsprachigen Cinnamon-Systemen
+# Zweck:    Installiert UnixPlay (AirPlay Receiver) und erstellt einen Desktopstarter
+#           auf Cinnamon-Systemen
 #           - Terminal-Start
 #           - Icon liegt in files/uxplay.png
 # ======================================================================
@@ -50,23 +50,22 @@
     - name: Zeige gefundene Benutzer
       debug:
         var: ansible_users
+        
+    # --------------------------------------------------------------
+    # 4. uxplay installieren
+    # --------------------------------------------------------------
+        
+    - name: Installiere UnixPlay
+    ansible.builtin.apt:
+      name: uxplay
+      state: latest
+      update_cache: yes    
+        
 
     # --------------------------------------------------------------
-    # 4. Desktop-Verzeichnisse sicherstellen (deutsche Cinnamon-Variante)
+    # 5. Desktopstarter anlegen (Terminalstart)
     # --------------------------------------------------------------
-#    - name: Stelle sicher, dass Verzeichnis Desktop existiert
-#      file:
- #       path: "{{ item.home }}/Desktop"
-  #      state: directory
-   #     owner: "{{ item.name }}"
-    #    group: "{{ item.name }}"
-     #   mode: "0755"
-      #loop: "{{ ansible_users }}"
-
-    # --------------------------------------------------------------
-    # 5. Arbeitsflächestarter anlegen (Terminalstart)
-    # --------------------------------------------------------------
-    - name: Erstelle uxplay-Starter auf der Desktop
+    - name: Erstelle uxplay-Starter auf dem Desktop
       copy:
         dest: "{{ item.home }}/Desktop/uxplay-terminal.desktop"
         content: |
