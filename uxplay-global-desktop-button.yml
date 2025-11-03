@@ -129,3 +129,38 @@
       args:
         executable: /bin/bash
       ignore_errors: true
+      
+    # --------------------------------------------------------------
+    # 9. Markiere uxplay-Starter als vertrauenswürdig für Cinnamon
+    # --------------------------------------------------------------
+    - name: Markiere uxplay-Starter als vertrauenswürdig
+      ansible.builtin.shell: |
+        for dir in /home/*; do
+          desktop_file="$dir/Schreibtisch/uxplay-terminal.desktop"
+          if [ -f "$desktop_file" ]; then
+            chown $(basename "$dir"):$(basename "$dir") "$desktop_file"
+            chmod +x "$desktop_file"
+            sudo -u $(basename "$dir") DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u $(basename "$dir"))/bus gio set "$desktop_file" "metadata::trusted" true
+          fi
+        done
+      args:
+        executable: /bin/bash
+      ignore_errors: true
+
+    # --------------------------------------------------------------
+    # 10. Starte Nemo-Desktop neu, damit das Icon angezeigt wird
+    # --------------------------------------------------------------
+    - name: Lade Desktop-Icons neu
+      ansible.builtin.shell: |
+        for user in $(who | awk '{print $1}' | sort -u); do
+          uid=$(id -u "$user" 2>/dev/null || true)
+          if [ -n "$uid" ]; then
+            sudo -u "$user" DISPLAY=:0 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$uid/bus nemo-desktop --quit 2>/dev/null || true
+            sleep 1
+            sudo -u "$user" DISPLAY=:0 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$uid/bus nemo-desktop --no-desktop 2>/dev/null || true
+          fi
+        done
+      args:
+        executable: /bin/bash
+      ignore_errors: true
+
