@@ -109,6 +109,7 @@
   #      - xed
         - catfish
         - flatpak
+        - gnome-software-plugin-flatpak
   #      - mintinstall
 
       state: latest
@@ -149,7 +150,9 @@
 
   - name: Stelle sicher, dass Flatpak installiert ist
     ansible.builtin.apt:
-      name: flatpak
+      name:
+      - flatpak
+      - gnome-software-plugin-flatpak
       state: present
 
   - name: Füge Flathub-Repository hinzu
