@@ -18,7 +18,7 @@
     playbooks:
       - "ssh-key-setup.yml"
       - "veyon-installer.yml"
-      - "veyon-config-{{ room }}.yml"
+      - "veyon-config-313.yml"
       - "informatik.yml"
 
   tasks:
