@@ -76,10 +76,10 @@
 
   - name: Lade die aktuelle Installationsdatei von Veyon herunter (falls nicht installiert)
     ansible.builtin.get_url:
-      url: "https://github.com/veyon/veyon/releases/download/{{ veyon_folder }}/veyon_{{ veyon_version }}.deb"
+      url: "https://github.com/veyon/veyon/releases/download/v{{ veyon_folder }}/veyon_{{ veyon_version }}.deb"
       dest: "/home/administrator/packages/veyon_{{ veyon_version }}.deb"
       mode: '0644'
-    force: no
+#    force: no
 #    when: ansible_facts.packages | dict2items | selectattr('key', 'match', '^veyon') | list | length == 0
 
   - name: Installiere Veyon
