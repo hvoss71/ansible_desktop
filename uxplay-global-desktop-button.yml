@@ -101,4 +101,26 @@
         executable: /bin/bash
       ignore_errors: true
       
+    # --------------------------------------------------------------
+    # 7. Starter in der unteren Taskleiste (Panel) eintragen
+    # --------------------------------------------------------------
+    - name: Füge uxplay zum Panel-Favoriten hinzu
+      ansible.builtin.shell: |
+        for user in $(who | awk '{print $1}' | sort -u); do
+          uid=$(id -u "$user")
+          export DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$uid/bus"
+          # vorhandene Favoriten auslesen
+          favorites=$(sudo -u "$user" gsettings get org.cinnamon favorite-apps)
+          # prüfen, ob unser Starter schon drin ist
+          if [[ $favorites != *"uxplay-terminal.desktop"* ]]; then
+            # uxplay hinzufügen
+            new_favorites=$(echo $favorites | sed "s/]$/, 'uxplay-terminal.desktop']/")
+            sudo -u "$user" gsettings set org.cinnamon favorite-apps "$new_favorites"
+          fi
+        done
+      args:
+        executable: /bin/bash
+      ignore_errors: true
+
+      
 
