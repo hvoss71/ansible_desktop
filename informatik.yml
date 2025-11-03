@@ -168,6 +168,8 @@
       flatpakrepo_url: "https://dl.flathub.org/repo/flathub.flatpakrepo"
       method: system
 
+
+
   - name: Installiere Unterrichtssoftware über Flatpak
     community.general.flatpak:
       name:
@@ -194,6 +196,7 @@
       src: /var/lib/flatpak/exports/share/applications
       dest: /usr/share/applications/flatpak
       state: link
+
 
 
   ###########################################################################
