@@ -1,0 +1,95 @@
+---
+# ======================================================================
+# Playbook: uxplay-global-desktop-button.yml
+# Zweck:    Erstellt systemweiten Starter für uxplay auf Cinnamon-Desktops
+#           - Sichtbar im Menü und auf Schreibtischen aller Benutzer
+#           - Terminal bleibt nach uxplay offen
+#           - Kein "unsicher"-Hinweis in Cinnamon
+# ======================================================================
+
+- hosts: localhost
+  connection: local
+  become: true
+
+  vars:
+    uxplay_icon: "/usr/share/icons/hicolor/128x128/apps/uxplay.png"
+    desktop_entry_system: "/usr/share/applications/uxplay-terminal.desktop"
+    desktop_entry_skel: "/etc/skel/Schreibtisch/uxplay-terminal.desktop"
+    uxplay_exec: "/usr/bin/uxplay -n {{ ansible_hostname }} -nh"
+
+  tasks:
+    # --------------------------------------------------------------
+    # 1. Icon ins System kopieren
+    # --------------------------------------------------------------
+    - name: Kopiere uxplay-Icon
+      copy:
+        src: "files/uxplay.png"
+        dest: "{{ uxplay_icon }}"
+        mode: "0644"
+
+    # --------------------------------------------------------------
+    # 2. Systemweiten Starter im Menü anlegen
+    # --------------------------------------------------------------
+    - name: Erstelle systemweiten uxplay-Starter
+      copy:
+        dest: "{{ desktop_entry_system }}"
+        content: |
+          [Desktop Entry]
+          Type=Application
+          Name=AirPlay Receiver (Terminal)
+          Comment=Starte uxplay im Terminal
+          Exec=gnome-terminal -- bash -c "{{ uxplay_exec }}; echo; echo 'Drücken Sie [Enter], um das Terminal zu schließen...'; read"
+          Icon={{ uxplay_icon }}
+          Terminal=false
+          Categories=AudioVideo;Network;
+          StartupNotify=true
+      mode: "0644"
+
+    # --------------------------------------------------------------
+    # 3. Starter für zukünftige Benutzer (in /etc/skel)
+    # --------------------------------------------------------------
+    - name: Starter in /etc/skel ablegen (für neue Benutzer)
+      copy:
+        dest: "{{ desktop_entry_skel }}"
+        content: |
+          [Desktop Entry]
+          Type=Application
+          Name=AirPlay Receiver (Terminal)
+          Comment=Starte uxplay im Terminal
+          Exec=gnome-terminal -- bash -c "{{ uxplay_exec }}; echo; echo 'Drücken Sie [Enter], um das Terminal zu schließen...'; read"
+          Icon={{ uxplay_icon }}
+          Terminal=false
+          StartupNotify=true
+          X-GNOME-UsesNotifications=true
+          X-AppStream-Ignore=true
+      mode: "0755"
+
+    # --------------------------------------------------------------
+    # 4. Starter auf Schreibtischen bestehender Benutzer anlegen
+    # --------------------------------------------------------------
+    - name: Kopiere Starter auf Schreibtische bestehender Benutzer
+      shell: |
+        for dir in /home/*; do
+          if [ -d "$dir/Schreibtisch" ] && [ -w "$dir/Schreibtisch" ]; then
+            cp "{{ desktop_entry_skel }}" "$dir/Schreibtisch/uxplay-terminal.desktop"
+            chown $(basename "$dir"):$(basename "$dir") "$dir/Schreibtisch/uxplay-terminal.desktop"
+            chmod +x "$dir/Schreibtisch/uxplay-terminal.desktop"
+          fi
+        done
+      args:
+        executable: /bin/bash
+      ignore_errors: true
+
+    # --------------------------------------------------------------
+    # 5. Vertrauen in Cinnamon aktivieren (keine Nachfrage)
+    # --------------------------------------------------------------
+    - name: Markiere alle uxplay-Starter als vertrauenswürdig
+      shell: |
+        for file in /home/*/Schreibtisch/uxplay-terminal.desktop; do
+          if [ -f "$file" ]; then
+            gio set "$file" "metadata::trusted" true || true
+          fi
+        done
+      args:
+        executable: /bin/bash
+      ignore_errors: true

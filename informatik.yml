@@ -76,6 +76,8 @@
         # --- Entwicklung / Informatik ---
         - arduino
         - emacs
+        - kate
+        - gedit
         - thonny
         - python-is-python3
         - python3-keras-applications
@@ -97,20 +99,13 @@
         - libreoffice
         - libreoffice-l10n-de
 
-        # --- Netzwerk / Fernzugriff ---
-#        - x11vnc
- #       - remmina
-
-        # --- Cinnamon Desktop ---
+         # --- Cinnamon Desktop ---
         - cinnamon
         - cinnamon-common
         - nemo-fileroller
-  #      - nemo-share
-  #      - xed
         - catfish
         - flatpak
         - gnome-software-plugin-flatpak
-  #      - mintinstall
 
       state: latest
       update_cache: yes
@@ -156,19 +151,12 @@
       state: present
       update_cache: yes
 
-#      - name: Initialisiere Flatpak-Systeminstallation (falls nötig)
- #   ansible.builtin.command: flatpak system-init
-  #  args:
-   #   creates: /var/lib/flatpak/runtime
-
   - name: Füge Flathub-Repository hinzu (systemweit)
     community.general.flatpak_remote:
       name: flathub
       state: present
       flatpakrepo_url: "https://dl.flathub.org/repo/flathub.flatpakrepo"
       method: system
-
-
 
   - name: Installiere Unterrichtssoftware über Flatpak
     community.general.flatpak:
@@ -190,14 +178,6 @@
         - org.apache.netbeans
       state: present
       method: system
-
-#  - name: Verknüpfe systemweite Flatpak-Desktopdateien mit /usr/share/applications
- #   ansible.builtin.file:
-  #    src: /var/lib/flatpak/exports/share/applications
-   #   dest: /usr/share/applications/flatpak
-    #  state: link
-
-
 
   ###########################################################################
   # 7. Systempflege
