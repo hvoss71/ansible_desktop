@@ -64,7 +64,6 @@
   - name: Installiere System- und Desktop-Sprachpakete (Deutsch)
     ansible.builtin.apt:
       name:
-      - "{{ (['task-german'] if ansible_facts['distribution'] == 'Debian' else ['language-pack-de']) }}"
       - 'language-pack-gnome-de'
       state: latest
       update_cache: yes
