@@ -156,10 +156,10 @@
       state: present
       update_cache: yes
 
-  - name: Initialisiere Flatpak-Systeminstallation (falls nötig)
-    ansible.builtin.command: flatpak system-init
-    args:
-      creates: /var/lib/flatpak/runtime
+#      - name: Initialisiere Flatpak-Systeminstallation (falls nötig)
+ #   ansible.builtin.command: flatpak system-init
+  #  args:
+   #   creates: /var/lib/flatpak/runtime
 
   - name: Füge Flathub-Repository hinzu (systemweit)
     community.general.flatpak_remote:
@@ -191,11 +191,11 @@
       state: present
       method: system
 
-  - name: Verknüpfe systemweite Flatpak-Desktopdateien mit /usr/share/applications
-    ansible.builtin.file:
-      src: /var/lib/flatpak/exports/share/applications
-      dest: /usr/share/applications/flatpak
-      state: link
+#  - name: Verknüpfe systemweite Flatpak-Desktopdateien mit /usr/share/applications
+ #   ansible.builtin.file:
+  #    src: /var/lib/flatpak/exports/share/applications
+   #   dest: /usr/share/applications/flatpak
+    #  state: link
 
 
 
