@@ -41,7 +41,7 @@
           Terminal=false
           Categories=AudioVideo;Network;
           StartupNotify=true
-      mode: "0644"
+        mode: "0644"
 
     # --------------------------------------------------------------
     # 3. Starter in /etc/skel ablegen (für neue Benutzer)
