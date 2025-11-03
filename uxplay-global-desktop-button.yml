@@ -11,7 +11,7 @@
   vars:
     uxplay_icon: "/usr/share/icons/hicolor/128x128/apps/uxplay.png"
     desktop_entry_system: "/usr/share/applications/uxplay-terminal.desktop"
-    desktop_entry_skel: "/etc/skel/Schreibtisch/uxplay-terminal.desktop"
+    desktop_entry_skel: "/etc/skel/Desktop/uxplay-terminal.desktop"
     uxplay_exec: "/usr/bin/uxplay -n {{ ansible_hostname }} -nh"
 
   tasks:
@@ -44,11 +44,11 @@
         mode: "0644"
 
     # --------------------------------------------------------------
-    # 3. Erstelle Schreibtisch-Verzeichnis in /etc/skel falls nötig
+    # 3. Erstelle Desktop-Verzeichnis in /etc/skel falls nötig
     # --------------------------------------------------------------
-    - name: Stelle sicher, dass /etc/skel/Schreibtisch existiert
+    - name: Stelle sicher, dass /etc/skel/Desktop existiert
       ansible.builtin.file:
-        path: /etc/skel/Schreibtisch
+        path: /etc/skel/Desktop
         state: directory
         mode: "0755"
 
@@ -72,15 +72,15 @@
         mode: "0755"
 
     # --------------------------------------------------------------
-    # 5. Starter auf Schreibtischen bestehender Benutzer anlegen
+    # 5. Starter auf Desktop bestehender Benutzer anlegen
     # --------------------------------------------------------------
-    - name: Kopiere Starter auf Schreibtische bestehender Benutzer
+    - name: Kopiere Starter auf Desktope bestehender Benutzer
       ansible.builtin.shell: |
         for dir in /home/*; do
-          if [ -d "$dir/Schreibtisch" ] && [ -w "$dir/Schreibtisch" ]; then
-            cp "{{ desktop_entry_skel }}" "$dir/Schreibtisch/uxplay-terminal.desktop"
-            chown $(basename "$dir"):$(basename "$dir") "$dir/Schreibtisch/uxplay-terminal.desktop"
-            chmod +x "$dir/Schreibtisch/uxplay-terminal.desktop"
+          if [ -d "$dir/Desktop" ] && [ -w "$dir/Desktop" ]; then
+            cp "{{ desktop_entry_skel }}" "$dir/Desktop/uxplay-terminal.desktop"
+            chown $(basename "$dir"):$(basename "$dir") "$dir/Desktop/uxplay-terminal.desktop"
+            chmod +x "$dir/Desktop/uxplay-terminal.desktop"
           fi
         done
       args:
@@ -92,7 +92,7 @@
     # --------------------------------------------------------------
     - name: Markiere alle uxplay-Starter als vertrauenswürdig
       ansible.builtin.shell: |
-        for file in /home/*/Schreibtisch/uxplay-terminal.desktop; do
+        for file in /home/*/Desktop/uxplay-terminal.desktop; do
           if [ -f "$file" ]; then
             gio set "$file" "metadata::trusted" true || true
           fi
@@ -104,12 +104,12 @@
     # --------------------------------------------------------------
     # 7. Setze Besitzrechte und Sichtbarkeit korrekt
     # --------------------------------------------------------------
-    - name: Korrigiere Besitzrechte und Berechtigungen auf Benutzer-Schreibtischen
+    - name: Korrigiere Besitzrechte und Berechtigungen auf Benutzer-Desktop
       ansible.builtin.shell: |
         for dir in /home/*; do
-          if [ -d "$dir/Schreibtisch" ]; then
-            chown $(basename "$dir"):$(basename "$dir") "$dir/Schreibtisch/uxplay-terminal.desktop" 2>/dev/null || true
-            chmod +x "$dir/Schreibtisch/uxplay-terminal.desktop" 2>/dev/null || true
+          if [ -d "$dir/Desktop" ]; then
+            chown $(basename "$dir"):$(basename "$dir") "$dir/Desktop/uxplay-terminal.desktop" 2>/dev/null || true
+            chmod +x "$dir/Desktop/uxplay-terminal.desktop" 2>/dev/null || true
           fi
         done
       args:
@@ -136,7 +136,7 @@
     - name: Markiere uxplay-Starter als vertrauenswürdig
       ansible.builtin.shell: |
         for dir in /home/*; do
-          desktop_file="$dir/Schreibtisch/uxplay-terminal.desktop"
+          desktop_file="$dir/Desktop/uxplay-terminal.desktop"
           if [ -f "$desktop_file" ]; then
             chown $(basename "$dir"):$(basename "$dir") "$desktop_file"
             chmod +x "$desktop_file"
