@@ -44,7 +44,16 @@
         mode: "0644"
 
     # --------------------------------------------------------------
-    # 3. Starter in /etc/skel ablegen (für neue Benutzer)
+    # 3. Erstelle Schreibtisch-Verzeichnis in /etc/skel falls nötig
+    # --------------------------------------------------------------
+    - name: Stelle sicher, dass /etc/skel/Schreibtisch existiert
+      ansible.builtin.file:
+        path: /etc/skel/Schreibtisch
+        state: directory
+        mode: "0755"
+
+    # --------------------------------------------------------------
+    # 4. Starter in /etc/skel ablegen (für neue Benutzer)
     # --------------------------------------------------------------
     - name: Starter in /etc/skel ablegen
       ansible.builtin.copy:
@@ -63,7 +72,7 @@
         mode: "0755"
 
     # --------------------------------------------------------------
-    # 4. Starter auf Schreibtischen bestehender Benutzer anlegen
+    # 5. Starter auf Schreibtischen bestehender Benutzer anlegen
     # --------------------------------------------------------------
     - name: Kopiere Starter auf Schreibtische bestehender Benutzer
       ansible.builtin.shell: |
@@ -79,7 +88,7 @@
       ignore_errors: true
 
     # --------------------------------------------------------------
-    # 5. Vertrauen in Cinnamon aktivieren (kein Sicherheitsdialog)
+    # 6. Vertrauen in Cinnamon aktivieren (kein Sicherheitsdialog)
     # --------------------------------------------------------------
     - name: Markiere alle uxplay-Starter als vertrauenswürdig
       ansible.builtin.shell: |
