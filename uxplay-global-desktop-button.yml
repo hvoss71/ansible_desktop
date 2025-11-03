@@ -100,3 +100,32 @@
       args:
         executable: /bin/bash
       ignore_errors: true
+      
+    # --------------------------------------------------------------
+    # 7. Setze Besitzrechte und Sichtbarkeit korrekt
+    # --------------------------------------------------------------
+    - name: Korrigiere Besitzrechte und Berechtigungen auf Benutzer-Schreibtischen
+      ansible.builtin.shell: |
+        for dir in /home/*; do
+          if [ -d "$dir/Schreibtisch" ]; then
+            chown $(basename "$dir"):$(basename "$dir") "$dir/Schreibtisch/uxplay-terminal.desktop" 2>/dev/null || true
+            chmod +x "$dir/Schreibtisch/uxplay-terminal.desktop" 2>/dev/null || true
+          fi
+        done
+      args:
+        executable: /bin/bash
+      ignore_errors: true
+
+    # --------------------------------------------------------------
+    # 8. Nemo-Desktop neu laden, damit Icons erscheinen
+    # --------------------------------------------------------------
+    - name: Aktualisiere Desktop-Ansicht für angemeldete Benutzer
+      ansible.builtin.shell: |
+        for user in $(who | awk '{print $1}' | sort -u); do
+          sudo -u "$user" DISPLAY=:0 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u $user)/bus nemo-desktop --quit 2>/dev/null || true
+          sleep 1
+          sudo -u "$user" DISPLAY=:0 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u $user)/bus nemo-desktop --no-desktop 2>/dev/null || true
+        done
+      args:
+        executable: /bin/bash
+      ignore_errors: true
