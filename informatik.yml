@@ -109,7 +109,7 @@
   #      - xed
         - catfish
         - flatpak
-        - mintinstall
+  #      - mintinstall
 
       state: latest
       update_cache: yes
