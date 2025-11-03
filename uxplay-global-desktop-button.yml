@@ -2,6 +2,9 @@
 # ======================================================================
 # Playbook: uxplay-global-desktop-button.yml
 # Zweck:    Erstellt systemweiten Starter für uxplay auf Cinnamon-Desktops
+#           - Sichtbar auf allen Benutzer-Desktops
+#           - Terminal bleibt geöffnet nach Programmstart
+#           - Icon im Menü
 # ======================================================================
 
 - hosts: localhost
@@ -11,8 +14,11 @@
   vars:
     uxplay_icon: "/usr/share/icons/hicolor/128x128/apps/uxplay.png"
     desktop_entry_system: "/usr/share/applications/uxplay-terminal.desktop"
-    desktop_entry_skel: "/etc/skel/Desktop/uxplay-terminal.desktop"
     uxplay_exec: "/usr/bin/uxplay -n {{ ansible_hostname }} -nh"
+    desktop_dirs:
+      - Desktop
+      - Schreibtisch
+      - Arbeitsfläche
 
   tasks:
 
@@ -44,20 +50,37 @@
         mode: "0644"
 
     # --------------------------------------------------------------
-    # 3. Erstelle Desktop-Verzeichnis in /etc/skel falls nötig
+    # 3. Starter auf Desktop-Ordnern bestehender Benutzer anlegen
     # --------------------------------------------------------------
-    - name: Stelle sicher, dass /etc/skel/Desktop existiert
-      ansible.builtin.file:
-        path: /etc/skel/Desktop
-        state: directory
-        mode: "0755"
+    - name: Kopiere Starter auf Desktop-Ordner bestehender Benutzer
+      ansible.builtin.shell: |
+        for dir in /home/*; do
+          for d in {{ desktop_dirs | join(' ') }}; do
+            target="$dir/$d"
+            if [ -d "$target" ] && [ -w "$target" ]; then
+              cp -f "{{ desktop_entry_system }}" "$target/uxplay-terminal.desktop"
+              chown $(basename "$dir"):$(basename "$dir") "$target/uxplay-terminal.desktop"
+              chmod +x "$target/uxplay-terminal.desktop"
+            fi
+          done
+        done
+      args:
+        executable: /bin/bash
+      ignore_errors: true
 
     # --------------------------------------------------------------
-    # 4. Starter in /etc/skel ablegen (für neue Benutzer)
+    # 4. Starter in /etc/skel für neue Benutzer anlegen
     # --------------------------------------------------------------
-    - name: Starter in /etc/skel ablegen
+    - name: Lege Desktop-Ordner in /etc/skel an
+      ansible.builtin.file:
+        path: "/etc/skel/{{ item }}"
+        state: directory
+        mode: "0755"
+      loop: "{{ desktop_dirs }}"
+
+    - name: Kopiere Starter in /etc/skel für neue Benutzer
       ansible.builtin.copy:
-        dest: "{{ desktop_entry_skel }}"
+        dest: "/etc/skel/{{ item }}/uxplay-terminal.desktop"
         content: |
           [Desktop Entry]
           Type=Application
@@ -70,36 +93,4 @@
           X-GNOME-UsesNotifications=true
           X-AppStream-Ignore=true
         mode: "0755"
-
-    # --------------------------------------------------------------
-    # 5. Starter auf Desktop bestehender Benutzer anlegen
-    # --------------------------------------------------------------
-    - name: Kopiere Starter auf Desktope bestehender Benutzer
-      ansible.builtin.shell: |
-        for dir in /home/*; do
-          if [ -d "$dir/Desktop" ] && [ -w "$dir/Desktop" ]; then
-            cp "{{ desktop_entry_skel }}" "$dir/Desktop/uxplay-terminal.desktop"
-            chown $(basename "$dir"):$(basename "$dir") "$dir/Desktop/uxplay-terminal.desktop"
-            chmod +x "$dir/Desktop/uxplay-terminal.desktop"
-          fi
-        done
-      args:
-        executable: /bin/bash
-      ignore_errors: true
-
-    # --------------------------------------------------------------
-    # 6. Vertrauen in Cinnamon aktivieren (kein Sicherheitsdialog)
-    # --------------------------------------------------------------
-    - name: Markiere alle uxplay-Starter als vertrauenswürdig
-      ansible.builtin.shell: |
-        for file in /home/*/Desktop/uxplay-terminal.desktop; do
-          if [ -f "$file" ]; then
-            gio set "$file" "metadata::trusted" true || true
-          fi
-        done
-      args:
-        executable: /bin/bash
-      ignore_errors: true
-    
-      
-
+      loop: "{{ desktop_dirs }}"
