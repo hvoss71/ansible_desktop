@@ -148,14 +148,20 @@
   # 6. Flatpak-Integration und externe Software
   ###########################################################################
 
-  - name: Stelle sicher, dass Flatpak installiert ist
+   - name: Stelle sicher, dass Flatpak und Plugin installiert sind
     ansible.builtin.apt:
       name:
-      - flatpak
-      - gnome-software-plugin-flatpak
+        - flatpak
+        - gnome-software-plugin-flatpak
       state: present
+      update_cache: yes
 
-  - name: Füge Flathub-Repository hinzu
+  - name: Initialisiere Flatpak-Systeminstallation (falls nötig)
+    ansible.builtin.command: flatpak system-init
+    args:
+      creates: /var/lib/flatpak/runtime
+
+  - name: Füge Flathub-Repository hinzu (systemweit)
     community.general.flatpak_remote:
       name: flathub
       state: present
@@ -182,6 +188,13 @@
         - org.apache.netbeans
       state: present
       method: system
+
+  - name: Verknüpfe systemweite Flatpak-Desktopdateien mit /usr/share/applications
+    ansible.builtin.file:
+      src: /var/lib/flatpak/exports/share/applications
+      dest: /usr/share/applications/flatpak
+      state: link
+
 
   ###########################################################################
   # 7. Systempflege
