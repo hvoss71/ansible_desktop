@@ -70,7 +70,7 @@
     ansible.builtin.apt:
       name:
         # --- Browser ---
-        - chromium-browser
+        - chromium
         - chromium-l10n
 
         # --- Entwicklung / Informatik ---
