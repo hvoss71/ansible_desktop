@@ -98,14 +98,14 @@
         - libreoffice-l10n-de
 
         # --- Netzwerk / Fernzugriff ---
-        - x11vnc
-        - remmina
+#        - x11vnc
+ #       - remmina
 
         # --- Cinnamon Desktop ---
         - cinnamon
         - cinnamon-common
         - nemo-fileroller
-        - nemo-share
+  #      - nemo-share
         - xed
         - catfish
         - flatpak
