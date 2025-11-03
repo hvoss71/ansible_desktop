@@ -45,7 +45,7 @@
   - name: Erzeuge lokalen Notfall-Benutzer 'hainberg'
     ansible.builtin.user:
       name: hainberg
-      uid: 2001
+#      uid: 2001
       group: users
       create_home: yes
       shell: /bin/bash
