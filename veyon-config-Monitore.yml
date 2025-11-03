@@ -69,7 +69,7 @@
 
       # Neue Schlüssel importieren und Zugriffsgruppen setzen
       veyon-cli authkeys import {{ room }}/public /tmp/{{ room }}_public_key.pem
-      veyon-cli authkeys setaccessgroup {{ room }}/public schueler.innen
+      veyon-cli authkeys setaccessgroup {{ room }}/public monitore
       veyon-cli authkeys import {{ room }}/private /tmp/{{ room }}_private_key.pem
       veyon-cli authkeys setaccessgroup {{ room }}/private lehrer.innen
     args:
