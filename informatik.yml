@@ -60,14 +60,6 @@
     ansible.builtin.apt:
       update_cache: yes
       upgrade: dist
-      
-  - name: Installiere System- und Desktop-Sprachpakete (Deutsch)
-    ansible.builtin.apt:
-      name:
-      - 'language-pack-gnome-de'
-      state: latest
-      update_cache: yes
-
 
 
   ###########################################################################
