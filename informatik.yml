@@ -148,7 +148,7 @@
   # 6. Flatpak-Integration und externe Software
   ###########################################################################
 
-   - name: Stelle sicher, dass Flatpak und Plugin installiert sind
+  - name: Stelle sicher, dass Flatpak und Plugin installiert sind
     ansible.builtin.apt:
       name:
         - flatpak
