@@ -42,10 +42,10 @@
       name: hainberg
       state: present
 
-  - name: Erzeuge lokalen Notfall-Benutzer 'hainberg'
+  - name: Erzeuge lokalen Notfall-Benutzer 'hainberg-local'
     ansible.builtin.user:
-      name: hainberg
-      uid: 3000
+      name: hainberg-local
+      uid: 2001
       group: users
       create_home: yes
       shell: /bin/bash
