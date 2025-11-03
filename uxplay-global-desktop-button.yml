@@ -2,9 +2,6 @@
 # ======================================================================
 # Playbook: uxplay-global-desktop-button.yml
 # Zweck:    Erstellt systemweiten Starter für uxplay auf Cinnamon-Desktops
-#           - Sichtbar im Menü und auf Schreibtischen aller Benutzer
-#           - Terminal bleibt nach uxplay offen
-#           - Kein "unsicher"-Hinweis in Cinnamon
 # ======================================================================
 
 - hosts: localhost
@@ -18,11 +15,12 @@
     uxplay_exec: "/usr/bin/uxplay -n {{ ansible_hostname }} -nh"
 
   tasks:
+
     # --------------------------------------------------------------
     # 1. Icon ins System kopieren
     # --------------------------------------------------------------
     - name: Kopiere uxplay-Icon
-      copy:
+      ansible.builtin.copy:
         src: "files/uxplay.png"
         dest: "{{ uxplay_icon }}"
         mode: "0644"
@@ -31,7 +29,7 @@
     # 2. Systemweiten Starter im Menü anlegen
     # --------------------------------------------------------------
     - name: Erstelle systemweiten uxplay-Starter
-      copy:
+      ansible.builtin.copy:
         dest: "{{ desktop_entry_system }}"
         content: |
           [Desktop Entry]
@@ -46,10 +44,10 @@
       mode: "0644"
 
     # --------------------------------------------------------------
-    # 3. Starter für zukünftige Benutzer (in /etc/skel)
+    # 3. Starter in /etc/skel ablegen (für neue Benutzer)
     # --------------------------------------------------------------
-    - name: Starter in /etc/skel ablegen (für neue Benutzer)
-      copy:
+    - name: Starter in /etc/skel ablegen
+      ansible.builtin.copy:
         dest: "{{ desktop_entry_skel }}"
         content: |
           [Desktop Entry]
@@ -62,13 +60,13 @@
           StartupNotify=true
           X-GNOME-UsesNotifications=true
           X-AppStream-Ignore=true
-      mode: "0755"
+        mode: "0755"
 
     # --------------------------------------------------------------
     # 4. Starter auf Schreibtischen bestehender Benutzer anlegen
     # --------------------------------------------------------------
     - name: Kopiere Starter auf Schreibtische bestehender Benutzer
-      shell: |
+      ansible.builtin.shell: |
         for dir in /home/*; do
           if [ -d "$dir/Schreibtisch" ] && [ -w "$dir/Schreibtisch" ]; then
             cp "{{ desktop_entry_skel }}" "$dir/Schreibtisch/uxplay-terminal.desktop"
@@ -81,10 +79,10 @@
       ignore_errors: true
 
     # --------------------------------------------------------------
-    # 5. Vertrauen in Cinnamon aktivieren (keine Nachfrage)
+    # 5. Vertrauen in Cinnamon aktivieren (kein Sicherheitsdialog)
     # --------------------------------------------------------------
     - name: Markiere alle uxplay-Starter als vertrauenswürdig
-      shell: |
+      ansible.builtin.shell: |
         for file in /home/*/Schreibtisch/uxplay-terminal.desktop; do
           if [ -f "$file" ]; then
             gio set "$file" "metadata::trusted" true || true
