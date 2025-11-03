@@ -14,7 +14,7 @@
   # Prüfen, ob das Command Line Interface installiert ist
   # --------------------------------------------------------------------------
 
-    - name: Prüfe, ob veyon-cli installiert ist
+  - name: Prüfe, ob veyon-cli installiert ist
     ansible.builtin.command: which veyon-cli
     register: veyon_cli
     failed_when: veyon_cli.rc != 0
