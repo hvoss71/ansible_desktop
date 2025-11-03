@@ -106,7 +106,7 @@
         - cinnamon-common
         - nemo-fileroller
   #      - nemo-share
-        - xed
+  #      - xed
         - catfish
         - flatpak
         - mintinstall
