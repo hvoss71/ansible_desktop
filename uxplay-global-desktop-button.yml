@@ -54,7 +54,7 @@
     # --------------------------------------------------------------
     - name: Kopiere Starter auf Desktop-Ordner bestehender Benutzer
       ansible.builtin.shell: |
-        for dir in /home/*; do
+        for dir in /home/HAINBERG/*; do
           for d in {{ desktop_dirs | join(' ') }}; do
             target="$dir/$d"
             if [ -d "$target" ] && [ -w "$target" ]; then
