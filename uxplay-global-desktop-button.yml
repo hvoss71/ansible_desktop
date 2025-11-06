@@ -23,6 +23,14 @@
   tasks:
 
     # --------------------------------------------------------------
+    # 0. uxplay installieren
+    # --------------------------------------------------------------
+   - name: Installiere den Airplay Receiver (uxplay)
+     ansible.builtin.apt:
+       name: uxplay
+       state: latest
+       update_cache: yes
+    # --------------------------------------------------------------
     # 1. Icon ins System kopieren
     # --------------------------------------------------------------
     - name: Kopiere uxplay-Icon
