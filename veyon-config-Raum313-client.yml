@@ -65,7 +65,7 @@
 
       # UNIVERSAL-KEY
       veyon-cli authkeys import universal/public /tmp/universal_public_key.pem
-      veyon-cli authkeys setaccessgroup universal/public users
+      veyon-cli authkeys setaccessgroup universal/public Admins
     args:
       executable: /bin/bash
     changed_when: true
