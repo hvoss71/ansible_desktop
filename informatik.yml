@@ -173,7 +173,7 @@
         - org.bluej.BlueJ
         - com.jetbrains.IntelliJ-IDEA-Community
         - com.vscodium.codium
-        - org.greenfoot.Greenfoot
+  #      - org.greenfoot.Greenfoot
         - com.bambulab.BambuStudio
         - org.apache.netbeans
       state: present
