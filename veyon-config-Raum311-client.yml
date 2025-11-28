@@ -1,0 +1,85 @@
+---
+# Dieses Playbook konfiguriert Veyon raumbezogen über das Command Line Interface
+
+- hosts: localhost
+  connection: local
+  become: true
+
+  vars:
+    room: "Raum311"
+
+  tasks:
+
+  # --------------------------------------------------------------------------
+  # Prüfen, ob das Command Line Interface installiert ist
+  # --------------------------------------------------------------------------
+
+  - name: Prüfe, ob veyon-cli installiert ist
+    ansible.builtin.command: which veyon-cli
+    register: veyon_cli
+    failed_when: veyon_cli.rc != 0
+    changed_when: false
+
+  # --------------------------------------------------------------------------
+  # Konfigurations- und Schlüssel-Dateien herunterladen
+  # --------------------------------------------------------------------------
+
+  - name: Lade die Veyon-Konfigurationsdatei herunter
+    ansible.builtin.get_url:
+      url: "https://raw.githubusercontent.com/hvoss71/ansible_desktop/main/veyonfiles/veyon-settings-HG-Linux.json"
+      dest: /tmp/veyon-settings-HG-Linux.json
+      mode: '0644'
+
+  - name: Lade den öffentlichen Raum-Schlüssel herunter
+    ansible.builtin.get_url:
+      url: "https://raw.githubusercontent.com/hvoss71/ansible_desktop/main/public_keys/{{ room }}_public_key.pem"
+      dest: /tmp/{{ room }}_public_key.pem
+      mode: '0644'
+
+  - name: Lade den öffentlichen Universal-Schlüssel herunter
+    ansible.builtin.get_url:
+      url: "https://raw.githubusercontent.com/hvoss71/ansible_desktop/main/public_keys/universal_public_key.pem"
+      dest: /tmp/universal_public_key.pem
+      mode: '0644'
+
+  # --------------------------------------------------------------------------
+  # Veyon konfigurieren
+  # --------------------------------------------------------------------------
+
+  - name: Importiere Veyon-Konfiguration, Netzwerkobjekte und Schlüssel
+    become: yes
+    ansible.builtin.shell: |
+      set -e
+
+      # Konfiguration
+      veyon-cli config import /tmp/veyon-settings-HG-Linux.json
+
+      # ÄLTERE KEYS BEREINIGEN
+      veyon-cli authkeys delete {{ room }}/public || true
+      veyon-cli authkeys delete {{ room }}/private || true
+      veyon-cli authkeys delete universal/public || true
+
+      # RAUM-KEY
+      veyon-cli authkeys import {{ room }}/public /tmp/{{ room }}_public_key.pem
+      veyon-cli authkeys setaccessgroup {{ room }}/public users
+
+      # UNIVERSAL-KEY
+      veyon-cli authkeys import universal/public /tmp/universal_public_key.pem
+      veyon-cli authkeys setaccessgroup universal/public Admins
+    args:
+      executable: /bin/bash
+    changed_when: true
+
+  # --------------------------------------------------------------------------
+  # Aufräumen
+  # --------------------------------------------------------------------------
+
+  - name: Entferne temporäre Dateien
+    ansible.builtin.file:
+      path: "{{ item }}"
+      state: absent
+    loop:
+      - /tmp/veyon-settings-HG-Linux.json
+      - /tmp/{{ room }}_public_key.pem
+      - /tmp/universal_public_key.pem
+    ignore_errors: true
