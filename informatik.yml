@@ -111,26 +111,31 @@
   # 5. Automatisches Entfernen aller GNOME-Spiele (Debian/Ubuntu)
   ###########################################################################
 
-  - name: Liste aller installierten Pakete abfragen
-    ansible.builtin.command: "apt list --installed"
-    register: apt_list
-    changed_when: false
+ - name: Entferne GNOME-Spiele
+  ansible.builtin.apt:
+    name:
+      - aisleriot
+      - gnome-2048
+      - iagno
+      - gnome-robots
+      - gnome-mahjongg
+      - gnome-mines
+      - gnome-sudoku
+      - five-or-more
+      - hitori
+      - gnome-four-in-a-row
+      - gnome-klotski
+      - lightsoff
+      - gnome-nibbles
+      - quadrapassel
+      - swell-foop
+      - gnome-tetravex
+      - gnome-taquin
+      - tali
+    state: absent
+    purge: true
+  become: true
 
-  - name: Filtere GNOME-Spielpakete aus der Paketliste
-    set_fact:
-      gnome_spiele:
-        "{{ apt_list.stdout_lines
-            | map('regex_search',
-                   '^(aisleriot|gnome-.*|quadrapassel|lightsoff|swell-foop|five-or-more|four-in-a-row|hitori|iagno|tali)')
-            | select('string')
-            | list }}"
-
-  - name: Entferne alle gefundenen GNOME-Spiele
-    ansible.builtin.apt:
-      name: "{{ gnome_spiele }}"
-      state: absent
-      purge: true
-    when: gnome_spiele | length > 0
 
   ###########################################################################
   # 6. Flatpak-Integration und externe Software
