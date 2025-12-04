@@ -120,6 +120,7 @@
         - gnome-mahjongg
         - gnome-mines
         - gnome-sudoku
+        - four-in-a-row
         - five-or-more
         - hitori
         - gnome-four-in-a-row
@@ -135,6 +136,14 @@
       purge: true
     become: true
 
+    
+  - name: Entferne andere überflüssige Pakete
+    ansible.builtin.apt:
+      name:
+        - thonny
+      state: absent
+      purge: true
+    become: true
 
   ###########################################################################
   # 6. Flatpak-Integration und externe Software
