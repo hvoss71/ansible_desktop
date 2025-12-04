@@ -73,7 +73,6 @@
         - emacs
         - kate
         - gedit
-        - thonny
         - python-is-python3
         - python3-keras-applications
         - python3-keras-preprocessing
@@ -161,6 +160,7 @@
         - com.bambulab.BambuStudio
         - org.apache.netbeans
         - org.bluej.BlueJ
+        - org.thonny.Thonny
       state: present
       method: system
 
