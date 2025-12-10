@@ -169,6 +169,11 @@
       state: present
       method: system
 
+  - name: Enable X11/Tkinter/turtle support for Thonny flatpak
+    ansible.builtin.command:
+      cmd: "flatpak override org.thonny.Thonny --socket=x11 --share=network"
+
+
   ###########################################################################
   # 7. Systempflege
   ###########################################################################
