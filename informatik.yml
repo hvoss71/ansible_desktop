@@ -73,6 +73,7 @@
         - emacs
         - kate
         - gedit
+        - thonny
         - python-is-python3
         - python3-keras-applications
         - python3-keras-preprocessing
@@ -136,15 +137,6 @@
       purge: true
     become: true
 
-    
-  - name: Entferne andere überflüssige Pakete
-    ansible.builtin.apt:
-      name:
-        - thonny
-      state: absent
-      purge: true
-    become: true
-
   ###########################################################################
   # 6. Flatpak-Integration und externe Software
   ###########################################################################
@@ -177,10 +169,6 @@
         - org.thonny.Thonny
       state: present
       method: system
-
-  - name: Enable X11/Tkinter/turtle support for Thonny flatpak
-    ansible.builtin.command:
-      cmd: "flatpak override org.thonny.Thonny --socket=x11 --share=network"
 
 
   ###########################################################################
