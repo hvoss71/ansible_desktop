@@ -89,8 +89,6 @@
         - python3-jedi
         - python3-parso
         - python3-asttokens
-        - python3-numpy
-        - python3-matplotlib        
         
         # Grafik / Multimedia
         - gimp
