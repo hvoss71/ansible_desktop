@@ -5,6 +5,7 @@
 - hosts: localhost
   connection: local
   become: true
+  gather_facts: true
 
   vars:
     repo_url: "https://github.com/hvoss71/ansible_desktop.git"
@@ -62,12 +63,23 @@
   # 4. Anwendungen aus Debian-/Ubuntu-Repositories
   ###########################################################################
 
-  - name: Installiere Standardanwendungen
+  - name: "Prüfe Distribution"
+    debug:
+      msg: "Distribution erkannt: {{ ansible_facts.distribution }} {{ ansible_facts.distribution_version }}"
+
+  - name: "Installiere Chromium unter Debian (APT)"
     ansible.builtin.apt:
       name:
         - chromium
         - chromium-l10n
-
+      state: present
+      update_cache: yes
+    when: ansible_facts.distribution == "Debian"
+  
+  - name: Installiere Standardanwendungen
+    ansible.builtin.apt:
+      name:
+      
         # Entwicklung
         - arduino
         - emacs
@@ -84,13 +96,13 @@
         - python3-matplotlib
         - python3-pip
         - python3-venv
-        - python3-tk                        # WICHTIG: nötig für turtle & Tkinter
+        - python3-tk                        # nötig für turtle & Tkinter
         - python3-dev
         - python3-pil.imagetk
         - python3-jedi
         - python3-parso
         - python3-asttokens
-        - python3-serial                    # WICHTIG: für MicroPython / USB / Pico
+        - python3-serial                    # für MicroPython / USB / Pico
         - python3-pyudev                    # für Geräteerkennung
         
         # Grafik / Multimedia
