@@ -74,6 +74,7 @@
         - kate
         - gedit
         - thonny
+        - python3
         - python-is-python3
         - python3-keras-applications
         - python3-keras-preprocessing
@@ -83,12 +84,14 @@
         - python3-matplotlib
         - python3-pip
         - python3-venv
-        - python3-tk
+        - python3-tk                        # WICHTIG: nötig für turtle & Tkinter
         - python3-dev
         - python3-pil.imagetk
         - python3-jedi
         - python3-parso
         - python3-asttokens
+        - python3-serial                    # WICHTIG: für MicroPython / USB / Pico
+        - python3-pyudev                    # für Geräteerkennung
         
         # Grafik / Multimedia
         - gimp
@@ -112,6 +115,15 @@
       state: present
       update_cache: yes
     ignore_errors: yes
+    
+ - name: udev-Regeln für Pico/ESP32 installieren
+   copy:
+     dest: "/etc/udev/rules.d/99-micropython.rules"
+     content: |
+       SUBSYSTEM=="usb", ATTRS{idVendor}=="2e8a", MODE:="0666"
+       SUBSYSTEM=="tty", ATTRS{idVendor}=="10c4", MODE:="0666"
+       SUBSYSTEM=="tty", ATTRS{idVendor}=="1a86", MODE:="0666"
+
 
   ###########################################################################
   # 5. Automatisches Entfernen aller GNOME-Spiele (Debian/Ubuntu)
