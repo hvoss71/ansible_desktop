@@ -186,8 +186,14 @@
         - com.bambulab.BambuStudio
         - org.apache.netbeans
         - org.bluej.BlueJ
-        - org.thonny.Thonny
       state: present
+      method: system
+      
+  - name: Entferne Unterrichtssoftware über Flatpak
+    community.general.flatpak:
+      name:
+        - org.thonny.Thonny
+      state: absent
       method: system
 
 
