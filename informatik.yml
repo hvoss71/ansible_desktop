@@ -123,6 +123,8 @@
         SUBSYSTEM=="usb", ATTRS{idVendor}=="2e8a", MODE:="0666"
         SUBSYSTEM=="tty", ATTRS{idVendor}=="10c4", MODE:="0666"
         SUBSYSTEM=="tty", ATTRS{idVendor}=="1a86", MODE:="0666"
+        
+  # Auf diese Weise dürfen alle Benutzer, ohne Zugehörigkeit zur Gruppe dialout, auf die Geräte zugreifen.
 
 
   ###########################################################################
