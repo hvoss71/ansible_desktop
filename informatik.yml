@@ -128,6 +128,32 @@
       update_cache: yes
     ignore_errors: yes
     
+  - name: Prüfe, ob Structorizer installiert ist
+    ansible.builtin.command: dpkg -s structorizer
+    register: structorizer_check
+    failed_when: false
+    changed_when: false
+
+  - name: Structorizer herunterladen
+    ansible.builtin.get_url:
+      url: https://www.fisch.lu/Php/download.php?file=structorizer.deb
+      dest: /tmp/structorizer.deb
+      mode: '0644'
+    when: structorizer_check.rc != 0
+
+  - name: Structorizer installieren
+    ansible.builtin.apt:
+      deb: /tmp/structorizer.deb
+      state: present
+    when: structorizer_check.rc != 0
+    become: true
+
+  - name: Installationsdatei löschen
+    ansible.builtin.file:
+      path: /tmp/structorizer.deb
+      state: absent
+    when: structorizer_check.rc != 0
+
   - name: udev-Regeln für Pico/ESP32 und Calliope mini installieren
     copy:
       dest: "/etc/udev/rules.d/99-micropython.rules"
