@@ -133,6 +133,12 @@
     register: structorizer_check
     failed_when: false
     changed_when: false
+    
+  - name: Fehlende Abhängigkeiten reparieren
+    ansible.builtin.apt:
+      fix_broken: yes
+    when: structorizer_check.rc != 0
+    become: true
 
   - name: Structorizer herunterladen
     ansible.builtin.get_url:
