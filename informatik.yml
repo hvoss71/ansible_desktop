@@ -201,6 +201,7 @@
         - com.bambulab.BambuStudio
         - org.apache.netbeans
         - org.bluej.BlueJ
+        - com.jgraph.drawio.desktop
       state: present
       method: system
       
