@@ -28,7 +28,7 @@
       name: "Ansible Auto-Provision"
       user: root
       minute: "*/10"
-      job: "ansible-pull -o -U {{ repo_url }} {{ playbook_file }} > /var/log/ansible-pull.log 2>&1"
+      job: "ansible-pull -U {{ repo_url }} {{ playbook_file }} > /var/log/ansible-pull.log 2>&1"
       state: present
 
   ###########################################################################
