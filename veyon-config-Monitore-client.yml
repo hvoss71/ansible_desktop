@@ -52,7 +52,7 @@
       set -e
 
       # Konfiguration
-      veyon-cli config import /tmp/veyon-settings-HG-Linux.json
+  #    veyon-cli config import /tmp/veyon-settings-HG-Linux.json
 
       # ÄLTERE KEYS BEREINIGEN
       veyon-cli authkeys delete {{ room }}/public || true
@@ -65,7 +65,7 @@
 
       # UNIVERSAL-KEY
       veyon-cli authkeys import universal/public /tmp/universal_public_key.pem
-      veyon-cli authkeys setaccessgroup universal/public Admins
+      veyon-cli authkeys setaccessgroup universal/public administrator
     args:
       executable: /bin/bash
     changed_when: true
