@@ -52,7 +52,7 @@
       set -e
 
       # Konfiguration
-  #    veyon-cli config import /tmp/veyon-settings-HG-Linux.json
+  #   veyon-cli config import /tmp/veyon-settings-HG-Linux.json
 
       # ÄLTERE KEYS BEREINIGEN
       veyon-cli authkeys delete {{ room }}/public || true
