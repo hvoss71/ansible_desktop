@@ -1,0 +1,61 @@
+---
+# Dieses Playbook installiert die aktuelle Version von Veyon.
+# Das Debian-Paket des Herstellers ist weder über die Debian-Repositories
+# noch über Flathub verfügbar und kann daher nur direkt beim Hersteller bezogen werden.
+
+- hosts: localhost
+  connection: local
+  become: true
+
+  pre_tasks:
+    - name: Abbrechen, falls kein Debian-System vorliegt
+      fail:
+        msg: "Dieses Playbook ist nur für Debian-Systeme vorgesehen."
+      when: ansible_facts['os_family'] != "Debian"
+
+  tasks:
+
+  # --------------------------------------------------------------------------
+  # Wayland deaktivieren, falls GDM3 verwendet wird
+  # --------------------------------------------------------------------------
+  - name: Deaktiviere Wayland, falls GDM3 verwendet wird
+    block:
+      - name: Prüfe, welcher Display-Manager aktiv ist
+        command: cat /etc/X11/default-display-manager
+        register: display_manager
+        changed_when: false
+        failed_when: false
+
+      - name: Deaktiviere Wayland in GDM3, falls aktiv
+        when: "'gdm3' in display_manager.stdout"
+        lineinfile:
+          path: /etc/gdm3/daemon.conf
+          regexp: '^#?WaylandEnable='
+          line: 'WaylandEnable=false'
+          state: present
+          create: no
+          backup: yes
+
+      - name: GDM3 neu starten, falls geändert
+        when: "'gdm3' in display_manager.stdout"
+        systemd:
+          name: gdm3
+          state: restarted
+    tags: wayland
+
+  # --------------------------------------------------------------------------
+  # Veyon installieren
+  # --------------------------------------------------------------------------
+  - name: Update repositories cache
+    ansible.builtin.apt:
+      update_cache: yes
+
+  - name: Installiere Veyon aus dem Debian-Repository
+    ansible.builtin.package:
+      name:
+        - libveyon-core
+        - veyon-configurator
+      # - veyon-master
+        - veyon-plugins
+        - veyon-service
+      state: latest
