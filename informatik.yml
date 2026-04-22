@@ -110,6 +110,8 @@
         - gwenview
         - inkscape
         - shotcut
+        - libheif-examples
+        - heif-gdk-pixbuf
 
         # Office
         - libreoffice
@@ -228,6 +230,7 @@
         - org.apache.netbeans
         - org.bluej.BlueJ
         - com.jgraph.drawio.desktop
+        - io.github.shiftey.Desktop
       state: present
       method: system
       
