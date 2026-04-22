@@ -107,6 +107,7 @@
         
         # Grafik / Multimedia
         - gimp
+        - imagemagick
         - gwenview
         - inkscape
         - shotcut
