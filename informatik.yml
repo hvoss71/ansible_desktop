@@ -231,6 +231,7 @@
         - org.bluej.BlueJ
         - com.jgraph.drawio.desktop
         - io.github.shiftey.Desktop
+        - org.localsend.localsend_app
       state: present
       method: system
       
