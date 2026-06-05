@@ -27,7 +27,7 @@
   - name: Erzeuge lokalen Benutzer 'zeugnis'
     ansible.builtin.user:
       name: zeugnis
-      uid: 2002
+      uid: 2005
       group: users
       create_home: yes
       shell: /bin/bash
