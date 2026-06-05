@@ -42,7 +42,7 @@
       update_cache: yes
       cache_valid_time: 3600
       state: present
-    when: "'i386' not in ansible_facts.perf_arches"  # optional guard, wird meist keine Konflikte verursachen
+#    when: "'i386' not in ansible_facts.perf_arches"  # optional guard, wird meist keine Konflikte verursachen
 
   - name: Multiarch-Unterstützung hinzufügen (i386)
     ansible.builtin.apt:
