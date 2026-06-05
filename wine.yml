@@ -24,7 +24,7 @@
       name: hainberg
       state: present
 
-  - name: Erzeuge lokalen Notfall-Benutzer 'hainberg-local'
+  - name: Erzeuge lokalen Benutzer 'zeugnis'
     ansible.builtin.user:
       name: zeugnis
       uid: 2002
