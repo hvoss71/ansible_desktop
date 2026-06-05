@@ -77,32 +77,24 @@
       recurse: yes
     register: found_exe
 
-  - name: Erstelle Desktop-Launcher (.desktop) für die gefundenen EXE-Dateien
+  - name: Erzeuge Desktop-Verknüpfung für die erste gefundene EXE mit Arbeitsverzeichnis
     when: found_exe.matched > 0
-    block:
-      - name: Erzeuge Desktop-Verknüpfung für jede gefundene EXE
-        ansible.builtin.copy:
-          dest: "{{ user_home.stdout }}/{{ desktop_subpath }}/Erfassungsmodul_Fuxmedia.desktop"
-          content: |
-            [Desktop Entry]
-            Version=1.0
-            Type=Application
-            Name=Zeugnisdaten-Eingabe
-            Comment=Starte Erfassungsmodul via Wine (32-Bit)
-            Exec=WINEARCH=win32 wine "{{ found_exe.files[0].path }}"
-            Icon=application-x-executable
-            Terminal=true
-            Categories=Development;Utility;
-            StartupNotify=true
-          owner: "{{ benutzername }}"
-          group: "{{ benutzername }}"
-          mode: '0755'
-        with_items: "{{ found_exe.files }}"
-        vars:
-          # Beispiel: Falls mehrere Klassen existieren, wähle jeweils die passende EXE-Datei.
-          # Der Befehl verwendet den vollständigen Pfad zur EXE; der Exec-String wird durch diebasename ersetzt,
-          # was ggf. angepasst werden muss, falls du den Pfad strikt verwenden willst.
-          path: "{{ item.path }}"
-    # Hinweis: Falls du nur eine einzige Desktop-Datei möchtest, passe das oben entsprechend an.
+    ansible.builtin.copy:
+      dest: "{{ user_home.stdout }}/{{ desktop_subpath }}/Erfassungsmodul_Fuxmedia.desktop"
+      content: |
+        [Desktop Entry]
+        Version=1.0
+        Type=Application
+        Name=Erfassungsmodul Fuxmedia (Win32)
+        Comment=Starte Erfassungsmodul via Wine (32-Bit)
+        # Setze Arbeitsverzeichnis auf das Verzeichnis der EXE und rufe Wine mit dem vollständigen Pfad auf
+        Exec=bash -lc 'cd "{{ (found_exe.files[0].path | dirname) }}" && WINEARCH=win32 wine "./{{ found_exe.files[0].path | basename }}"'
+        Icon=application-x-executable
+        Terminal=false
+        Categories=Development;Utility;
+        StartupNotify=true
+      owner: "{{ benutzername }}"
+      group: "{{ benutzername }}"
+      mode: '0755'
 
 
