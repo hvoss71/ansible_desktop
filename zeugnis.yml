@@ -18,7 +18,7 @@
       name:
         - wine
         - wine64
-        - wine32
+        - wine32:i386
       state: present
       update_cache: yes
     ignore_errors: yes
