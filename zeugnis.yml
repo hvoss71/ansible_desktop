@@ -32,6 +32,28 @@
   - name: Gather facts
     ansible.builtin.setup:
 
+  - name: Prüfe vorhandene Architekturen
+    ansible.builtin.shell: dpkg --print-architecture
+    register: arch_host
+    changed_when: false
+
+  - name: Prüfe, ob i386 bereits hinzugefügt wurde
+    ansible.builtin.shell: dpkg --print-foreign-architectures
+    register: arch_foreign
+    changed_when: false
+
+  - name: i386-Architektur hinzufügen (falls nötig)
+    ansible.builtin.shell: dpkg --add-architecture i386
+    when: "'i386' not in (arch_foreign.stdout | default '').split()"
+    become: true
+    changed_when: true
+
+  - name: APT-Cache aktualisieren nach Architektur-Änderung
+    ansible.builtin.apt:
+      update_cache: yes
+    when: "'i386' not in (arch_foreign.stdout | default '').split()"
+    become: true
+
   - name: Installiere Standardanwendungen
     ansible.builtin.apt:
       name:
