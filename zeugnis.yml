@@ -1,0 +1,112 @@
+---
+# Playbook: Installation von wine inkl. 32bit-Architektur auf Debian
+
+- hosts: localhost
+  connection: local
+  become: true
+  gather_facts: true
+
+
+  vars:
+    benutzername: zeugnis
+    exe_glob_root: "data/Fuxmedia_Erfassungsmodul_*"
+    desktop_subpath: "Desktop"
+
+  tasks:
+  - name: Installiere Standardanwendungen
+    ansible.builtin.apt:
+      name:
+        - wine
+        - wine64
+        - wine32
+      state: present
+      update_cache: yes
+    ignore_errors: yes
+
+  - name: Stelle sicher, dass die Gruppe 'hainberg' existiert
+    ansible.builtin.group:
+      name: zeugnis
+      state: present
+
+  - name: Erzeuge lokalen Benutzer 'zeugnis'
+    ansible.builtin.user:
+      name: zeugnis
+      uid: 2100
+      group: users
+      create_home: yes
+      shell: /bin/bash
+      password: "{{ 'zeugnisdaten' | password_hash('sha512') }}"
+      state: present
+ 
+  - name: Gather facts
+    ansible.builtin.setup:
+
+  - name: Aktivieren der 32-Bit-Architektur (multiarch)
+    ansible.builtin.apt:
+      update_cache: yes
+      cache_valid_time: 3600
+      state: present
+#    when: "'i386' not in ansible_facts.perf_arches"  # optional guard, wird meist keine Konflikte verursachen
+
+  - name: Multiarch-Unterstützung hinzufügen (i386)
+    ansible.builtin.apt:
+      name: [ 'gcc-multilib', 'g++-multilib' ]
+      state: present
+    when: "'Debian' in ansible_facts.os_family"  # explizit, Debian/Ubuntu-ähnlich
+    tags: multiarch
+
+  - name: Sicherstellen, dass der Benutzer existiert
+      ansible.builtin.user:
+      name: "{{ benutzername }}"
+      state: present
+
+  - name: Home-Verzeichnis des Benutzers ermitteln
+    ansible.builtin.shell: "eval echo ~{{ benutzername }}"
+    register: user_home
+    changed_when: false
+
+  - name: Erstelle versteckten .data Ordner im Home-Verzeichnis des Nutzers
+    ansible.builtin.file:
+      path: "{{ user_home.stdout }}/.data"
+      state: directory
+      mode: '0755'
+      owner: "{{ benutzername }}"
+      group: "{{ benutzername }}"
+
+  - name: Suche nach der Erfassungsmodul EXE in data/Fuxmedia_Erfassungsmodul_*
+    ansible.builtin.find:
+      paths: "{{ user_home.stdout }}/data"
+      patterns: "erfassungsmodul_fuxmedia.exe"
+    file_type: file
+      recurse: yes
+    register: found_exe
+
+  - name: Erstelle Desktop-Launcher (.desktop) für die gefundenen EXE-Dateien
+    when: found_exe.matched > 0
+    block:
+      - name: Erzeuge Desktop-Verknüpfung für jede gefundene EXE
+        ansible.builtin.copy:
+          dest: "{{ user_home.stdout }}/{{ desktop_subpath }}/Erfassungsmodul_Fuxmedia.desktop"
+          content: |
+            [Desktop Entry]
+            Version=1.0
+            Type=Application
+            Name=Zeugnisdaten-Eingabe
+            Comment=Starte Erfassungsmodul via Wine (32-Bit)
+            Exec=WINEARCH=win32 wine {{ item.path | basename }}
+            Icon=application-x-executable
+            Terminal=false
+            Categories=Development;Utility;
+            StartupNotify=true
+          owner: "{{ benutzername }}"
+          group: "{{ benutzername }}"
+          mode: '0755'
+        with_items: "{{ found_exe.files }}"
+        vars:
+          # Beispiel: Falls mehrere Klassen existieren, wähle jeweils die passende EXE-Datei.
+          # Der Befehl verwendet den vollständigen Pfad zur EXE; der Exec-String wird durch diebasename ersetzt,
+          # was ggf. angepasst werden muss, falls du den Pfad strikt verwenden willst.
+          path: "{{ item.path }}"
+    # Hinweis: Falls du nur eine einzige Desktop-Datei möchtest, passe das oben entsprechend an.
+
+
