@@ -10,7 +10,7 @@
   vars:
     benutzername: zeugnis
     exe_glob_root: "data/Fuxmedia_Erfassungsmodul_*"
-    desktop_subpath: "Desktop"
+    desktop_subpath: "Schreibtisch"
 
   tasks:
   - name: Installiere Standardanwendungen
