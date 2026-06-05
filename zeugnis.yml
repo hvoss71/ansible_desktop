@@ -13,15 +13,6 @@
     desktop_subpath: "Schreibtisch"
 
   tasks:
-  - name: Installiere Standardanwendungen
-    ansible.builtin.apt:
-      name:
-        - wine
-        - wine64
-        - wine32:i386
-      state: present
-      update_cache: yes
-    ignore_errors: yes
 
   - name: Stelle sicher, dass die Gruppe 'hainberg' existiert
     ansible.builtin.group:
@@ -40,6 +31,16 @@
  
   - name: Gather facts
     ansible.builtin.setup:
+
+  - name: Installiere Standardanwendungen
+    ansible.builtin.apt:
+      name:
+        - wine
+        - wine32:i386
+      state: present
+      update_cache: yes
+    ignore_errors: yes
+
 
   - name: Aktivieren der 32-Bit-Architektur (multiarch)
     ansible.builtin.apt:
