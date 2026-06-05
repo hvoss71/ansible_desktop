@@ -85,7 +85,7 @@
         [Desktop Entry]
         Version=1.0
         Type=Application
-        Name=Erfassungsmodul Fuxmedia (Win32)
+        Name=Erfassung der Noten
         Comment=Starte Erfassungsmodul via Wine (32-Bit)
         # Setze Arbeitsverzeichnis auf das Verzeichnis der EXE und rufe Wine mit dem vollständigen Pfad auf
         Exec=bash -lc 'cd "{{ (found_exe.files[0].path | dirname) }}" && WINEARCH=win32 wine "./{{ found_exe.files[0].path | basename }}"'
