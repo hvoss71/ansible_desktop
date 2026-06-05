@@ -45,14 +45,12 @@
   - name: i386-Architektur hinzufügen (falls nötig)
     ansible.builtin.shell: dpkg --add-architecture i386
     when: "'i386' not in (arch_foreign.stdout | default '').split()"
-    become: true
     changed_when: true
 
   - name: APT-Cache aktualisieren nach Architektur-Änderung
     ansible.builtin.apt:
       update_cache: yes
     when: "'i386' not in (arch_foreign.stdout | default '').split()"
-    become: true
 
   - name: Installiere Standardanwendungen
     ansible.builtin.apt:
