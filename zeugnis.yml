@@ -68,9 +68,9 @@
       owner: "{{ benutzername }}"
       group: "{{ benutzername }}"
 
-  - name: Suche nach der Erfassungsmodul EXE in data/Fuxmedia_Erfassungsmodul_*
+  - name: Suche nach der Erfassungsmodul EXE in .data/Fuxmedia_Erfassungsmodul_*
     ansible.builtin.find:
-      paths: "{{ user_home.stdout }}/data"
+      paths: "{{ user_home.stdout }}/.data"
       patterns: "erfassungsmodul_fuxmedia.exe"
       file_type: file
       recurse: yes
