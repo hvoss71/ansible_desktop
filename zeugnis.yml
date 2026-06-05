@@ -55,11 +55,6 @@
     when: "'Debian' in ansible_facts.os_family"  # explizit, Debian/Ubuntu-ähnlich
     tags: multiarch
 
-  - name: Sicherstellen, dass der Benutzer existiert
-      ansible.builtin.user:
-      name: "{{ benutzername }}"
-      state: present
-
   - name: Home-Verzeichnis des Benutzers ermitteln
     ansible.builtin.shell: "eval echo ~{{ benutzername }}"
     register: user_home
