@@ -20,22 +20,22 @@
       # Optional: winetricks installieren
     winetricks_install: false
 
-    - name: Gather facts
-      ansible.builtin.setup:
+  - name: Gather facts
+    ansible.builtin.setup:
 
-    - name: Aktivieren der 32-Bit-Architektur (multiarch)
-      ansible.builtin.apt:
-        update_cache: yes
-        cache_valid_time: 3600
-        state: present
-      when: "'i386' not in ansible_facts.perf_arches"  # optional guard, wird meist keine Konflikte verursachen
+  - name: Aktivieren der 32-Bit-Architektur (multiarch)
+    ansible.builtin.apt:
+      update_cache: yes
+      cache_valid_time: 3600
+      state: present
+    when: "'i386' not in ansible_facts.perf_arches"  # optional guard, wird meist keine Konflikte verursachen
 
-    - name: Multiarch-Unterstützung hinzufügen (i386)
-      ansible.builtin.apt:
-        name: [ 'gcc-multilib', 'g++-multilib' ]
-        state: present
-      when: "'Debian' in ansible_facts.os_family"  # explizit, Debian/Ubuntu-ähnlich
-      tags: multiarch
+  - name: Multiarch-Unterstützung hinzufügen (i386)
+    ansible.builtin.apt:
+      name: [ 'gcc-multilib', 'g++-multilib' ]
+      state: present
+    when: "'Debian' in ansible_facts.os_family"  # explizit, Debian/Ubuntu-ähnlich
+    tags: multiarch
 
 #      - name: Debian/Ubuntu: 32-Bit-Pakete installieren
 #        ansible.builtin.apt:
@@ -45,11 +45,11 @@
 #        when: ansible_facts.os_family == "Debian"
 #        tags: wine
 
-    - name: Optional: winetricks installieren
-      ansible.builtin.apt:
-        name: winetricks
-        state: present
-      when:
-        - ansible_facts.os_family == "Debian"
-        - winetricks_install
-      tags: wine
+  - name: Optional: winetricks installieren
+    ansible.builtin.apt:
+      name: winetricks
+      state: present
+    when:
+      - ansible_facts.os_family == "Debian"
+      - winetricks_install
+    tags: wine
