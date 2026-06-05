@@ -21,7 +21,7 @@
 
   - name: Stelle sicher, dass die Gruppe 'hainberg' existiert
     ansible.builtin.group:
-      name: hainberg
+      name: zeugnis
       state: present
 
   - name: Erzeuge lokalen Benutzer 'zeugnis'
