@@ -7,16 +7,18 @@
   gather_facts: true
 
   tasks:
- 
-  - name: Installiere Wine und 32-Bit-Unterstützung auf Debian
-      # Standard-Wine-Pakete (Debian-Standardrepository)
-      wine_packages:
+
+
+  - name: Installiere Standardanwendungen
+    ansible.builtin.apt:
+      name:
         - wine
         - wine64
         - wine32
-      # Optional: winetricks installieren
-    winetricks_install: false
-
+      state: present
+      update_cache: yes
+    ignore_errors: yes
+ 
   - name: Gather facts
     ansible.builtin.setup:
 
