@@ -1,0 +1,55 @@
+---
+# Playbook: Installation von wine inkl. 32bit-Architektur auf Debian
+
+- hosts: localhost
+  connection: local
+  become: true
+  gather_facts: true
+
+  tasks:
+ 
+  - name: Installiere Wine und 32-Bit-Unterstützung auf Debian
+    hosts: all
+    become: true
+    vars:
+      # Standard-Wine-Pakete (Debian-Standardrepository)
+      wine_packages:
+        - wine
+        - wine64
+        - wine32
+      # Optional: winetricks installieren
+    winetricks_install: false
+
+    - name: Gather facts
+      ansible.builtin.setup:
+
+    - name: Aktivieren der 32-Bit-Architektur (multiarch)
+      ansible.builtin.apt:
+        update_cache: yes
+        cache_valid_time: 3600
+        state: present
+      when: "'i386' not in ansible_facts.perf_arches"  # optional guard, wird meist keine Konflikte verursachen
+
+    - name: Multiarch-Unterstützung hinzufügen (i386)
+      ansible.builtin.apt:
+        name: [ 'gcc-multilib', 'g++-multilib' ]
+        state: present
+      when: "'Debian' in ansible_facts.os_family"  # explizit, Debian/Ubuntu-ähnlich
+      tags: multiarch
+
+#      - name: Debian/Ubuntu: 32-Bit-Pakete installieren
+#        ansible.builtin.apt:
+#          name: "{{ wine_packages }}"
+#          state: present
+#          update_cache: yes
+#        when: ansible_facts.os_family == "Debian"
+#        tags: wine
+
+    - name: Optional: winetricks installieren
+      ansible.builtin.apt:
+        name: winetricks
+        state: present
+      when:
+        - ansible_facts.os_family == "Debian"
+        - winetricks_install
+      tags: wine
