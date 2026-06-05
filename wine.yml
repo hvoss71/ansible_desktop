@@ -9,9 +9,6 @@
   tasks:
  
   - name: Installiere Wine und 32-Bit-Unterstützung auf Debian
-    hosts: all
-    become: true
-    vars:
       # Standard-Wine-Pakete (Debian-Standardrepository)
       wine_packages:
         - wine
