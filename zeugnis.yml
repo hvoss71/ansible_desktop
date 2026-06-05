@@ -69,32 +69,3 @@
       owner: "{{ benutzername }}"
       group: "{{ benutzername }}"
 
-  - name: Suche nach der Erfassungsmodul EXE in .data/Fuxmedia_Erfassungsmodul_*
-    ansible.builtin.find:
-      paths: "{{ user_home.stdout }}/.data"
-      patterns: "erfassungsmodul_fuxmedia.exe"
-      file_type: file
-      recurse: yes
-    register: found_exe
-
-  - name: Erzeuge Desktop-Verknüpfung für die erste gefundene EXE mit Arbeitsverzeichnis
-    when: found_exe.matched > 0
-    ansible.builtin.copy:
-      dest: "{{ user_home.stdout }}/{{ desktop_subpath }}/Erfassungsmodul_Fuxmedia.desktop"
-      content: |
-        [Desktop Entry]
-        Version=1.0
-        Type=Application
-        Name=Erfassung der Noten
-        Comment=Starte Erfassungsmodul via Wine (32-Bit)
-        # Setze Arbeitsverzeichnis auf das Verzeichnis der EXE und rufe Wine mit dem vollständigen Pfad auf
-        Exec=bash -lc 'cd "{{ (found_exe.files[0].path | dirname) }}" && WINEARCH=win32 wine "./{{ found_exe.files[0].path | basename }}"'
-        Icon=application-x-executable
-        Terminal=false
-        Categories=Development;Utility;
-        StartupNotify=true
-      owner: "{{ benutzername }}"
-      group: "{{ benutzername }}"
-      mode: '0755'
-
-
