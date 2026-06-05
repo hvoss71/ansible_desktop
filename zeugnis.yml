@@ -89,7 +89,7 @@
             Type=Application
             Name=Zeugnisdaten-Eingabe
             Comment=Starte Erfassungsmodul via Wine (32-Bit)
-            Exec=WINEARCH=win32 wine {{ (found_exe.files[0].path) | basename }}
+            Exec=WINEARCH=win32 wine /home/zeugnis/.data/FuxMedia_Erfassungsmodul_7a/{{ (found_exe.files[0].path) | basename }}
             Icon=application-x-executable
             Terminal=false
             Categories=Development;Utility;
