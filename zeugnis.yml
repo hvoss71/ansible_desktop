@@ -72,7 +72,7 @@
     ansible.builtin.find:
       paths: "{{ user_home.stdout }}/data"
       patterns: "erfassungsmodul_fuxmedia.exe"
-    file_type: file
+      file_type: file
       recurse: yes
     register: found_exe
 
