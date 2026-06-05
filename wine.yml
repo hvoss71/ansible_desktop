@@ -18,6 +18,21 @@
       state: present
       update_cache: yes
     ignore_errors: yes
+
+  - name: Stelle sicher, dass die Gruppe 'hainberg' existiert
+    ansible.builtin.group:
+      name: hainberg
+      state: present
+
+  - name: Erzeuge lokalen Notfall-Benutzer 'hainberg-local'
+    ansible.builtin.user:
+      name: zeugnis
+      uid: 2002
+      group: users
+      create_home: yes
+      shell: /bin/bash
+      password: "{{ 'zeugnisdaten' | password_hash('sha512') }}"
+      state: present
  
   - name: Gather facts
     ansible.builtin.setup:
