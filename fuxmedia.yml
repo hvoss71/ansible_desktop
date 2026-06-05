@@ -19,6 +19,17 @@
     register: user_home
     changed_when: false
 
+  - name: Prüfen, ob Verzeichnis '.wine' existiert
+    ansible.builtin.stat:
+      path: "{{ user_home.stdout }}/.wine"
+    register: wine_dir
+
+  - name: Entferne das Verzeichnis ./wine rekursiv, falls vorhanden
+    ansible.builtin.file:
+      path: "{{ user_home.stdout }}/.wine"
+      state: absent
+    when: wine_dir.stat.exists
+
   - name: Suche nach der Erfassungsmodul EXE in .data/Fuxmedia_Erfassungsmodul_*
     ansible.builtin.find:
       paths: "{{ user_home.stdout }}/.data"
