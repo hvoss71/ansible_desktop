@@ -6,65 +6,52 @@
 
   vars:
     benutzername: zeugnis
-    exe_glob_root: "data/Fuxmedia_Erfassungsmodul_*"
-    desktop_subpath: "Schreibtisch"
+    desktop_subpath: "Schreibtisch"  # deutschsprachiger Desktop-Ordner
+    wrapper_path: "~{{ benutzername }}/.data/wine_reset_wrapper.sh"
 
   tasks:
-
-  - name: Noteneingabe-Windows-App Reset-Knopf
-    hosts: localhost
-    connection: local
-    become: true
-    gather_facts: true
-
-    vars:
-      benutzername: zeugnis
-      wine_dir: "~{{ benutzername }}/.wine"  # Pfad zum .wine-Verzeichnis (anpassen!)
-
-    vars_prompt:
-      - name: confirm_reset
-        prompt: "Lässt sich das Noteneingabe-Programm nicht mehr starten?"
-        private: no
-        # Werte: Ja / Nein
-        choices:
-          - "Ja"
-          - "Nein"
-  tasks:
-
     - name: Home-Verzeichnis des Benutzers ermitteln
       ansible.builtin.shell: "eval echo ~{{ benutzername }}"
       register: user_home
       changed_when: false
 
-    - name: Prüfe, ob das .wine-Verzeichnis existiert
-      ansible.builtin.stat:
-        path: "{{ user_home.stdout }}/.wine"
-      register: wine_dir_exists
+    - name: Wrapper-Skript für Reset erstellen
+      ansible.builtin.copy:
+        dest: "{{ user_home.stdout }}/.data/wine_reset_wrapper.sh"
+        content: |
+          #!/bin/bash
+          if ! command -v read >/dev/null 2>&1; then
+            echo "Interaktive Eingabe wird benötigt. Bitte eine Shell verwenden."
+            exit 1
+          fi
+          read -p "Diese Aktion macht nur Sinn, wenn das Program geschlossen ist und sich nicht mehr starten lässt. Möchtest du das Pogramm jetzt zurücksetzen? (Ja/Nein): " user_choice
+          case \"$user_choice\" in
+            Ja|ja|YES|Yes|yes)
+              rm -rf "$HOME/.wine"
+              echo "Das Programm wurde zurückgesetzt. Es lässt sich jetzt wieder starten!"
+              ;;
+            *)
+              echo "Zurücksetzen abgebrochen."
+              ;;
+          esac
+        mode: '0755'
+        owner: "{{ benutzername }}"
+        group: "{{ benutzername }}"
 
-    - name: Lösche das .wine-Verzeichnis bei Bestätigung (Ja)
-      ansible.builtin.file:
-        path: "{{ user_home.stdout }}/.wine"
-        state: absent
-      when:
-        - wine_dir_exists.stat.exists
-        - confirm_reset == "Ja"
-      # Optional: Debug-Ausgabe nach Löschung
-    - name: Bestätigung der Löschung anzeigen
-      ansible.builtin.debug:
-        msg: ".wine-Verzeichnis wurde gelöscht: {{ user_home.stdout }}/.wine"
-      when:
-        - wine_dir_exists.stat.exists
-        - confirm_reset == "Ja"
-
-    - name: Hinweis, dass kein Löschen erfolgt ist
-      ansible.builtin.debug:
-        msg: "Kein Löschvorgang durchgeführt."
-      when:
-        - wine_dir_exists.stat.exists
-        - confirm_reset != "Ja"
-
-
-
-
-
-
+    - name: Desktop-Verknüpfung erstellen
+      ansible.builtin.copy:
+        dest: "{{ user_home.stdout }}/{{ desktop_subpath }}/Programm zurücksetzen.desktop"
+        content: |
+          [Desktop Entry]
+          Version=1.0
+          Type=Application
+          Name=Programm zurücksetzen
+          Comment=Löscht das .wine-Verzeichnis nach Bestätigung
+          Exec=bash -lc '"{{ wrapper_path | replace(\"~\", \"$HOME\") }}"'
+          Icon=system-run
+          Terminal=false
+          Categories=Utility;
+          StartupNotify=true
+        owner: "{{ benutzername }}"
+        group: "{{ benutzername }}"
+        mode: '0755'
