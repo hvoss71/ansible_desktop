@@ -4,12 +4,6 @@
   become: true
   gather_facts: true
 
-
-
-  ---
-- name: Desktop-Link zum Neustart/Reset von .wine
-  hosts: all
-  become: true
   vars:
     benutzername: zeugnis
     desktop_subpath: "Schreibtisch"  # deutsches Desktop-Verzeichnis
