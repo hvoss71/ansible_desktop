@@ -1,0 +1,70 @@
+---
+- hosts: localhost
+  connection: local
+  become: true
+  gather_facts: true
+
+  vars:
+    benutzername: zeugnis
+    exe_glob_root: "data/Fuxmedia_Erfassungsmodul_*"
+    desktop_subpath: "Schreibtisch"
+
+  tasks:
+
+  - name: Noteneingabe-Windows-App Reset-Knopf
+    hosts: localhost
+    connection: local
+    become: true
+    gather_facts: true
+
+    vars:
+      benutzername: zeugnis
+      wine_dir: "~{{ benutzername }}/.wine"  # Pfad zum .wine-Verzeichnis (anpassen!)
+
+    vars_prompt:
+      - name: confirm_reset
+        prompt: "Lässt sich das Noteneingabe-Programm nicht mehr starten?"
+        private: no
+        # Werte: Ja / Nein
+        choices:
+          - "Ja"
+          - "Nein"
+  tasks:
+
+    - name: Home-Verzeichnis des Benutzers ermitteln
+      ansible.builtin.shell: "eval echo ~{{ benutzername }}"
+      register: user_home
+      changed_when: false
+
+    - name: Prüfe, ob das .wine-Verzeichnis existiert
+      ansible.builtin.stat:
+        path: "{{ user_home.stdout }}/.wine"
+      register: wine_dir_exists
+
+    - name: Lösche das .wine-Verzeichnis bei Bestätigung (Ja)
+      ansible.builtin.file:
+        path: "{{ user_home.stdout }}/.wine"
+        state: absent
+      when:
+        - wine_dir_exists.stat.exists
+        - confirm_reset == "Ja"
+      # Optional: Debug-Ausgabe nach Löschung
+    - name: Bestätigung der Löschung anzeigen
+      ansible.builtin.debug:
+        msg: ".wine-Verzeichnis wurde gelöscht: {{ user_home.stdout }}/.wine"
+      when:
+        - wine_dir_exists.stat.exists
+        - confirm_reset == "Ja"
+
+    - name: Hinweis, dass kein Löschen erfolgt ist
+      ansible.builtin.debug:
+        msg: "Kein Löschvorgang durchgeführt."
+      when:
+        - wine_dir_exists.stat.exists
+        - confirm_reset != "Ja"
+
+
+
+
+
+

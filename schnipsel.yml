@@ -1,0 +1,57 @@
+
+
+      ---
+- name: Desktop-Link zum Neustart/Reset von .wine
+  hosts: all
+  become: true
+  vars:
+    benutzername: zeugnis
+    desktop_subpath: "Schreibtisch"  # deutschsprachiger Desktop-Ordner
+    wrapper_path: "~{{ benutzername }}/.data/wine_reset_wrapper.sh"
+  tasks:
+    - name: Home-Verzeichnis des Benutzers ermitteln
+      ansible.builtin.shell: "eval echo ~{{ benutzername }}"
+      register: user_home
+      changed_when: false
+
+    - name: Wrapper-Skript für Reset erstellen
+      ansible.builtin.copy:
+        dest: "{{ user_home.stdout }}/.data/wine_reset_wrapper.sh"
+        content: |
+          #!/bin/bash
+          if ! command -v read >/dev/null 2>&1; then
+            echo "Interaktive Eingabe wird benötigt. Bitte eine Shell verwenden."
+            exit 1
+          fi
+          read -p "Diese Aktion macht nur Sinn, wenn das Program geschlossen ist und sich nicht mehr starten lässt. Möchtest du das Pogramm jetzt zurücksetzen? (Ja/Nein): " user_choice
+          case \"$user_choice\" in
+            Ja|ja|YES|Yes|yes)
+              rm -rf "$HOME/.wine"
+              echo "Das Programm wurde zurückgesetzt. Es lässt sich jetzt wieder starten!"
+              ;;
+            *)
+              echo "Zurücksetzen abgebrochen."
+              ;;
+          esac
+        mode: '0755'
+        owner: "{{ benutzername }}"
+        group: "{{ benutzername }}"
+
+    - name: Desktop-Verknüpfung erstellen
+      ansible.builtin.copy:
+        dest: "{{ user_home.stdout }}/{{ desktop_subpath }}/Programm zurücksetzen.desktop"
+        content: |
+          [Desktop Entry]
+          Version=1.0
+          Type=Application
+          Name=Programm zurücksetzen
+          Comment=Löscht das .wine-Verzeichnis nach Bestätigung
+          Exec=bash -lc '"{{ wrapper_path | replace(\"~\", \"$HOME\") }}"'
+          Icon=system-run
+          Terminal=false
+          Categories=Utility;
+          StartupNotify=true
+        owner: "{{ benutzername }}"
+        group: "{{ benutzername }}"
+        mode: '0755'
+
