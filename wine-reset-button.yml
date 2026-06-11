@@ -46,7 +46,7 @@
           Version=1.0
           Type=Application
           Name=Programm zurücksetzen
-          Comment=Löscht das .wine-Verzeichnis nach Bestätigung
+          Comment="Löscht das .wine-Verzeichnis nach Bestätigung"
           Exec=bash -lc '"{{ wrapper_path | replace(\"~\", \"$HOME\") }}"'
           Icon=system-run
           Terminal=false
