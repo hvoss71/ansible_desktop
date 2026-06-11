@@ -27,11 +27,11 @@
         content: |
           #!/bin/bash
           if command -v zenity >/dev/null 2>&1; then
-            if zenity --question --text="Lässt sich das Noteneingabe-Programm nicht mehr starten?" --ok-label="Ja" --cancel-label="Nein"; then
+            if zenity --question --text="Lässt sich das Noteneingabe-Programm noch starten?" --ok-label="Nein" --cancel-label="Ja"; then
               rm -rf "$HOME/.wine"
-              zenity --info --text=".wine-Verzeichnis wurde gelöscht."
+              zenity --info --text="Das Programm wurde zurückgesetzt."
             else
-              zenity --info --text="Löschung abgebrochen."
+              zenity --info --text="Zurücksetzen abgebrochen."
             fi
           else
             echo "Zenity nicht installiert."
