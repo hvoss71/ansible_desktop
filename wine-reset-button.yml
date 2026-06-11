@@ -6,33 +6,51 @@
 
   vars:
     benutzername: zeugnis
-    desktop_subpath: "Schreibtisch"  # deutsches Desktop-Verzeichnis
+    desktop_subpath: "Schreibtisch"  # deutsche Desktop-Bezeichnung
+    wrapper_path: "~{{ benutzername }}/.data/wine_reset_wrapper_zenity.sh"
   tasks:
     - name: Home-Verzeichnis des Benutzers ermitteln
       ansible.builtin.shell: "eval echo ~{{ benutzername }}"
       register: user_home
       changed_when: false
 
-    - name: Wrapper-Skript für Reset erstellen
+    - name: Zenity installieren (falls benötigt)
+      apt:
+        name: zenity
+        state: present
+        update_cache: yes
+      when: ansible_facts.os_family == "Debian"
+
+    - name: Wrapper-Skript für Reset mit Zenity erstellen
       ansible.builtin.copy:
-        dest: "{{ user_home.stdout }}/.data/wine_reset_wrapper.sh"
+        dest: "{{ user_home.stdout }}/.data/wine_reset_wrapper_zenity.sh"
         content: |
           #!/bin/bash
-          read -p "Lässt sich das Noteneingabe-Programm nicht mehr starten? (Ja/Nein): " user_choice
-          case "$user_choice" in
-            Ja|ja|YES|Yes|yes)
+          if command -v zenity >/dev/null 2>&1; then
+            if zenity --question --text="Lässt sich das Noteneingabe-Programm nicht mehr starten?" --ok-label="Ja" --cancel-label="Nein"; then
               rm -rf "$HOME/.wine"
-              echo ".wine-Verzeichnis wurde gelöscht."
-              ;;
-            *)
-              echo "Löschung abgebrochen."
-              ;;
-          esac
+              zenity --info --text=".wine-Verzeichnis wurde gelöscht."
+            else
+              zenity --info --text="Löschung abgebrochen."
+            fi
+          else
+            # Fallback: Textprompt (falls Zenity doch nicht verfügbar ist)
+            read -p "Lässt sich das Noteneingabe-Programm nicht mehr starten? (Ja/Nein): " user_choice
+            case "$user_choice" in
+              Ja|ja|YES|Yes|yes)
+                rm -rf "$HOME/.wine"
+                echo ".wine-Verzeichnis wurde gelöscht."
+                ;;
+              *)
+                echo "Löschung abgebrochen."
+                ;;
+            esac
+          fi
         mode: '0755'
         owner: "{{ benutzername }}"
         group: "{{ benutzername }}"
 
-    - name: Desktop-Verknüpfung erstellen
+    - name: Desktop-Verknüpfung erstellen (Zenity-Variante)
       ansible.builtin.copy:
         dest: "{{ user_home.stdout }}/{{ desktop_subpath }}/Programm zurücksetzen.desktop"
         content: |
@@ -41,7 +59,7 @@
           Type=Application
           Name=Programm zurücksetzen
           Comment=Löscht das .wine-Verzeichnis nach Bestätigung
-          Exec=bash -lc "$HOME/.data/wine_reset_wrapper.sh"
+          Exec=bash -lc '"{{ wrapper_path | replace(\"~\", \"$HOME\") }}"'
           Icon=system-run
           Terminal=false
           Categories=Utility;
@@ -49,3 +67,4 @@
         mode: '0755'
         owner: "{{ benutzername }}"
         group: "{{ benutzername }}"
+
