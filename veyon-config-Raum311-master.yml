@@ -14,6 +14,12 @@
   # Prüfen, ob das Command Line Interface installiert ist
   # --------------------------------------------------------------------------
 
+  - name: Installiere Veyon Master aus dem Debian-Repository
+    ansible.builtin.package:
+      name:
+        - veyon-master
+      state: latest
+
   - name: Prüfe, ob veyon-cli installiert ist
     ansible.builtin.command: which veyon-cli
     register: veyon_cli
