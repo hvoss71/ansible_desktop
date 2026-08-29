@@ -2,6 +2,7 @@
 # Playbook: Grundausstattung Informatik-PC-Räume (Cinnamon)
 # Debian/Ubuntu + automatische Aktualisierung via ansible-pull
 
+
 - hosts: localhost
   connection: local
   become: true
