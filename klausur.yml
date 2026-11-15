@@ -1,57 +1,55 @@
 ---
 # Einrichtung des Klausurprofils inkl. Nutzer und Prüfungssoftware
-
 - hosts: localhost
   connection: local
   become: true
+  vars:
+    klausur_user: klausur
+    klausur_group: klausur
+    klausur_uid: 1010
+    klausur_gid: 1010
+    klausur_home: /home/klausur
+    klausur_pass_hash: ""  # Optional: vorab über Vault/Secret setzen; wenn leer, wird kein Passwort geändert
 
   tasks:
-  - name: Erzeuge eine Gruppe "Klausur"
+  - name: Erzeuge eine Gruppe 'klausur'
     ansible.builtin.group:
-      name: klausur
-      gid: 1010
+      name: "{{ klausur_group }}"
+      gid: "{{ klausur_gid }}"
       state: present
 
-  - name: Erzeuge einen Nutzer 'Klausur' mit einem eigenen Home-Verzeichnis
+  - name: Erzeuge einen Nutzer 'klausur' mit eigenem Home-Verzeichnis
     ansible.builtin.user:
-      name: klausur
+      name: "{{ klausur_user }}"
       comment: Klausur
-      group: klausur
+      group: "{{ klausur_group }}"
       state: present
-      uid: 1010
+      uid: "{{ klausur_uid }}"
       create_home: yes
-      state: present
-#      password: 'klausur'
-#      update_password: always 
+      home: "{{ klausur_home }}"
+      shell: /bin/bash
+      system: no
+      # Passwörter sollten idempotent gesetzt werden; siehe unten
+      # password: "{{ klausur_pass_hash | default(omit) }}"
+      # update_password: on_create
 
-  - name: Initiale Passwort-Erzeugung für den Nutzer klausur
-    shell: usermod -p $(echo 'klausur' | openssl passwd -1 -stdin) 'klausur'
+  - name: Prüfe, ob Passwort-Hash gesetzt ist und passe gegebenenfalls den Hash an
+    ansible.builtin.shell: >
+      if [[ -n "{{ klausur_pass_hash }}" ]]; then
+        # Prüfe, ob der aktuelle Hash bereits gesetzt ist
+        current_hash=$(sudo -u "{{ klausur_user }}" bash -lc "getent shadow {{ klausur_user }} | cut -d: -f2")
+        if [[ "$current_hash" != "$klausur_pass_hash" && -n "$current_hash" ]]; then
+          usermod -p "{{ klausur_pass_hash }}" "{{ klausur_user }}"
+          echo "Password updated for user {{ klausur_user }}"
+        else
+          echo "Password hash already set for user {{ klausur_user }} or no change needed"
+        fi
+      else
+        echo "No password hash configured; skipping password change"
+      fi
+    when: klausur_pass_hash is defined
+    changed_when: "'Password updated' in stdout"
 
-# Das Passwort kann aufgrund neuer Sicherheitsbestimmungen nicht mehr direkt 
-# gesetzt werden. Im der hier verwendeten Shell-Anweisung wird das Passwort
-# bei jedem Aufruf des Playbooks neu (zurück-)gesetzt.
-
-
-  - name: Ermittle das aktuelle stabile Next-Exam-Release
-    ansible.builtin.uri:
-      url: https://api.github.com/repos/Bildungsportal/next-exam/releases/latest
-      return_content: yes
-      body_format: json
-    register: next_exam_release
-    
-  - name: Ermittle die Download-Adresse des Linux-Student-AppImage
-    ansible.builtin.set_fact:
-      next_exam_download_url: "{{ item.browser_download_url }}"
-    loop: "{{ next_exam_release.json.assets }}"
-    when:
-      - "'Student' in item.name"
-      - "'AppImage' in item.name"
-      - "'x86_64' in item.name"
-
-  - name: Lade das aktuelle Next-Exam Student AppImage herunter
-    ansible.builtin.get_url:
-      url: "{{ next_exam_download_url }}"
-      dest: /home/klausur/Next-Exam-Student.AppImage
-      owner: klausur
-      group: klausur
-      mode: '0550'     # - r-x r-x ---
+# Hinweis: Falls du lieber eine klare Idempotenz durch Ansible-Mechanismen wünschst,
+# könntest du auch das Passwort direkt mit 'password' setzen und 'update_password: always'
+# deaktivieren oder auf 'on_create' setzen, je nach Sicherheitsanforderung.
