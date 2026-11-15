@@ -13,8 +13,8 @@
     klausur_pass_hash: ""  # Optional: vorab über Vault/Secret setzen; wenn leer, wird kein Passwort geändert
 
     # Next-Exam AppImage
-    appimage_path: "{{ klausur_home }}/Next-Exam-Student.AppImage"
-    appimage_exec_dir: "{{ klausur_home }}"
+    appimage_path: "{{ klausur_home }}/AppImages/Next-Exam-Student.AppImage"
+    appimage_exec_dir: "{{ klausur_home }}/AppImages"
     appimage_filename: Next-Exam-Student.AppImage
 
     # Gear Lever Desktop-Launcher
@@ -165,16 +165,6 @@
         group: "{{ klausur_user }}"
         mode: '0755'
 
-    - name: Copy AppImage to Gear Lever directory (idempotent)
-      ansible.builtin.copy:
-        src: "/home/{{ klausur_user }}/{{ appimage_filename }}"
-        dest: "{{ appimage_path }}"
-        remote_src: yes
-        owner: "{{ klausur_user }}"
-        group: "{{ klausur_user }}"
-        mode: '0755'
-      # Falls AppImage bereits dort liegt, ersetzt dieser Task es nicht
-
     - name: Ensure app image is executable (in case copied earlier)
       ansible.builtin.file:
         path: "{{ appimage_path }}"
@@ -199,7 +189,7 @@
           Version=1.0
           Type=Application
           Name=Next-Exam AppImage
-          Exec={{ appimage_path }}
+          Exec=flatpak run it.mijorus.gearlever
           Icon=application-x-executable
           Terminal=false
           Categories=Education;
@@ -214,7 +204,7 @@
           [Desktop Entry]
           Type=Application
           Name=Gear Lever
-          Exec=gear-lever
+          Exec=flatpak run it.mijorus.gearlever
           X-GNOME-Autostart-enabled=true
         owner: "{{ klausur_user }}"
         group: "{{ klausur_user }}"
