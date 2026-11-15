@@ -29,27 +29,26 @@
       home: "{{ klausur_home }}"
       shell: /bin/bash
       system: no
-      # Passwörter sollten idempotent gesetzt werden; siehe unten
       # password: "{{ klausur_pass_hash | default(omit) }}"
       # update_password: on_create
-
-  - name: Prüfe, ob Passwort-Hash gesetzt ist und passe gegebenenfalls den Hash an
-    ansible.builtin.shell: >
-      if [[ -n "{{ klausur_pass_hash }}" ]]; then
-        # Prüfe, ob der aktuelle Hash bereits gesetzt ist
-        current_hash=$(sudo -u "{{ klausur_user }}" bash -lc "getent shadow {{ klausur_user }} | cut -d: -f2")
-        if [[ "$current_hash" != "$klausur_pass_hash" && -n "$current_hash" ]]; then
-          usermod -p "{{ klausur_pass_hash }}" "{{ klausur_user }}"
-          echo "Password updated for user {{ klausur_user }}"
+  
+  - name: Prüfe Passwort-Hash gesetzt und passe ggf. an
+    ansible.builtin.shell: |
+      if [ -n "{{ klausur_pass_hash | default('') }}" ]; then
+        current_hash=$(getent shadow klausur | cut -d: -f2)
+        if [ "$current_hash" != "{{ klausur_pass_hash }}" ] && [ -n "$current_hash" ]; then
+          usermod -p "{{ klausur_pass_hash }}" klausur
+          echo "Password updated for user klausur"
         else
-          echo "Password hash already set for user {{ klausur_user }} or no change needed"
+          echo "Password hash already set for user klausur or no change needed"
         fi
       else
         echo "No password hash configured; skipping password change"
       fi
+    become: true
     when: klausur_pass_hash is defined
-    changed_when: "'Password updated' in stdout"
-
-# Hinweis: Falls du lieber eine klare Idempotenz durch Ansible-Mechanismen wünschst,
-# könntest du auch das Passwort direkt mit 'password' setzen und 'update_password: always'
-# deaktivieren oder auf 'on_create' setzen, je nach Sicherheitsanforderung.
+    args:
+      executable: /bin/bash
+    
+    
+    
