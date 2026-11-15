@@ -32,10 +32,26 @@
 # bei jedem Aufruf des Playbooks neu (zurück-)gesetzt.
 
 
-  - name: Kopiere das AppImage in das lokale Verzeichnis des Klausur-Zugangs
+  - name: Ermittle das aktuelle stabile Next-Exam-Release
+    ansible.builtin.uri:
+      url: https://api.github.com/repos/Bildungsportal/next-exam/releases/latest
+      return_content: yes
+      body_format: json
+    register: next_exam_release
+    
+  - name: Ermittle die Download-Adresse des Linux-Student-AppImage
+    ansible.builtin.set_fact:
+      next_exam_download_url: "{{ item.browser_download_url }}"
+    loop: "{{ next_exam_release.json.assets }}"
+    when:
+      - "'Student' in item.name"
+      - "'AppImage' in item.name"
+      - "'x86_64' in item.name"
+
+  - name: Lade das aktuelle Next-Exam Student AppImage herunter
     ansible.builtin.get_url:
-      url: https://next-exam.at/release/current/lin/Next-Exam-Student_1.0.0.AppImage
-      dest: /home/klausur
+      url: "{{ next_exam_download_url }}"
+      dest: /home/klausur/Next-Exam-Student.AppImage
       owner: klausur
       group: klausur
-      mode: '0550'    # - r-x r-x ---
+      mode: '0550'     # - r-x r-x ---
