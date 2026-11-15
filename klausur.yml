@@ -50,5 +50,86 @@
     args:
       executable: /bin/bash
     
+  - name: Ermittle das aktuelle stabile Next-Exam-Release
+    ansible.builtin.uri:
+      url: https://api.github.com/repos/Bildungsportal/next-exam/releases/latest
+      return_content: yes
+      body_format: json
+    register: next_exam_release
     
     
+  - name: Ermittle die Download-Adresse des Linux-Student-AppImage
+    ansible.builtin.set_fact:
+      next_exam_download_url: "{{ item.browser_download_url }}"
+    loop: "{{ next_exam_release.json.assets }}"
+    when:
+      - "'Student' in item.name"
+      - "'AppImage' in item.name"
+      - "'x86_64' in item.name"
+      
+  - name: Prüfe, ob Download-URL gefunden wurde
+    ansible.builtin.fail:
+      msg: "Kein passendes Next-Exam AppImage Asset gefunden (Student AppImage, x86_64)."
+    when: next_exam_download_url is not defined or next_exam_download_url | trim == ""
+
+  - name: Stelle sicher, dass Home-Verzeichnis von Klausur existiert
+    ansible.builtin.file:
+      path: "{{ klausur_home }}"
+      state: directory
+      owner: klausur
+      group: klausur
+      mode: '0755'
+      
+  - name: Lade das aktuelle Next-Exam Student AppImage herunter
+    ansible.builtin.get_url:
+      url: "{{ next_exam_download_url }}"
+      dest: /home/klausur/Next-Exam-Student.AppImage
+      owner: klausur
+      group: klausur
+      mode: '0755'
+    when: next_exam_download_url is defined
+      
+      
+# Optional: creates: /home/klausur/Next-Exam-Student.AppImage  # falls du eine einfache Idempotenz möchtest
+
+# Optional: Checksummen-Verifikation (falls du eine Hash-Datei oder Checksummen von GitHub hast)
+# - name: Checksumme verifizieren (falls vorhanden)
+#   ...
+
+  - name: Ensure AppImage launcher desktop entry exists for Gear Lever
+    ansible.builtin.copy:
+      dest: "{{ klausur_home }}/.local/share/applications/next-exam-appimage.desktop"
+      content: |
+        [Desktop Entry]
+        Name=Next-Exam AppImage
+        Exec={{ klausur_home }}/Next-Exam-Student.AppImage
+        Type=Application
+        Terminal=false
+        Comment=Next-Exam AppImage Launcher
+        Categories=Education;
+      owner: klausur
+      group: klausur
+      mode: '0644'
+    when: klausur_home is defined
+
+  - name: Ensure Next-Exam AppImage is executable
+    ansible.builtin.file:
+      path: "{{ klausur_home }}/Next-Exam-Student.AppImage"
+      mode: '0755'
+      owner: klausur
+      group: klausur
+      state: file
+
+  - name: Ensure Gear Lever autostart entry exists
+    ansible.builtin.copy:
+      dest: "{{ klausur_home }}/.config/autostart/gear-lever.desktop"
+      content: |
+        [Desktop Entry]
+        Type=Application
+        Name=Gear Lever
+        Exec=gear-lever
+        X-GNOME-Autostart-enabled=true
+      owner: klausur
+      group: klausur
+      mode: '0644'
+    when: klausur_home is defined
