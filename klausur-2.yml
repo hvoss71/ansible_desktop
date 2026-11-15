@@ -1,0 +1,135 @@
+---
+# Einrichtung des Klausurprofils inkl. Nutzer und Prüfungssoftware
+- hosts: localhost
+  connection: local
+  become: true
+  vars:
+    klausur_user: klausur
+    klausur_group: klausur
+    klausur_uid: 1010
+    klausur_gid: 1010
+    klausur_home: /home/klausur
+    klausur_pass_hash: ""  # Optional: vorab über Vault/Secret setzen; wenn leer, wird kein Passwort geändert
+
+  tasks:
+  - name: Erzeuge eine Gruppe 'klausur'
+    ansible.builtin.group:
+      name: "{{ klausur_group }}"
+      gid: "{{ klausur_gid }}"
+      state: present
+
+  - name: Erzeuge einen Nutzer 'klausur' mit eigenem Home-Verzeichnis
+    ansible.builtin.user:
+      name: "{{ klausur_user }}"
+      comment: Klausur
+      group: "{{ klausur_group }}"
+      state: present
+      uid: "{{ klausur_uid }}"
+      create_home: yes
+      home: "{{ klausur_home }}"
+      shell: /bin/bash
+      system: no
+      # password: "{{ klausur_pass_hash | default(omit) }}"
+      # update_password: on_create
+  
+  - name: Prüfe Passwort-Hash gesetzt und passe ggf. an
+    ansible.builtin.shell: |
+      if [ -n "{{ klausur_pass_hash | default('') }}" ]; then
+        current_hash=$(getent shadow klausur | cut -d: -f2)
+        if [ "$current_hash" != "{{ klausur_pass_hash }}" ] && [ -n "$current_hash" ]; then
+          usermod -p "{{ klausur_pass_hash }}" klausur
+          echo "Password updated for user klausur"
+        else
+          echo "Password hash already set for user klausur or no change needed"
+        fi
+      else
+        echo "No password hash configured; skipping password change"
+      fi
+    become: true
+    when: klausur_pass_hash is defined
+    args:
+      executable: /bin/bash
+    
+  - name: Ermittle das aktuelle stabile Next-Exam-Release
+    ansible.builtin.uri:
+      url: https://api.github.com/repos/Bildungsportal/next-exam/releases/latest
+      return_content: yes
+      body_format: json
+    register: next_exam_release
+    
+    
+  - name: Ermittle die Download-Adresse des Linux-Student-AppImage
+    ansible.builtin.set_fact:
+      next_exam_download_url: "{{ item.browser_download_url }}"
+    loop: "{{ next_exam_release.json.assets }}"
+    when:
+      - "'Student' in item.name"
+      - "'AppImage' in item.name"
+      - "'x86_64' in item.name"
+      
+  - name: Prüfe, ob Download-URL gefunden wurde
+    ansible.builtin.fail:
+      msg: "Kein passendes Next-Exam AppImage Asset gefunden (Student AppImage, x86_64)."
+    when: next_exam_download_url is not defined or next_exam_download_url | trim == ""
+
+  - name: Stelle sicher, dass Home-Verzeichnis von Klausur existiert
+    ansible.builtin.file:
+      path: "{{ klausur_home }}"
+      state: directory
+      owner: klausur
+      group: klausur
+      mode: '0755'
+      
+  - name: Lade das aktuelle Next-Exam Student AppImage herunter
+    ansible.builtin.get_url:
+      url: "{{ next_exam_download_url }}"
+      dest: /home/klausur/Next-Exam-Student.AppImage
+      owner: klausur
+      group: klausur
+      mode: '0755'
+    when: next_exam_download_url is defined
+      
+      
+# Optional: creates: /home/klausur/Next-Exam-Student.AppImage  # falls du eine einfache Idempotenz möchtest
+
+# Optional: Checksummen-Verifikation (falls du eine Hash-Datei oder Checksummen von GitHub hast)
+# - name: Checksumme verifizieren (falls vorhanden)
+#   ...
+
+  - name: Ensure AppImage launcher desktop entry exists for Gear Lever
+    ansible.builtin.copy:
+      dest: "{{ klausur_home }}/.local/share/applications/next-exam-appimage.desktop"
+      content: |
+        [Desktop Entry]
+        Name=Next-Exam AppImage
+        Exec={{ klausur_home }}/Next-Exam-Student.AppImage
+        Type=Application
+        Terminal=false
+        Comment=Next-Exam AppImage Launcher
+        Categories=Education;
+      owner: klausur
+      group: klausur
+      mode: '0644'
+    when: klausur_home is defined
+
+  - name: Ensure Next-Exam AppImage is executable
+    ansible.builtin.file:
+      path: "{{ klausur_home }}/Next-Exam-Student.AppImage"
+      mode: '0755'
+      owner: klausur
+      group: klausur
+      state: file
+
+  - name: Ensure Gear Lever autostart entry exists
+    ansible.builtin.copy:
+      dest: "{{ klausur_home }}/.config/autostart/gear-lever.desktop"
+      content: |
+        [Desktop Entry]
+        Type=Application
+        Name=Gear Lever
+        Exec=gear-lever
+        X-GNOME-Autostart-enabled=true
+      owner: klausur
+      group: klausur
+      mode: '0644'
+    when: klausur_home is defined
