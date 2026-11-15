@@ -15,6 +15,7 @@
     # Next-Exam AppImage
     appimage_path: "{{ klausur_home }}/Next-Exam-Student.AppImage"
     appimage_exec_dir: "{{ klausur_home }}"
+    appimage_filename: Next-Exam-Student.AppImage
 
     # Gear Lever Desktop-Launcher
     desktop_dir: "{{ klausur_home }}/.local/share/applications"
@@ -22,6 +23,7 @@
 
     # Autostart Gear Lever
     autostart_dir: "{{ klausur_home }}/.config/autostart"
+    gearlever_dir: /opt/gearlever
     gear_lever_autostart: "{{ autostart_dir }}/gear-lever.desktop"
 
   tasks:
@@ -140,7 +142,7 @@
           [Desktop Entry]
           Type=Application
           Name=Gear Lever
-          Exec=gear-lever
+          Exec=flatpak run it.mijorus.gearlever
           X-GNOME-Autostart-enabled=true
         owner: "{{ klausur_user }}"
         group: "{{ klausur_user }}"
@@ -149,15 +151,74 @@
 
     - name: Stoße einen Gear Lever Rescan an (falls nötig)
       ansible.builtin.shell: |
-        gear-lever --reload-cache || true
+        flatpak run it.mijorus.gearlever --reload-cache || true
       args:
         executable: /bin/bash
       ignore_errors: yes
 
-    - name: Starte Gear Lever zur Erkennung der neuen Desktop-Datei neu
-      ansible.builtin.shell: |
-        pkill Gear\ Lever || true
-        gear-lever &
-      args:
-        executable: /bin/bash
+
+    - name: Ensure gearlever directory exists
+      ansible.builtin.file:
+        path: "{{ gearlever_dir }}"
+        state: directory
+        owner: "{{ klausur_user }}"
+        group: "{{ klausur_user }}"
+        mode: '0755'
+
+    - name: Copy AppImage to Gear Lever directory (idempotent)
+      ansible.builtin.copy:
+        src: "/home/{{ klausur_user }}/{{ appimage_filename }}"
+        dest: "{{ appimage_path }}"
+        remote_src: yes
+        owner: "{{ klausur_user }}"
+        group: "{{ klausur_user }}"
+        mode: '0755'
+      # Falls AppImage bereits dort liegt, ersetzt dieser Task es nicht
+
+    - name: Ensure app image is executable (in case copied earlier)
+      ansible.builtin.file:
+        path: "{{ appimage_path }}"
+        mode: '0755'
+        owner: "{{ klausur_user }}"
+        group: "{{ klausur_user }}"
+        state: file
+
+    - name: Ensure applications directory exists
+      ansible.builtin.file:
+        path: "{{ desktop_dir }}"
+        state: directory
+        owner: "{{ klausur_user }}"
+        group: "{{ klausur_user }}"
+        mode: '0755'
+
+    - name: Create or update desktop launcher for Gear Lever / Next-Exam AppImage (Flatpak launcher path)
+      ansible.builtin.copy:
+        dest: "{{ desktop_file }}"
+        content: |
+          [Desktop Entry]
+          Version=1.0
+          Type=Application
+          Name=Next-Exam AppImage
+          Exec={{ appimage_path }}
+          Icon=application-x-executable
+          Terminal=false
+          Categories=Education;
+        owner: "{{ klausur_user }}"
+        group: "{{ klausur_user }}"
+        mode: '0644'
+
+    - name: Ensure Gear Lever autostart entry exists
+      ansible.builtin.copy:
+        dest: "{{ gear_lever_autostart }}"
+        content: |
+          [Desktop Entry]
+          Type=Application
+          Name=Gear Lever
+          Exec=gear-lever
+          X-GNOME-Autostart-enabled=true
+        owner: "{{ klausur_user }}"
+        group: "{{ klausur_user }}"
+        mode: '0644'
       ignore_errors: yes
+
+   
