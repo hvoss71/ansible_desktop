@@ -47,23 +47,12 @@
         # password: "{{ klausur_pass_hash | default(omit) }}"
         # update_password: on_create
 
-    - name: Prüfe Passwort-Hash gesetzt und passe ggf. an
-      ansible.builtin.shell: |
-        if [ -n "{{ klausur_pass_hash | default('') }}" ]; then
-          current_hash=$(getent shadow {{ klausur_user }} | cut -d: -f2)
-          if [ "$current_hash" != "{{ klausur_pass_hash }}" ] && [ -n "$current_hash" ]; then
-            usermod -p "{{ klausur_pass_hash }}" {{ klausur_user }}
-            echo "Password updated for user {{ klausur_user }}"
-          else
-            echo "Password hash already set for user {{ klausur_user }} or no change needed"
-          fi
-        else
-          echo "No password hash configured; skipping password change"
-        fi
-      become: true
-      when: klausur_pass_hash is defined
-      args:
-        executable: /bin/bash
+    - name: Initiale Passwort-Erzeugung für den Nutzer klausur
+      shell: usermod -p $(echo 'klausur' | openssl passwd -1 -stdin) 'klausur'
+
+# Das Passwort kann aufgrund neuer Sicherheitsbestimmungen nicht mehr direkt
+# gesetzt werden. Im der hier verwendeten Shell-Anweisung wird das Passwort
+# bei jedem Aufruf des Playbooks neu (zurück-)gesetzt.
 
     - name: Ermittle das aktuelle stabile Next-Exam-Release
       ansible.builtin.uri:
