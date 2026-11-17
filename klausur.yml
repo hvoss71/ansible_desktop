@@ -13,8 +13,8 @@
     klausur_pass_hash: ""  # Optional: vorab über Vault/Secret setzen; wenn leer, wird kein Passwort geändert
 
     # Next-Exam AppImage
-    appimage_path: "{{ klausur_home }}/AppImages/Next-Exam-Student.AppImage"
-    appimage_exec_dir: "{{ klausur_home }}/AppImages"
+    appimage_path: "{{ klausur_home }}/Next-Exam-Student.AppImage"
+    appimage_exec_dir: "{{ klausur_home }}"
     appimage_filename: Next-Exam-Student.AppImage
 
     # Gear Lever Desktop-Launcher
