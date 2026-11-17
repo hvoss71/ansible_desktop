@@ -127,6 +127,9 @@
         # Flatpak Support
         - flatpak
         - gnome-software-plugin-flatpak
+
+        # FUSE-Support
+        - libfuse2t64
       state: present
       update_cache: yes
     ignore_errors: yes
